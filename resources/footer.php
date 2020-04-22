@@ -159,7 +159,7 @@
 		else if (isset($_SESSION['software_name'])) {
 			$document_title = $_SESSION['software_name'];
 		}
-		$document_title = ($document['title'] != '' ? 'Gottesdienst Telefon - '.$document['title'] : null).$document_title;
+		$document_title = (!empty($document['title']) ? 'Gottesdienst Telefon - '.$document['title'] : null).$document_title;
 		$view->assign('document_title', $document_title);
 	//domain selector control
 		$domain_selector_enabled = permission_exists('domain_select') && count($_SESSION['domains']) > 1 ? true : false;
