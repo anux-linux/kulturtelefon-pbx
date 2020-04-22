@@ -136,7 +136,7 @@
 				$settings['theme']['menu_side_width_expanded'] = is_numeric($settings['theme']['menu_side_width_expanded']) ? $settings['theme']['menu_side_width_expanded'] : '225';
 				$settings['theme']['menu_style'] = $settings['theme']['menu_style'] != '' ? $settings['theme']['menu_style'] : 'fixed';
 				$settings['theme']['menu_position'] = $settings['theme']['menu_position'] != '' ? $settings['theme']['menu_position'] : 'top';
-				$settings['theme']['footer'] = $settings['theme']['footer'] != '' ? $settings['theme']['footer'] : '&copy; '.$text['theme-label-copyright'].' 2008 - '.date('Y')." <a href='http://www.fusionpbx.com' class='footer' target='_blank'>fusionpbx.com</a> ".$text['theme-label-all_rights_reserved'];
+				$settings['theme']['footer'] = $settings['theme']['footer'] != '' ? $settings['theme']['footer'] : '&copy; '.$text['theme-label-copyright'].' 2020 - '.date('Y')."<a href='https://www.gottesdienst-telefon.de' class='footer' target='_blank'>Gottesdienst Telefon</a> Powerd By <a href='http://www.fusionpbx.com' class='footer' target='_blank'>fusionpbx.com</a> ".$text['theme-label-all_rights_reserved'];
 			$view->assign('settings', $settings);
 		}
 	//document title
@@ -146,7 +146,7 @@
 		else if (isset($_SESSION['software_name'])) {
 			$document_title = $_SESSION['software_name'];
 		}
-		$document_title = ($document['title'] != '' ? $document['title'].' - ' : null).$document_title;
+		$document_title = ($document['title'] != '' ? 'Gottesdienst Telefon - '.$document['title'] : null).$document_title;
 		$view->assign('document_title', $document_title);
 	//domain selector control
 		$domain_selector_enabled = permission_exists('domain_select') && count($_SESSION['domains']) > 1 ? true : false;

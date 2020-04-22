@@ -269,7 +269,7 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 			background-position: 0px 0px;
 			background-repeat: repeat-x;
 		<?php } else {?>
-			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(0,0,0,0.90)'; ?>;
+			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(178,214,202)'; ?>;
 		<?php } ?>
 		-webkit-box-shadow: <?php echo ($_SESSION['theme']['menu_main_shadow_color']['text'] != '') ? '0 0 5px '.$_SESSION['theme']['menu_main_shadow_color']['text'] : 'none';?>;
 		-moz-box-shadow: <?php echo ($_SESSION['theme']['menu_main_shadow_color']['text'] != '') ? '0 0 5px '.$_SESSION['theme']['menu_main_shadow_color']['text'] : 'none';?>;
@@ -303,14 +303,14 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 
 	/* menu brand text */
 	div.navbar-brand > a.navbar-brand-text {
-		color: <?php echo ($_SESSION['theme']['menu_brand_text_color']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color']['text'] : 'rgba(255,255,255,0.80)'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_brand_text_color']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color']['text'] : 'rgba(0,0,0,0.80)'; ?>;
 		font-size: <?php echo ($_SESSION['theme']['menu_brand_text_size']['text'] != '') ? $_SESSION['theme']['menu_brand_text_size']['text'] : '13pt'; ?>;
 		white-space: nowrap;
 		}
 
 	/* menu brand text hover */
 	div.navbar-brand > a.navbar-brand-text:hover {
-		color: <?php echo ($_SESSION['theme']['menu_brand_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color_hover']['text'] : 'rgba(255,255,255,1.0)'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_brand_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color_hover']['text'] : 'rgba(0,0,0,0,1.0)'; ?>;
 		text-decoration: none;
 		}
 
@@ -318,15 +318,15 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 	ul.navbar-nav > li.nav-item > a.nav-link {
 		font-family: <?php echo ($_SESSION['theme']['menu_main_text_font']['text'] != '') ? $_SESSION['theme']['menu_main_text_font']['text'] : 'arial'; ?>;
 		font-size: <?php echo ($_SESSION['theme']['menu_main_text_size']['text'] != '') ? $_SESSION['theme']['menu_main_text_size']['text'] : '10.25pt'; ?>;
-		color: <?php echo ($_SESSION['theme']['menu_main_text_color']['text'] != '') ? $_SESSION['theme']['menu_main_text_color']['text'] : '#fff'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_main_text_color']['text'] != '') ? $_SESSION['theme']['menu_main_text_color']['text'] : '#000'; ?>;
 		padding: 15px 10px 14px 10px; !important;
 		}
 
 	ul.navbar-nav > li.nav-item:hover > a.nav-link,
 	ul.navbar-nav > li.nav-item:focus > a.nav-link,
 	ul.navbar-nav > li.nav-item:active > a.nav-link {
-		color: <?php echo ($_SESSION['theme']['menu_main_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_text_color_hover']['text'] : '#fd9c03'; ?>;
-		background: <?php echo ($_SESSION['theme']['menu_main_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_background_color_hover']['text'] : 'rgba(0,0,0,1.0)'; ?>
+		color: <?php echo ($_SESSION['theme']['menu_main_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_text_color_hover']['text'] : '#024b40'; ?>;
+		background: <?php echo ($_SESSION['theme']['menu_main_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_background_color_hover']['text'] : 'rgba(178,214,202,1.0)'; ?>
 		}
 
 	.navbar .navbar-nav > li > a > span.fas {
@@ -349,7 +349,7 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 		echo ($_SESSION['theme']['menu_sub_border_color']['text'] != '') ? 'border-color: '.$_SESSION['theme']['menu_sub_border_color']['text'].";\n" : null;
 		echo ($_SESSION['theme']['menu_sub_border_size']['text'] != '') ? 'border-width: '.$_SESSION['theme']['menu_sub_border_size']['text'].";\n" : null;
 		?>
-		background: <?php echo ($_SESSION['theme']['menu_sub_background_color']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color']['text'] : 'rgba(0,0,0,0.90)'; ?>;
+		background: <?php echo ($_SESSION['theme']['menu_sub_background_color']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color']['text'] : 'rgba(178,214,202,1.0)'; ?>;
 		-webkit-box-shadow: <?php echo ($_SESSION['theme']['menu_sub_shadow_color']['text'] != '') ? '0 0 5px '.$_SESSION['theme']['menu_sub_shadow_color']['text'] : 'none';?>;
 		-moz-box-shadow: <?php echo ($_SESSION['theme']['menu_sub_shadow_color']['text'] != '') ? '0 0 5px '.$_SESSION['theme']['menu_sub_shadow_color']['text'] : 'none';?>;
 		box-shadow: <?php echo ($_SESSION['theme']['menu_sub_shadow_color']['text'] != '') ? '0 0 5px '.$_SESSION['theme']['menu_sub_shadow_color']['text'] : 'none';?>;
@@ -364,7 +364,7 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 	/* sub menu item */
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link {
 		font-family: <?php echo ($_SESSION['theme']['menu_sub_text_font']['text'] != '') ? $_SESSION['theme']['menu_sub_text_font']['text'] : 'arial'; ?>;
-		color: <?php echo ($_SESSION['theme']['menu_sub_text_color']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color']['text'] : '#fff'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_sub_text_color']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color']['text'] : '#000'; ?>;
 		font-size: <?php echo ($_SESSION['theme']['menu_sub_text_size']['text'] != '') ? $_SESSION['theme']['menu_sub_text_size']['text'] : '10pt'; ?>;
 		margin: 0;
 		padding: 3px 14px !important;
@@ -373,8 +373,8 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:hover,
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:focus,
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:active {
-		color: <?php echo ($_SESSION['theme']['menu_sub_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color_hover']['text'] : '#fd9c03'; ?>;
-		background: <?php echo ($_SESSION['theme']['menu_sub_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color_hover']['text'] : '#141414'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_sub_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color_hover']['text'] : '#024b40'; ?>;
+		background: <?php echo ($_SESSION['theme']['menu_sub_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color_hover']['text'] : 'rgba(178,214,202,1.0)'; ?>;
 		outline: none;
 		}
 
@@ -465,7 +465,7 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 			background-position: 0px 0px;
 			background-repeat: repeat-y;
 		<?php } else {?>
-			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(0,0,0,0.90)'; ?>;
+			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : '#b2d6ca'; ?>;
 		<?php } ?>
 		-webkit-box-shadow: <?php echo ($_SESSION['theme']['menu_main_shadow_color']['text'] != '') ? '0 0 5px '.$_SESSION['theme']['menu_main_shadow_color']['text'] : 'none';?>;
 		-moz-box-shadow: <?php echo ($_SESSION['theme']['menu_main_shadow_color']['text'] != '') ? '0 0 5px '.$_SESSION['theme']['menu_main_shadow_color']['text'] : 'none';?>;
@@ -495,7 +495,7 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 			background-position: 0px 0px;
 			background-repeat: repeat-y;
 		<?php } else {?>
-			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(0,0,0,0.90)'; ?>;
+			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : '#b2d6ca'; ?>;
 		<?php } ?>
 		<?php
 		echo ($_SESSION['theme']['menu_main_border_color']['text'] == '' && $_SESSION['theme']['menu_main_border_size']['text'] == '') ? "border: 0;\n" : null;
@@ -528,13 +528,13 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 
 	/* menu brand text */
 	.menu_brand_text {
-		color: <?php echo ($_SESSION['theme']['menu_brand_text_color']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color']['text'] : 'rgba(255,255,255,0.80)'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_brand_text_color']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color']['text'] : '#000'; ?>;
 		font-weight: 600;
 		white-space: nowrap;
 		}
 
 	.menu_brand_text:hover {
-		color: <?php echo ($_SESSION['theme']['menu_brand_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color_hover']['text'] : 'rgba(255,255,255,1.0)'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_brand_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color_hover']['text'] : '#024b40'; ?>;
 		text-decoration: none;
 		}
 
@@ -547,7 +547,7 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 		text-align: left;
 		font-family: <?php echo ($_SESSION['theme']['menu_main_text_font']['text'] != '') ? $_SESSION['theme']['menu_main_text_font']['text'] : 'arial'; ?>;
 		font-size: <?php echo ($_SESSION['theme']['menu_main_text_size']['text'] != '') ? $_SESSION['theme']['menu_main_text_size']['text'] : '10.25pt'; ?>;
-		color: <?php echo ($_SESSION['theme']['menu_main_text_color']['text'] != '') ? $_SESSION['theme']['menu_main_text_color']['text'] : '#fff'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_main_text_color']['text'] != '') ? $_SESSION['theme']['menu_main_text_color']['text'] : '#000'; ?>;
 		cursor: pointer;
 		}
 
@@ -560,8 +560,8 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:hover,
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:focus,
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:active {
-		color: <?php echo ($_SESSION['theme']['menu_main_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_text_color_hover']['text'] : '#fd9c03'; ?>;
-		background: <?php echo ($_SESSION['theme']['menu_main_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_background_color_hover']['text'] : 'rgba(0,0,0,1.0)'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_main_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_text_color_hover']['text'] : '#024b40'; ?>;
+		background: <?php echo ($_SESSION['theme']['menu_main_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_background_color_hover']['text'] : '#b2d6ca'; ?>;
 		text-decoration: none;
 		}
 
@@ -570,18 +570,18 @@ header('Expires: '.gmdate('D, d M Y H:i:s',time()+3600).' GMT');
 		width: 100%;
 		padding: 5px 20px 5px 45px;
 		text-align: left;
-		background: <?php echo ($_SESSION['theme']['menu_sub_background_color']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color']['text'] : 'rgba(0,0,0,0.90)'; ?>;
+		background: <?php echo ($_SESSION['theme']['menu_sub_background_color']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color']['text'] : '#b2d6ca'; ?>;
 		font-family: <?php echo ($_SESSION['theme']['menu_sub_text_font']['text'] != '') ? $_SESSION['theme']['menu_sub_text_font']['text'] : 'arial'; ?>;
 		font-size: <?php echo ($_SESSION['theme']['menu_sub_text_size']['text'] != '') ? $_SESSION['theme']['menu_sub_text_size']['text'] : '10pt'; ?>;
-		color: <?php echo ($_SESSION['theme']['menu_sub_text_color']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color']['text'] : '#fff'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_sub_text_color']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color']['text'] : '#000'; ?>;
 		cursor: pointer;
 		}
 
 	a.menu_side_item_sub:hover,
 	a.menu_side_item_sub:focus,
 	a.menu_side_item_sub:active {
-		color: <?php echo ($_SESSION['theme']['menu_sub_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color_hover']['text'] : '#fd9c03'; ?>;
-		background: <?php echo ($_SESSION['theme']['menu_sub_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color_hover']['text'] : 'rgba(0,0,0,1.0)'; ?>;
+		color: <?php echo ($_SESSION['theme']['menu_sub_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color_hover']['text'] : '#024b40'; ?>;
+		background: <?php echo ($_SESSION['theme']['menu_sub_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color_hover']['text'] : '#b2d6ca'; ?>;
 		text-decoration: none;
 		}
 
