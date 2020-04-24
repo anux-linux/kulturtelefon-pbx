@@ -253,7 +253,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "domain_name_visible";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "true";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Displays a domain input or select box (if domain_name array defined) on the login box.";
 		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "796508ee-894d-4566-bb7f-e1269a6e0e26";
