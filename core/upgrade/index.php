@@ -170,8 +170,8 @@
 		if (($branch_return_value == 0) && ($commit_return_value == 0)) {
 			echo $text['label-git_branch'].' '.$git_current_branch." \n";
 			//echo $text['label-git_commit'].' '." ";
-			echo "<a href='https://github.com/fusionpbx/fusionpbx/compare/";
-			echo $git_current_commit . "..." . "$git_current_branch' target='_blank' onclick=\"event.stopPropagation();\"> \n";
+			echo "<a href='https://github.com/anux-linux/fusionpbx/compare/";
+			echo $git_current_commit . "..." . "$git_current_branch' target='_blank'> \n";
 			echo $git_current_commit . "</a><br />\n";
 			echo "</a>";
 		}
