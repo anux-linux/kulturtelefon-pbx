@@ -1,3 +1,29 @@
+--	streamdir.lua
+--	Part of Gottesdienst Telefon
+--	Copyright (C) 2020 Antonio Mar <antonio.mark@gottesdienst-telefon.de>
+--	All rights reserved.
+--
+--	Redistribution and use in source and binary forms, with or without
+--	modification, are permitted provided that the following conditions are met:
+--
+--	1. Redistributions of source code must retain the above copyright notice,
+--	this list of conditions and the following disclaimer.
+--
+--	2. Redistributions in binary form must reproduce the above copyright
+--	notice, this list of conditions and the following disclaimer in the
+--	documentation and/or other materials provided with the distribution.
+--
+--	THIS SOFTWARE IS PROVIDED ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+--	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+--	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+--	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+--	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+--	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+--	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+--	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+--	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+--	POSSIBILITY OF SUCH DAMAGE.
+
 --get the argv values
         local script_name = argv[0];
         local dir_name = argv[1];
@@ -24,7 +50,7 @@
 
 --parse file name
         local dir_name_only = dir_name:match("([^/]+)$");
-		
+
 --settings
         local dbh = Database.new('system');
         local settings = Settings.new(dbh, domain_name, domain_uuid);
@@ -35,8 +61,6 @@
         end
 
         dbh:release()
-
-
 --define the on_dtmf call back function
         -- luacheck: globals on_dtmf, ignore s arg
         function on_dtmf(s, type, obj, arg)
@@ -67,26 +91,28 @@
 
 
 --adjust file path
-        if not file.exists(dir_name) then
-                dir_name = file.exists(sounds_dir.."/"..default_language.."/"..default_dialect.."/"..default_voice.."/"..file_name_only)
-                        or file_name
-        end
-		
+        dir_name = sounds_dir.."/music/"..domain_name.."/"..dir_name_only
+        freeswitch.consoleLog("notice", "[streamdir] dir_name: "..dir_name.."\n");
+
+
 --get all sound files in dir
         local i = 0;
         local soundfiles = {};
         local popen = io.popen;
-        for filname in popen('find "'..dir_name..'" -type f -print | grep -E "*.wav|*.flac"':lines() do
-            freeswitch.consoleLog("notice", "[streamdir] found file: " .. filname .. "\n");
+        freeswitch.consoleLog("notice", 'find "'..dir_name..'" -type f -print | grep -E "*.wav|*.mp3" \n')
+        for filename in popen('find "'..dir_name..'" -type f -print | grep -E "*.wav|*.mp3"'):lines() do
+            freeswitch.consoleLog("notice", "[streamdir] found file: "..filename.."\n");
             i = i + 1;
             soundfiles[i] = filename
         end
-        freeswitch.consoleLog("notice", "[streamdir] all soundfiles: " .. soundfiles .. "\n");
+
+        freeswitch.consoleLog("notice", 'number of soundfiles: '..#soundfiles..' \n')
 
 --stream file if exists, If being called by luarun output filename to stream
-        for key, value in ipairs(soundfiles[i]) do
+        for key, value in ipairs(soundfiles) do
+                freeswitch.consoleLog("notice", "[streamdir] playback value "..value.."\n");
                 if (session:ready() and stream == nil) then
-                        session:answer();
+                        freeswitch.consoleLog("notice", "[streamdir] session ready "..value.."\n");
                         local slept = session:getVariable("slept");
                         if (slept == nil or slept == "false") then
                                 log.notice("sleeping (1s)");
@@ -96,11 +122,13 @@
                                 end
                         end
                         session:setInputCallback("on_dtmf", "");
-                        session:streamFile(file_name);
+                        session:streamFile(value);
                         session:unsetInputCallback();
                 else
                         stream:write(file_name);
                 end
         end
+
+
 
 
