@@ -125,7 +125,7 @@ if (!class_exists('destinations')) {
 				if ($this->destinations !== null && is_array($this->destinations)) {
 					$x = 0;
 					foreach ($this->destinations as $row) {
-						if ($row['type'] = 'sql') {
+						if ($row['type'] === 'sql') {
 							$table_name = preg_replace('#[^a-zA-Z0-9_]#', '', $row['name']);
 							if (isset($row['sql'])) {
 								if (is_array($row['sql'])) {
@@ -159,6 +159,9 @@ if (!class_exists('destinations')) {
 
 							$this->destinations[$x]['result']['sql'] = $sql;
 							$this->destinations[$x]['result']['data'] = $result;
+						}
+						if ($row['type'] === 'array') {
+							$this->destinations[$x] = $row;
 						}
 						$x++;
 					}
@@ -260,7 +263,7 @@ if (!class_exists('destinations')) {
 					$text2 = $language2->get($_SESSION['domain']['language']['code'], 'app/'.$name);
 				}
 
-				if (count($row['result']['data']) > 0 and strlen($row['select_value'][$destination_type]) > 0) {
+				if (is_array($row['result']['data']) && count($row['result']['data']) > 0 and strlen($row['select_value'][$destination_type]) > 0) {
 					$response .= "		<optgroup label='".$text2['title-'.$label]."'>\n";
 					$label2 = $label;
 					foreach ($row['result']['data'] as $data) {
@@ -268,7 +271,7 @@ if (!class_exists('destinations')) {
 						$select_label = $row['select_label'];
 						foreach ($row['field'] as $key => $value) {
 							if ($key == 'destination' and is_array($value)){
-								if ($value['type'] == 'csv') {
+								if ($value['type'] === 'csv') {
 									$array = explode($value['delimiter'], $data[$key]);
 									$select_value = str_replace("\${destination}", $array[0], $select_value);
 									$select_label = str_replace("\${destination}", $array[0], $select_label);
@@ -384,7 +387,7 @@ if (!class_exists('destinations')) {
 				//add the sql and data to the array
 				$x = 0;
 				foreach ($this->destinations as $row) {
-					if ($row['type'] = 'sql') {
+					if ($row['type'] === 'sql') {
 						$table_name = preg_replace('#[^a-zA-Z0-9_]#', '', $row['name']);
 						if (isset($row['sql'])) {
 							if (is_array($row['sql'])) {
@@ -419,8 +422,12 @@ if (!class_exists('destinations')) {
 						$this->destinations[$x]['result']['sql'] = $sql;
 						$this->destinations[$x]['result']['data'] = $result;
 					}
+					if ($row['type'] === 'array') {
+						$this->destinations[$x] = $row;
+					}
 					$x++;
 				}
+
 				$this->destinations[$x]['type'] = 'array';
 				$this->destinations[$x]['label'] = 'other';
 				$this->destinations[$x]['name'] = 'dialplans';
@@ -543,8 +550,8 @@ if (!class_exists('destinations')) {
 		/**
 		* valid destination
 		*/
-		public function valid($destination) {
-			$destinations = $this->all('dialplan');
+		public function valid($destination, $type = 'dialplan') {
+			$destinations = $this->all($type);
 			foreach($destinations as $category => $array) {
 				if (is_array($array)) {
 					foreach ($array as $key => $value) {
@@ -621,9 +628,6 @@ if (!class_exists('destinations')) {
 								//revoke temporary permissions
 									$p->delete('dialplan_delete', 'temp');
 									$p->delete('dialplan_detail_delete', 'temp');
-
-								//synchronize the xml config
-									save_dialplan_xml();
 
 								//clear the cache
 									if (is_array($destination_contexts) && @sizeof($destination_contexts) != 0) {
