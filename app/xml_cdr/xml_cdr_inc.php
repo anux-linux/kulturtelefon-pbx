@@ -242,8 +242,8 @@
 	$sql .= "c.source_number, \n";
 	$sql .= "c.destination_number, \n";
 	$sql .= "c.leg, \n";
-	$sql .= "(c.xml is not null or c.json is not null) as raw_data_exists, \n";
-	$sql .= "c.json, \n";
+	//$sql .= "(c.xml is not null or c.json is not null) as raw_data_exists, \n";
+	//$sql .= "c.json, \n";
 	if (is_array($_SESSION['cdr']['field'])) {
 		foreach ($_SESSION['cdr']['field'] as $field) {
 			$array = explode(",", $field);
@@ -279,7 +279,7 @@
 		$sql .= "where c.domain_uuid = :domain_uuid \n";
 		$parameters['domain_uuid'] = $domain_uuid;
 	}
-	if (!permission_exists('xml_cdr_domain') && is_array($extension_uuids)) { //only show the user their calls
+	if (!permission_exists('xml_cdr_domain')) { //only show the user their calls
 		$sql .= "and (c.extension_uuid = '".implode("' or c.extension_uuid = '", $extension_uuids)."') ";
 	}
 	if ($missed == true) {
@@ -457,7 +457,7 @@
 		$parameters['bleg_uuid'] = $bleg_uuid;
 	}
 	if (strlen($accountcode) > 0) {
-		$sql .= "and accountcode = :accountcode ";
+		$sql .= "and c.accountcode = :accountcode ";
 		$parameters['accountcode'] = $accountcode;
 	}
 	if (strlen($read_codec) > 0) {
