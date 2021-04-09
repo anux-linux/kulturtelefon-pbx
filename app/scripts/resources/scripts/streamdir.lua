@@ -83,6 +83,8 @@
                                 return("seek:+5000"); -- forward
                         elseif (obj['digit'] == "7") then
                                 return("speed:-1"); -- increase playback
+                        elseif (obj['digit'] == "8") then
+                                return("false"); -- stop playback
                         elseif (obj['digit'] == "9") then
                                 return("speed:+1"); -- decrease playback
                         end
@@ -99,8 +101,8 @@
         local i = 0;
         local soundfiles = {};
         local popen = io.popen;
-        freeswitch.consoleLog("notice", 'find "'..dir_name..'" -type f -print | grep -E "*.wav|*.mp3" \n')
-        for filename in popen('find "'..dir_name..'" -type f -print | grep -E "*.wav|*.mp3"'):lines() do
+        freeswitch.consoleLog("notice", 'find "'..dir_name..'" -type f -print | sort | grep -E "*.wav|*.mp3|*.ogg" \n')
+        for filename in popen('find "'..dir_name..'" -type f -print | sort | grep -E "*.wav|*.mp3|*.ogg"'):lines() do
             freeswitch.consoleLog("notice", "[streamdir] found file: "..filename.."\n");
             i = i + 1;
             soundfiles[i] = filename
