@@ -51,7 +51,7 @@
 				}
 			}
 			if ($db_type == "pgsql") {
-				$string = pg_escape_string($string);
+				$string = str_replace("'","''",$string);
 			}
 			if ($db_type == "mysql") {
 				if(function_exists('mysql_real_escape_string')){
@@ -393,7 +393,7 @@
 		//html table header order by
 		function th_order_by($field_name, $column_title, $order_by, $order, $app_uuid = '', $css = '', $http_get_params = '', $description = '') {
 			global $text;
-			if (is_uuid($app_uuid) > 0) { $app_uuid = "&app_uuid=".$app_uuid; }	// accomodate need to pass app_uuid where necessary (inbound/outbound routes lists)
+			if (is_uuid($app_uuid) > 0) { $app_uuid = "&app_uuid=".urlencode($app_uuid); }	// accomodate need to pass app_uuid where necessary (inbound/outbound routes lists)
 
 			$field_name = preg_replace("#[^a-zA-Z0-9_]#", "", $field_name);
 			$field_value = preg_replace("#[^a-zA-Z0-9_]#", "", $field_value);
@@ -438,13 +438,19 @@
 			if (strlen($order_by) == 0) {
 				$order = 'asc';
 			}
-			if ($order == "asc") {
-				$description .= $text['label-order'].': '.$text['label-ascending'];
-				$html .= "<a href='?order_by=".urlencode($field_name)."&order=desc".urlencode($app_uuid).$sanitized_parameters."' title=\"".escape($description)."\">".escape($column_title)."</a>";
+			if ($order_by == $field_name) {
+				if ($order == "asc") {
+					$description .= $text['label-order'].' '.$text['label-descending'];
+					$html .= "<a href='?order_by=".urlencode($field_name)."&order=desc".$app_uuid.$sanitized_parameters."' title=\"".escape($description)."\">".escape($column_title)."</a>";
+				}
+				else {
+					$description .= $text['label-order'].' '.$text['label-ascending'];
+					$html .= "<a href='?order_by=".urlencode($field_name)."&order=asc".$app_uuid.$sanitized_parameters."' title=\"".escape($description)."\">".escape($column_title)."</a>";
+				}
 			}
 			else {
-				$description .= $text['label-order'].': '.$text['label-descending'];
-				$html .= "<a href='?order_by=".urlencode($field_name)."&order=asc".urlencode($app_uuid).$sanitized_parameters."' title=\"".escape($description)."\">".escape($column_title)."</a>";
+				$description .= $text['label-order'].' '.$text['label-ascending'];
+				$html .= "<a href='?order_by=".urlencode($field_name)."&order=asc".$app_uuid.$sanitized_parameters."' title=\"".escape($description)."\">".escape($column_title)."</a>";
 			}
 			$html .= "</th>";
 			return $html;
@@ -1347,83 +1353,81 @@ function number_pad($number,$n) {
 
 			*/
 
-			include_once("resources/phpmailer/class.phpmailer.php");
-			include_once("resources/phpmailer/class.smtp.php");
+			try {
+				include_once("resources/phpmailer/class.phpmailer.php");
+				include_once("resources/phpmailer/class.smtp.php");
 
-			$regexp = '/^[A-z0-9][\w.-]*@[A-z0-9][\w\-\.]+\.[A-z0-9]{2,7}$/';
+				$regexp = '/^[A-z0-9][\w.-]*@[A-z0-9][\w\-\.]+\.[A-z0-9]{2,7}$/';
 
-			$mail = new PHPMailer();
-			$mail -> IsSMTP();
-			if ($_SESSION['email']['smtp_hostname']['text'] != '') {
-				$mail -> Hostname = $_SESSION['email']['smtp_hostname']['text'];
-			}
-			$mail -> Host = $_SESSION['email']['smtp_host']['text'];
-			if (is_numeric($_SESSION['email']['smtp_port']['numeric'])) {
-				$mail -> Port = $_SESSION['email']['smtp_port']['numeric'];
-			}
-			if ($_SESSION['email']['smtp_auth']['text'] == "true") {
-				$mail -> SMTPAuth = $_SESSION['email']['smtp_auth']['text'];
-				$mail -> Username = $_SESSION['email']['smtp_username']['text'];
-				$mail -> Password = $_SESSION['email']['smtp_password']['text'];
-			}
-			else {
-				$mail -> SMTPAuth = 'false';
-			}
-			if ($_SESSION['email']['smtp_secure']['text'] == "none") {
-				$_SESSION['email']['smtp_secure']['text'] = '';
-			}
-			if ($_SESSION['email']['smtp_secure']['text'] != '') {
-				$mail -> SMTPSecure = $_SESSION['email']['smtp_secure']['text'];
-			}
-			if (isset($_SESSION['email']['smtp_validate_certificate']) && $_SESSION['email']['smtp_validate_certificate']['boolean'] == "false") {
-				// bypass TLS certificate check e.g. for self-signed certificates
-				$mail -> SMTPOptions = array(
-					'ssl' => array(
-					'verify_peer' => false,
-					'verify_peer_name' => false,
-					'allow_self_signed' => true
-					)
-				);
-			}
-			$eml_from_address = ($eml_from_address != '') ? $eml_from_address : $_SESSION['email']['smtp_from']['text'];
-			$eml_from_name = ($eml_from_name != '') ? $eml_from_name : $_SESSION['email']['smtp_from_name']['text'];
-			$mail -> SetFrom($eml_from_address, $eml_from_name);
-			$mail -> AddReplyTo($eml_from_address, $eml_from_name);
-			$mail -> Subject = $eml_subject;
-			$mail -> MsgHTML($eml_body);
-			$mail -> Priority = $eml_priority;
-			if ($eml_read_confirmation) {
-				$mail -> AddCustomHeader('X-Confirm-Reading-To: '.$eml_from_address);
-				$mail -> AddCustomHeader('Return-Receipt-To: '.$eml_from_address);
-				$mail -> AddCustomHeader('Disposition-Notification-To: '.$eml_from_address);
-			}
-			if (is_numeric($eml_debug_level) && $eml_debug_level > 0) {
-				$mail -> SMTPDebug = $eml_debug_level;
-			}
+				$mail = new PHPMailer();
+				$mail->IsSMTP();
+				if ($_SESSION['email']['smtp_hostname']['text'] != '') {
+					$mail->Hostname = $_SESSION['email']['smtp_hostname']['text'];
+				}
+				$mail->Host = $_SESSION['email']['smtp_host']['text'];
+				if (is_numeric($_SESSION['email']['smtp_port']['numeric'])) {
+					$mail->Port = $_SESSION['email']['smtp_port']['numeric'];
+				}
+				if ($_SESSION['email']['smtp_auth']['text'] == "true") {
+					$mail->SMTPAuth = $_SESSION['email']['smtp_auth']['text'];
+					$mail->Username = $_SESSION['email']['smtp_username']['text'];
+					$mail->Password = $_SESSION['email']['smtp_password']['text'];
+				}
+				else {
+					$mail->SMTPAuth = 'false';
+				}
+				if ($_SESSION['email']['smtp_secure']['text'] == "none") {
+					$_SESSION['email']['smtp_secure']['text'] = '';
+				}
+				if ($_SESSION['email']['smtp_secure']['text'] != '') {
+					$mail->SMTPSecure = $_SESSION['email']['smtp_secure']['text'];
+				}
+				if (isset($_SESSION['email']['smtp_validate_certificate']) && $_SESSION['email']['smtp_validate_certificate']['boolean'] == "false") {
+					// bypass TLS certificate check e.g. for self-signed certificates
+					$mail->SMTPOptions = array(
+						'ssl' => array(
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+						'allow_self_signed' => true
+						)
+					);
+				}
+				$eml_from_address = ($eml_from_address != '') ? $eml_from_address : $_SESSION['email']['smtp_from']['text'];
+				$eml_from_name = ($eml_from_name != '') ? $eml_from_name : $_SESSION['email']['smtp_from_name']['text'];
+				$mail->SetFrom($eml_from_address, $eml_from_name);
+				$mail->AddReplyTo($eml_from_address, $eml_from_name);
+				$mail->Subject = $eml_subject;
+				$mail->MsgHTML($eml_body);
+				$mail->Priority = $eml_priority;
+				if ($eml_read_confirmation) {
+					$mail->AddCustomHeader('X-Confirm-Reading-To: '.$eml_from_address);
+					$mail->AddCustomHeader('Return-Receipt-To: '.$eml_from_address);
+					$mail->AddCustomHeader('Disposition-Notification-To: '.$eml_from_address);
+				}
+				if (is_numeric($eml_debug_level) && $eml_debug_level > 0) {
+					$mail->SMTPDebug = $eml_debug_level;
+				}
 
-			$address_found = false;
+				$address_found = false;
 
-			if (!is_array($eml_recipients)) { // must be a single or delimited recipient address(s)
-				$eml_recipients = str_replace(' ', '', $eml_recipients);
-				if (substr_count(',', $eml_recipients)) { $delim = ','; }
-				if (substr_count(';', $eml_recipients)) { $delim = ';'; }
-				if ($delim) { $eml_recipients = explode($delim, $eml_recipients); } // delimiter found, convert to array of addresses
-			}
-
-			if (is_array($eml_recipients)) { // check if multiple recipients
+				if (!is_array($eml_recipients)) { // must be a single or delimited recipient address(s)
+					$eml_recipients = str_replace(' ', '', $eml_recipients);
+					$eml_recipients = str_replace(array(';',','), ' ', $eml_recipients);
+					$eml_recipients = explode(' ', $eml_recipients); // convert to array of addresses
+				}
 				foreach ($eml_recipients as $eml_recipient) {
 					if (is_array($eml_recipient)) { // check if each recipient has multiple fields
 						if ($eml_recipient["address"] != '' && preg_match($regexp, $eml_recipient["address"]) == 1) { // check if valid address
 							switch ($eml_recipient["delivery"]) {
-								case "cc" :		$mail -> AddCC($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);			break;
-								case "bcc" :	$mail -> AddBCC($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);			break;
-								default :		$mail -> AddAddress($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);
+								case "cc" :		$mail->AddCC($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);			break;
+								case "bcc" :	$mail->AddBCC($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);			break;
+								default :		$mail->AddAddress($eml_recipient["address"], ($eml_recipient["name"]) ? $eml_recipient["name"] : $eml_recipient["address"]);
 							}
 							$address_found = true;
 						}
 					}
 					else if ($eml_recipient != '' && preg_match($regexp, $eml_recipient) == 1) { // check if recipient value is simply (only) an address
-						$mail -> AddAddress($eml_recipient);
+						$mail->AddAddress($eml_recipient);
 						$address_found = true;
 					}
 				}
@@ -1433,46 +1437,36 @@ function number_pad($number,$n) {
 					return false;
 				}
 
-			}
-			else { // just a single e-mail address found, not an array of addresses
-				if ($eml_recipients != '' && preg_match($regexp, $eml_recipients) == 1) { // check if email syntax is valid
-					$mail -> AddAddress($eml_recipients);
-				}
-				else {
-					$eml_error = "No valid e-mail address provided.";
-					return false;
-				}
-			}
-
-			if (is_array($eml_attachments) && sizeof($eml_attachments) > 0) {
-				foreach ($eml_attachments as $attachment) {
-					$attachment['name'] = $attachment['name'] != '' ? $attachment['name'] : basename($attachment['value']);
-					if ($attachment['type'] == 'file' || $attachment['type'] == 'path') {
-						$mail -> AddAttachment($attachment['value'], $attachment['name']);
-					}
-					else if ($attachment['type'] == 'string') {
-						if (base64_encode(base64_decode($attachment['value'], true)) === $attachment['value']) {
-							$mail -> AddStringAttachment(base64_decode($attachment['value']), $attachment['name']);
+				if (is_array($eml_attachments) && sizeof($eml_attachments) > 0) {
+					foreach ($eml_attachments as $attachment) {
+						$attachment['name'] = $attachment['name'] != '' ? $attachment['name'] : basename($attachment['value']);
+						if ($attachment['type'] == 'file' || $attachment['type'] == 'path') {
+							$mail->AddAttachment($attachment['value'], $attachment['name']);
 						}
-						else {
-							$mail -> AddStringAttachment($attachment['value'], $attachment['name']);
+						else if ($attachment['type'] == 'string') {
+							if (base64_encode(base64_decode($attachment['value'], true)) === $attachment['value']) {
+								$mail->AddStringAttachment(base64_decode($attachment['value']), $attachment['name']);
+							}
+							else {
+								$mail->AddStringAttachment($attachment['value'], $attachment['name']);
+							}
 						}
 					}
 				}
-			}
 
-			if (!$mail -> Send()) {
-				$eml_error = $mail -> ErrorInfo;
+				//send the email
+				$mail->Send();
+				$mail->ClearAddresses();
+				$mail->SmtpClose();
+				unset($mail);
+				return true;
+
+			}
+			catch (Exception $e) {
+				$eml_error = $mail->ErrorInfo;
 				return false;
 			}
-			else {
-				return true;
-			}
 
-			$mail	->	ClearAddresses();
-			$mail	->	SmtpClose();
-
-			unset($mail);
 		}
 	}
 
@@ -2058,13 +2052,25 @@ function number_pad($number,$n) {
 //validate and format order by clause of select statement
 	if (!function_exists('order_by')) {
 		function order_by($col, $dir, $col_default = '', $dir_default = 'asc') {
+			$order_by = ' order by ';
 			$col = preg_replace('#[^a-zA-Z0-9-_.]#', '', $col);
 			$dir = strtolower($dir) == 'desc' ? 'desc' : 'asc';
 			if ($col != '') {
-				return ' order by '.$col.' '.$dir.' ';
+				return $order_by.$col.' '.$dir.' ';
 			}
-			else if ($col_default != '') {
-				return ' order by '.$col_default.' '.$dir_default.' ';
+			else if (is_array($col_default) || $col_default != '') {
+				if (is_array($col_default) && @sizeof($col_default) != 0) {
+					foreach ($col_default as $k => $column) {
+						$direction = (is_array($dir_default) && @sizeof($dir_default) != 0 && (strtolower($dir_default[$k]) == 'asc' || strtolower($dir_default[$k]) == 'desc')) ? $dir_default[$k] : 'asc';
+						$order_bys[] = $column.' '.$direction.' ';
+					}
+					if (is_array($order_bys) && @sizeof($order_bys) != 0) {
+						return $order_by.implode(', ', $order_bys);
+					}
+				}
+				else {
+					return $order_by.$col_default.' '.$dir_default.' ';
+				}
 			}
 		}
 	}
@@ -2135,19 +2141,29 @@ function number_pad($number,$n) {
 		function persistent_form_values($action, $array = null) {
 			switch ($action) {
 				case 'store':
+					// $array is expected to be an array of key / value pairs to store in the session
 					if (is_array($array) && @sizeof($array) != 0) {
-						$_SESSION[$_SERVER['PHP_SELF']] = $array;
+						$_SESSION['persistent'][$_SERVER['PHP_SELF']] = $array;
 					}
 					break;
 				case 'exists':
-					return is_array($_SESSION[$_SERVER['PHP_SELF']]) && @sizeof($_SESSION[$_SERVER['PHP_SELF']]) != 0 ? true : false;
+					return is_array($_SESSION['persistent'][$_SERVER['PHP_SELF']]) && @sizeof($_SESSION['persistent'][$_SERVER['PHP_SELF']]) != 0 ? true : false;
 					break;
 				case 'load':
-					if (is_array($_SESSION[$_SERVER['PHP_SELF']]) && @sizeof($_SESSION[$_SERVER['PHP_SELF']]) != 0) {
-						foreach ($_SESSION[$_SERVER['PHP_SELF']] as $key => $value) {
+					// $array is expected to be the name of the array to create containing the key / value pairs
+					if ($array && !is_array($array)) {
+						global $$array;
+					}
+					if (is_array($_SESSION['persistent'][$_SERVER['PHP_SELF']]) && @sizeof($_SESSION['persistent'][$_SERVER['PHP_SELF']]) != 0) {
+						foreach ($_SESSION['persistent'][$_SERVER['PHP_SELF']] as $key => $value) {
 							if ($key != 'XID' && $key != 'ACT' && $key != 'RET') {
-								global $$key;
-								$$key = $value;
+								if ($array && !is_array($array)) {
+									$$array[$key] = $value;
+								}
+								else {
+									global $$key;
+									$$key = $value;
+								}
 							}
 						}
 						global $unsaved;
@@ -2155,15 +2171,25 @@ function number_pad($number,$n) {
 					}
 					break;
 				case 'view':
-					if (is_array($_SESSION[$_SERVER['PHP_SELF']]) && @sizeof($_SESSION[$_SERVER['PHP_SELF']]) != 0) {
-						view_array($_SESSION[$_SERVER['PHP_SELF']], false);
+					if (is_array($_SESSION['persistent'][$_SERVER['PHP_SELF']]) && @sizeof($_SESSION['persistent'][$_SERVER['PHP_SELF']]) != 0) {
+						view_array($_SESSION['persistent'][$_SERVER['PHP_SELF']], false);
 					}
 					break;
 				case 'clear':
-					unset($_SESSION[$_SERVER['PHP_SELF']]);
+					unset($_SESSION['persistent'][$_SERVER['PHP_SELF']]);
 					break;
 			}
 		}
+	}
+
+//add alternative array_key_first for older verisons of PHP
+	if (!function_exists('array_key_first')) {
+	    function array_key_first(array $arr) {
+		foreach($arr as $key => $unused) {
+		    return $key;
+		}
+		return NULL;
+	    }
 	}
 
 ?>

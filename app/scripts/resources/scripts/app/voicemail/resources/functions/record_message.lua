@@ -278,6 +278,72 @@
 				end
 			end
 
+			if (transcribe_provider == "google") then
+				local api_key = settings:get('voicemail', 'google_key', 'text') or '';
+				local transcription_server = settings:get('voicemail', 'google_url', 'text') or '';
+				transcribe_alternate_language = settings:get('voicemail', 'transcribe_alternate_language', 'text') or 'es-US';
+				if (api_key ~= '') then
+					transcribe_cmd = [[sox ]]..file_path..[[ ]]..file_path..[[.flac trim 0 00:59 && echo "{ 'config': { 'languageCode': ']]..transcribe_language..[[', 'enableWordTimeOffsets': false , 'enableAutomaticPunctuation': true , 'alternativeLanguageCodes': ']]..transcribe_alternate_language..[[' }, 'audio': { 'content': '`base64 -w 0 ]]..file_path..[[.flac`' } }" | curl -X POST -H "Content-Type: application/json" -d @- "]]..transcription_server..[[:recognize?key=]]..api_key..[[" && rm -f ]]..file_path..[[.flac]]
+				end
+
+				local handle = io.popen(transcribe_cmd);
+				local transcribe_result = handle:read("*a");
+				transcribe_result = transcribe_result:gsub('%%HESITATION ', '');
+				handle:close();
+				if (debug["info"]) then
+					freeswitch.consoleLog("notice", "[voicemail] CMD: " .. transcribe_cmd .. "\n");
+					freeswitch.consoleLog("notice", "[voicemail] RESULT: " .. transcribe_result .. "\n");
+				end
+
+				--Trancribe request can fail
+				if (transcribe_result == '') then
+					freeswitch.consoleLog("notice", "[voicemail] TRANSCRIPTION: (null) \n");
+					return ''
+				else
+					status, transcribe_json = pcall(JSON.decode, transcribe_result);
+					if not status then
+						if (debug["info"]) then
+							freeswitch.consoleLog("notice", "[voicemail] error decoding google json\n");
+						end
+						return '';
+					end 
+				end
+				if (transcribe_json["results"] ~= nil) then
+					--Transcription	
+					if (transcribe_json["results"][1]["alternatives"][1]["transcript"] ~= nil) then
+						transcription = '';
+						for key, row in pairs(transcribe_json["results"]) do 
+							transcription = transcription .. row["alternatives"][1]["transcript"];
+						end
+						if (debug["info"]) then
+							freeswitch.consoleLog("notice", "[voicemail] TRANSCRIPTION: " .. transcription .. "\n");
+						end
+					else
+						if (debug["info"]) then
+							freeswitch.consoleLog("notice", "[voicemail] TRANSCRIPTION: (null) \n");
+						end
+						return '';
+					end
+					--Confidence
+					if (transcribe_json["results"][1]["alternatives"][1]["confidence"]) then
+						if (debug["info"]) then
+							freeswitch.consoleLog("notice", "[voicemail] CONFIDENCE: " .. transcribe_json["results"][1]["alternatives"][1]["confidence"] .. "\n");
+						end
+						confidence = transcribe_json["results"][1]["alternatives"][1]["confidence"];
+					else
+						if (debug["info"]) then
+							freeswitch.consoleLog("notice", "[voicemail] CONFIDENCE: (null) \n");
+						end
+					end
+					return transcription;
+				else
+					if (debug["info"]) then
+						freeswitch.consoleLog("notice", "[voicemail] TRANSCRIPTION: json error \n");
+					end
+					return '';
+				end
+			end
+
 			if (transcribe_provider == "custom") then
 				local transcription_server = settings:get('voicemail', 'transcription_server', 'text') or '';
 				local api_key = settings:get('voicemail', 'api_key', 'text') or '';
@@ -329,9 +395,9 @@
 			local message_max_length = settings:get('voicemail', 'message_max_length', 'numeric') or 300;
 			local message_silence_threshold = settings:get('voicemail', 'message_silence_threshold', 'numeric') or 200;
 			local message_silence_seconds = settings:get('voicemail', 'message_silence_seconds', 'numeric') or 3;
-			transcribe_enabled = settings:get('voicemail', 'transcribe_enabled', 'boolean') or "false";
+			local email_queue_enabled = settings:get('email_queue', 'enabled', 'boolean') or "false";
 			local transcribe_provider = settings:get('voicemail', 'transcribe_provider', 'text') or '';
-			local email_method = settings:get('email', 'method', 'text') or "smtp";
+			transcribe_enabled = settings:get('voicemail', 'transcribe_enabled', 'boolean') or "false";
 
 		--debug information
 			if (debug["info"]) then
@@ -344,10 +410,10 @@
 				--skip the instructions
 			else
 				if (dtmf_digits and string.len(dtmf_digits) == 0) then
-					dtmf_digits = macro(session, "record_message", 1, 100);
+					dtmf_digits = session:playAndGetDigits(0, 1, 1, 500, "#", "phrase:voicemail_record_message", "", "\\d+");
 				end
 			end
-
+		
 		--voicemail ivr options
 			if (session:ready()) then
 				if (dtmf_digits == nil) then
@@ -455,13 +521,14 @@
 
 		--play the beep
 			dtmf_digits = '';
-			result = macro(session, "record_beep", 1, 100);
+			session:execute("playback","silence_stream://200");
+			session:streamFile("tone_stream://L=1;%(1000, 0, 640)");
 
 		--start epoch
 			start_epoch = os.time();
 
 		--if using the email queue disable inline transcription
-			if (email_method == 'queue') then
+			if (email_queue_enabled == 'true') then
 				transcribe_enabled = 'false';
 			end
 
@@ -521,12 +588,13 @@
 
 		--if the recording is below the minimal length then re-record the message
 			if (message_length > 2) then
-				--continue
+				session:setVariable("voicemail_message_seconds", message_length);
 			else
 				if (session:ready()) then
 					--your recording is below the minimal acceptable length, please try again
 						dtmf_digits = '';
-						macro(session, "too_small", 1, 100);
+						session:execute("playback", "phrase:voicemail_ack:too-small");
+						session:execute("sleep", "500");
 					--record your message at the tone
 						timeouts = timeouts + 1;
 						if (timeouts < max_timeouts) then
@@ -543,8 +611,9 @@
 				if (skip_instructions == "true") then
 					--save the message
 						dtmf_digits = '';
-						macro(session, "message_saved", 1, 100, '');
-						macro(session, "goodbye", 1, 100, '');
+						session:execute("playback", "phrase:voicemail_ack:saved");
+						session:execute("sleep", "300");
+						session:execute("playback", "phrase:voicemail_goodbye");
 					--hangup the call
 						session:hangup();
 				else
