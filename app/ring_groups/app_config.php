@@ -39,11 +39,15 @@
 		$apps[$x]['destinations'][$y]['field']['ring_group_uuid'] = "ring_group_uuid";
 		$apps[$x]['destinations'][$y]['field']['name'] = "ring_group_name";
 		$apps[$x]['destinations'][$y]['field']['destination'] = "ring_group_extension";
+		$apps[$x]['destinations'][$y]['field']['extension'] = "ring_group_extension";
 		$apps[$x]['destinations'][$y]['field']['description'] = "ring_group_description";
 		$apps[$x]['destinations'][$y]['field']['context'] = "ring_group_context";
 		$apps[$x]['destinations'][$y]['select_value']['dialplan'] = "transfer:\${destination} XML \${context}";
 		$apps[$x]['destinations'][$y]['select_value']['ivr'] = "menu-exec-app:transfer \${destination} XML \${context}";
 		$apps[$x]['destinations'][$y]['select_label'] = "\${destination} \${name} \${description}";
+
+	//cache details
+		$apps[$x]['cache']['key'] = "dialplan.\${ring_group_context}";
 
 	//permission details
 		$y=0;

@@ -205,7 +205,7 @@
 					$array['dialplans'][0]['app_uuid'] = 'b81412e8-7253-91f4-e48e-42fc2c9a38d9';
 					$array['dialplans'][0]['dialplan_xml'] = $dialplan_xml;
 					$array['dialplans'][0]['dialplan_order'] = '333';
-					$array['dialplans'][0]['dialplan_context'] = $_SESSION['context'];
+					$array['dialplans'][0]['dialplan_context'] = $_SESSION['domain_name'];
 					$array['dialplans'][0]['dialplan_enabled'] = $conference_enabled;
 					$array['dialplans'][0]['dialplan_description'] = $conference_description;
 
@@ -241,7 +241,12 @@
 
 				//clear the cache
 					$cache = new cache;
-					$cache->delete("dialplan:".$_SESSION["context"]);
+					$cache->delete("dialplan:".$_SESSION["domain_name"]);
+
+				//clear the destinations session array
+					if (isset($_SESSION['destinations']['array'])) {
+						unset($_SESSION['destinations']['array']);
+					}
 
 				//redirect the browser
 					header("Location: conferences.php");
@@ -324,9 +329,15 @@
 	echo "		<b>".$text['title-conference']."</b>";
 	echo "	</div>\n";
 	echo "	<div class='actions'>\n";
+
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'conferences.php']);
-	if ($action == 'update' && permission_exists('conference_active_view')) {
-		echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'style'=>'margin-right: 15px;','link'=>'../conferences_active/conferences_active.php?c='.urlencode(str_replace(' ', '-', $conference_name))]);
+	if ($action == 'update') {
+		if (permission_exists('conference_cdr_view')) {
+			echo button::create(['type'=>'button','label'=>$text['button-cdr'],'icon'=>'list','link'=>PROJECT_PATH.'/app/conference_cdr/conference_cdr.php?id='.urlencode($conference_uuid)]);
+		}
+		if (permission_exists('conference_active_view')) {
+			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'style'=>'','link'=>'../conferences_active/conferences_active.php?c='.urlencode(str_replace(' ', '-', $conference_name))]);
+		}
 	}
 	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save']);
 	echo "	</div>\n";
