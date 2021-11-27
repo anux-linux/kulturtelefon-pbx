@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2020
+	Portions created by the Initial Developer are Copyright (C) 2008-2021
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -81,9 +81,14 @@
 	}
 
 	if (!function_exists('check_cidr')) {
-		function check_cidr ($cidr,$ip_address) {
-			list ($subnet, $mask) = explode ('/', $cidr);
-			return ( ip2long ($ip_address) & ~((1 << (32 - $mask)) - 1) ) == ip2long ($subnet);
+		function check_cidr($cidr, $ip_address) {
+			if (isset($cidr) && strlen($cidr) > 0) {
+				list ($subnet, $mask) = explode ('/', $cidr);
+				return ( ip2long ($ip_address) & ~((1 << (32 - $mask)) - 1) ) == ip2long ($subnet);
+			}
+			else {
+				return false;
+			}
 		}
 	}
 
@@ -724,23 +729,38 @@ function switch_module_is_running($fp, $mod) {
 //switch_module_is_running('mod_spidermonkey');
 
 //format a number (n) replace with a number (r) remove the number
-function format_string ($format, $data) {
+function format_string($format, $data) {
+	//preset values
 	$x=0;
 	$tmp = '';
-	for ($i = 0; $i <= strlen($format); $i++) {
-		$tmp_format = strtolower(substr($format, $i, 1));
-		if ($tmp_format == 'x') {
-			$tmp .= substr($data, $x, 1);
-			$x++;
-		}
-		elseif ($tmp_format == 'r') {
-			$x++;
-		}
-		else {
-			$tmp .= $tmp_format;
+
+	//count the characters
+	$format_count = substr_count($format, 'x');
+	$format_count = $format_count + substr_count($format, 'R');
+	$format_count = $format_count + substr_count($format, 'r');
+
+	//format the string if it matches
+	if ($format_count == strlen($data)) {
+		for ($i = 0; $i <= strlen($format); $i++) {
+			$tmp_format = strtolower(substr($format, $i, 1));
+			if ($tmp_format == 'x') {
+				$tmp .= substr($data, $x, 1);
+				$x++;
+			}
+			elseif ($tmp_format == 'r') {
+				$x++;
+			}
+			else {
+				$tmp .= $tmp_format;
+			}
 		}
 	}
-	return $tmp;
+	if (strlen($tmp) == 0) {
+		return $data;
+	}
+	else {
+		return $tmp;
+	}
 }
 
 //get the format and use it to format the phone number
@@ -1354,11 +1374,14 @@ function number_pad($number,$n) {
 			*/
 
 			try {
+				//include the phpmailer classes
 				include_once("resources/phpmailer/class.phpmailer.php");
 				include_once("resources/phpmailer/class.smtp.php");
 
+				//regular expression to validate email addresses
 				$regexp = '/^[A-z0-9][\w.-]*@[A-z0-9][\w\-\.]+\.[A-z0-9]{2,7}$/';
 
+				//create the email object and set general settings
 				$mail = new PHPMailer();
 				$mail->IsSMTP();
 				if ($_SESSION['email']['smtp_hostname']['text'] != '') {
@@ -1408,8 +1431,8 @@ function number_pad($number,$n) {
 					$mail->SMTPDebug = $eml_debug_level;
 				}
 
+				//add the email recipients
 				$address_found = false;
-
 				if (!is_array($eml_recipients)) { // must be a single or delimited recipient address(s)
 					$eml_recipients = str_replace(' ', '', $eml_recipients);
 					$eml_recipients = str_replace(array(';',','), ' ', $eml_recipients);
@@ -1437,25 +1460,58 @@ function number_pad($number,$n) {
 					return false;
 				}
 
+				//add email attachments
 				if (is_array($eml_attachments) && sizeof($eml_attachments) > 0) {
 					foreach ($eml_attachments as $attachment) {
+						//set the name of the file
 						$attachment['name'] = $attachment['name'] != '' ? $attachment['name'] : basename($attachment['value']);
+
+						//set the mime type
+						switch (substr($attachment['name'], -4)) {
+							case ".png":
+								$attachment['mime_type'] = 'image/png';
+								break;
+							case ".pdf":
+								$attachment['mime_type'] = 'application/pdf';
+								break;
+							case ".mp3":
+								$attachment['mime_type'] = 'audio/mpeg';
+								break;
+							case ".wav":
+								$attachment['mime_type'] = 'audio/x-wav';
+								break;
+							case ".opus":
+								$attachment['mime_type'] = 'audio/opus';
+								break;
+							case ".ogg":
+								$attachment['mime_type'] = 'audio/ogg';
+								break;
+						}
+
+						//add the attachments
 						if ($attachment['type'] == 'file' || $attachment['type'] == 'path') {
-							$mail->AddAttachment($attachment['value'], $attachment['name']);
+							$mail->AddAttachment($attachment['value'], $attachment['name'], 'base64', $attachment['mime_type']);
 						}
 						else if ($attachment['type'] == 'string') {
 							if (base64_encode(base64_decode($attachment['value'], true)) === $attachment['value']) {
-								$mail->AddStringAttachment(base64_decode($attachment['value']), $attachment['name']);
+								$mail->AddStringAttachment(base64_decode($attachment['value']), $attachment['name'], 'base64', $attachment['mime_type']);
 							}
 							else {
-								$mail->AddStringAttachment($attachment['value'], $attachment['name']);
+								$mail->AddStringAttachment($attachment['value'], $attachment['name'], 'base64', $attachment['mime_type']);
 							}
 						}
 					}
 				}
 
 				//send the email
-				$mail->Send();
+				if (!$mail->Send()) {
+					if (isset($mail->ErrorInfo) && strlen($mail->ErrorInfo) > 0) {
+						$mailer_error = $mail->ErrorInfo;
+					}
+					return false;
+				}
+
+				//cleanup the mail object
 				$mail->ClearAddresses();
 				$mail->SmtpClose();
 				unset($mail);
@@ -2191,5 +2247,46 @@ function number_pad($number,$n) {
 		return NULL;
 	    }
 	}
+
+//get accountode
+	if (!function_exists('get_accountcode')) {
+		function get_accountcode() {
+			if (strlen($accountcode = $_SESSION['domain']['accountcode']['text']) > 0) {
+				if ($accountcode == "none") {
+					return;
+				}
+			}
+			else {
+				$accountcode = $_SESSION['domain_name'];
+			}
+			return $accountcode;
+		}
+	}
+
+// User exists
+        if (!function_exists('user_exists')) {
+                function user_exists($login, $domain_name = null) {
+                	//connect to freeswitch
+                        $fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+                        if (!$fp) {
+                                return false;
+                        }
+
+               		//send the user_exists command to freeswitch
+                        if ($fp) {
+                                //build and send the mkdir command to freeswitch
+				if (is_null($domain_name)){
+					$domain_name = $_SESSION['domain_name'];
+				}
+				$switch_cmd = "user_exists id '$login' '$domain_name'";
+				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+				fclose($fp);
+				return ($switch_result == 'true'?true:false);
+                        }
+
+			//can not create directory
+                        return null;
+                }
+        }
 
 ?>

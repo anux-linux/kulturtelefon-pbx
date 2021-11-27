@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2020
+	Portions created by the Initial Developer are Copyright (C) 2008-2021
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -236,11 +236,15 @@
 							$abbrv = "11d";
 							break;
 						case "^(?:\+?1)?(\d{10})$":
-							$label = $text['label-north-america'];
+							$label = $text['label-north_america'];
 							$abbrv = "10-11d";
 							break;
 						case "^(011\d{9,17})$":
-							$label = $text['label-north-america-intl'];
+							$label = $text['label-north_america_intl'];
+							$abbrv = "011.9-17d";
+							break;
+						case "^\+?1?((?:264|268|242|246|441|284|345|767|809|829|849|473|658|876|664|787|939|869|758|784|721|868|649|340|684|671|670|808)\d{7})$":
+							$label = $text['label-north_america_islands'];
 							$abbrv = "011.9-17d";
 							break;
 						case "^(\d{12,20})$":
@@ -579,7 +583,7 @@
 							$array['dialplans'][$x]['dialplan_details'][$y]['dialplan_uuid'] = $dialplan_uuid;
 							$array['dialplans'][$x]['dialplan_details'][$y]['dialplan_detail_tag'] = 'action';
 							$array['dialplans'][$x]['dialplan_details'][$y]['dialplan_detail_type'] = 'set';
-							$array['dialplans'][$x]['dialplan_details'][$y]['dialplan_detail_data'] = 'continue_on_fail=true';
+							$array['dialplans'][$x]['dialplan_details'][$y]['dialplan_detail_data'] = 'continue_on_fail=1,2,3,6,18,21,27,28,31,34,38,41,42,44,58,88,111,403,501,602,607';
 							$array['dialplans'][$x]['dialplan_details'][$y]['dialplan_detail_order'] = $y * 10;
 							$array['dialplans'][$x]['dialplan_details'][$y]['dialplan_detail_group'] = '0';
 						}
@@ -1082,9 +1086,10 @@ function type_onchange(dialplan_detail_type) {
 	echo "	<option value='^(\\d{9})\$'>".$text['label-9d']."</option>\n";
 	echo "	<option value='^(\\d{10})\$'>".$text['label-10d']."</option>\n";
 	echo "	<option value='^\+?(\\d{11})\$'>".$text['label-11d']."</option>\n";
-	echo "	<option value='^\+?1?(\\d{10})\$'>".$text['label-north-america']."</option>\n";
-	echo "	<option value='^(011\\d{9,17})\$'>".$text['label-north-america-intl']."</option>\n";
-	echo "	<option value='^(00\\d{9,17})\$'>".$text['label-europe-intl']."</option>\n";
+	echo "	<option value='^\+?1?(\\d{10})\$'>".$text['label-north_america']."</option>\n";
+	echo "	<option value='^(011\\d{9,17})\$'>".$text['label-north_america_intl']."</option>\n";
+	echo "	<option value='^\+?1?((?:264|268|242|246|441|284|345|767|809|829|849|473|658|876|664|787|939|869|758|784|721|868|649|340|684|671|670|808)\d{7})\$'>".$text['label-north_america_islands']."</option>\n";
+	echo "	<option value='^(00\\d{9,17})\$'>".$text['label-europe_intl']."</option>\n";
 	echo "	<option value='^(\\d{12,20})\$'>".$text['label-intl']."</option>\n";
 	echo "	<option value='^(311)\$'>".$text['label-311']."</option>\n";
 	echo "	<option value='^(411)\$'>".$text['label-411']."</option>\n";
@@ -1104,7 +1109,7 @@ function type_onchange(dialplan_detail_type) {
 	echo "	<option value='^9(\\d{10})\$'>".$text['label-9d10']."</option>\n";
 	echo "	<option value='^9(\\d{11})\$'>".$text['label-9d11']."</option>\n";
 	echo "	<option value='^9(\\d{12,20})\$'>".$text['label-9d.12-20']."</option>\n";
-	echo "	<option value='CUSTOM_PREFIX'>".$text['label-custom-outbound-prefix']."</option>\n";
+	echo "	<option value='CUSTOM_PREFIX'>".$text['label-custom_outbound_prefix']."</option>\n";
 	echo "	</select>\n";
 	echo "	<span class=\"vexpl\">\n";
 	echo "	<br />\n";
