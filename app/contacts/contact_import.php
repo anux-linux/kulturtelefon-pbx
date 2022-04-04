@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2020
+	Portions created by the Initial Developer are Copyright (C) 2008-2021
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -55,7 +55,7 @@
 	}
 
 //set the max php execution time
-	ini_set('max_execution_time',7200);
+	ini_set('max_execution_time', 7200);
 
 //get the http get values and set them as php variables
 	$action = $_POST["action"];
@@ -77,7 +77,6 @@
 			move_uploaded_file($_FILES['ulfile']['tmp_name'], $_SESSION['server']['temp']['dir'].'/'.$_FILES['ulfile']['name']);
 			$save_msg = "Uploaded file to ".$_SESSION['server']['temp']['dir']."/". htmlentities($_FILES['ulfile']['name']);
 			//system('chmod -R 744 '.$_SESSION['server']['temp']['dir'].'*');
-			unset($_POST['txtCommand']);
 			$file = $_SESSION['server']['temp']['dir'].'/'.$_FILES['ulfile']['name'];
 			$_SESSION['file'] = $file;
 		}
@@ -143,7 +142,7 @@
 			$token = new token;
 			if (!$token->validate($_SERVER['PHP_SELF'])) {
 				message::add($text['message-invalid_token'],'negative');
-				header('Location: extension_imports.php');
+				header('Location: contact_import.php');
 				exit;
 			}
 
@@ -172,21 +171,44 @@
 
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
+			//define phone label options
+			if (is_array($_SESSION["contact"]["phone_label"]) && @sizeof($_SESSION["contact"]["phone_label"]) != 0) {
+				sort($_SESSION["contact"]["phone_label"]);
+				foreach($_SESSION["contact"]["phone_label"] as $row) {
+					$label_options[] = "<option value='".$row.">".$row."</option>";
+				}
+			}
+			else {
+				$default_labels[] = $text['option-work'];
+				$default_labels[] = $text['option-home'];
+				$default_labels[] = $text['option-mobile'];
+				$default_labels[] = $text['option-main'];
+				$default_labels[] = $text['option-fax'];
+				$default_labels[] = $text['option-pager'];
+				$default_labels[] = $text['option-voicemail'];
+				$default_labels[] = $text['option-text'];
+				$default_labels[] = $text['option-other'];
+				foreach ($default_labels as $default_label) {
+					$label_options[] = "<option value='".$default_label."'>".$default_label."</option>";
+				}
+			}
+
 			//loop through user columns
 			$x = 0;
 			foreach ($line_fields as $line_field) {
 				$line_field = trim(trim($line_field), $enclosure);
 				echo "<tr>\n";
 				echo "	<td width='30%' class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
-				//echo "    ".$text['label-zzz']."\n";
 				echo $line_field;
 				echo "	</td>\n";
 				echo "	<td width='70%' class='vtable' align='left'>\n";
-				echo "		<select class='formfld' style='' name='fields[$x]'>\n";
+				echo "		<select class='formfld' style='' name='fields[$x]' onchange=\"document.getElementById('labels_$x').style.display = this.options[this.selectedIndex].value == 'contact_phones.phone_number' ? 'inline' : 'none';\">\n";
 				echo "			<option value=''></option>\n";
 				foreach($schema as $row) {
 					echo "			<optgroup label='".$row['table']."'>\n";
 					foreach($row['fields'] as $field) {
+						//if ($field == 'phone_label') { continue; }
+ 						//if ($field == 'contact_url') { continue; } // can remove this after field is removed from the table
 						$selected = '';
 						if ($field == $line_field) {
 							$selected = "selected='selected'";
@@ -198,8 +220,9 @@
 					echo "			</optgroup>\n";
 				}
 				echo "		</select>\n";
-				//echo "<br />\n";
-				//echo $text['description-zzz']."\n";
+				//echo "		<select class='formfld' style='display: none;' id='labels_$x' name='labels[$x]'>\n";
+				//echo 			is_array($label_options) ? implode("\n", $label_options) : null;
+				//echo "		</select>\n";
 				echo "	</td>\n";
 				echo "</tr>\n";
 				$x++;
@@ -247,12 +270,13 @@
 			$token = new token;
 			if (!$token->validate($_SERVER['PHP_SELF'])) {
 				message::add($text['message-invalid_token'],'negative');
-				header('Location: extension_imports.php');
+				header('Location: contact_import.php');
 				exit;
 			}
 
-		//user selected fields
+		//user selected fields, labels
 			$fields = $_POST['fields'];
+			$labels = $_POST['labels'];
 			
 		//set the domain_uuid
 			$domain_uuid = $_SESSION['domain_uuid'];
@@ -285,7 +309,7 @@
 								foreach ($fields as $key => $value) {
 									//get the line
 									$result = str_getcsv($line, $delimiter, $enclosure);
-									
+
 									//get the table and field name
 									$field_array = explode(".",$value);
 									$table_name = $field_array[0];
@@ -293,15 +317,26 @@
 									//echo "value: $value<br />\n";
 									//echo "table_name: $table_name<br />\n";
 									//echo "field_name: $field_name<br />\n";
-									
+
 									//get the parent table name
 									$parent = get_parent($schema, $table_name);
-	
+
+									//count the field names
+									if (isset($field_count[$table_name][$field_name])) {
+										$field_count[$table_name][$field_name]++;
+									}
+									else {
+										$field_count[$table_name][$field_name] = 0;
+									}
+
+									//set the ordinal ID
+									$id = $field_count[$table_name][$field_name];
+
 									//remove formatting from the phone number
 									if ($field_name == "phone_number") {
 										$result[$key] = preg_replace('{(?!^\+)[\D]}', '', $result[$key]);
 									}
-	
+
 									//build the data array
 									if (strlen($table_name) > 0) {
 										if (strlen($parent) == 0) {
@@ -310,38 +345,44 @@
 										}
 										else {
 											if ($field_name != "username" && $field_name != "group_name") {
-												$array[$parent][$row_id][$table_name][$y]['domain_uuid'] = $domain_uuid;
-												$array[$parent][$row_id][$table_name][$y][$field_name] = $result[$key];
+												$array[$parent][$row_id][$table_name][$id]['domain_uuid'] = $domain_uuid;
+												$array[$parent][$row_id][$table_name][$id][$field_name] = $result[$key];
+												//if ($field_name == 'phone_number') {
+												//	$array[$parent][$row_id][$table_name][$id]['phone_label'] = $labels[$key];
+												//}
 											}
 										}
-	
+
 										if ($field_name == "group_name") {
 											foreach ($groups as $field) {
 												if ($field['group_name'] == $result[$key]) {
 													//$array[$parent][$row_id]['contact_group_uuid'] = uuid();
-													$array[$parent][$row_id]['contact_groups'][$y]['domain_uuid'] = $domain_uuid;
+													$array[$parent][$row_id]['contact_groups'][$id]['domain_uuid'] = $domain_uuid;
 													//$array['contact_groups'][$x]['contact_uuid'] = $row['contact_uuid'];
-													$array[$parent][$row_id]['contact_groups'][$y]['group_uuid'] = $field['group_uuid'];
+													$array[$parent][$row_id]['contact_groups'][$id]['group_uuid'] = $field['group_uuid'];
 												}
 											}
 										}
-	
+
 										if ($field_name == "username") {
 											foreach ($users as $field) {
 												if ($field['username'] == $result[$key]) {
-													//$array[$parent][$row_id]['contact_users'][$y]['contact_group_uuid'] = uuid();
-													$array[$parent][$row_id]['contact_users'][$y]['domain_uuid'] = $domain_uuid;
+													//$array[$parent][$row_id]['contact_users'][$id]['contact_group_uuid'] = uuid();
+													$array[$parent][$row_id]['contact_users'][$id]['domain_uuid'] = $domain_uuid;
 													//$array['contact_groups'][$x]['contact_uuid'] = $row['contact_uuid'];
-													$array[$parent][$row_id]['contact_users'][$y]['user_uuid'] = $field['user_uuid'];
+													$array[$parent][$row_id]['contact_users'][$id]['user_uuid'] = $field['user_uuid'];
 												}
 											}
 										}
 									}
+									if (is_array($array[$parent][$row_id])) { $y++; }
 								}
-	
+
+							//debug information
+								//view_array($field_count);
+
 							//process a chunk of the array
 								if ($row_id === 1000) {
-	
 									//save to the data
 										$database = new database;
 										$database->app_name = 'contacts';
@@ -349,17 +390,21 @@
 										$database->save($array);
 
 									//clear the array
-										unset($array);
-										
+ 										unset($array);
+
 									//set the row id back to 0
 										$row_id = 0;
 								}
-	
+
 						} //if ($from_row <= $row_number)
+						unset($field_count);
 						$row_number++;
 						$row_id++;
 					} //end while
 					fclose($handle);
+
+				//debug information
+					//view_array($array);
 
 				//save to the data
 					if (is_array($array)) {

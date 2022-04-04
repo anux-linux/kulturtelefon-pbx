@@ -120,6 +120,9 @@ include "root.php";
 				case "64167f":
 					$device_vendor = "polycom";
 					break;
+				case "482567":
+					$device_vendor = "polycom";
+					break;
 				case "000413":
 					$device_vendor = "snom";
 					break;
@@ -156,6 +159,9 @@ include "root.php";
 				case "0080f0":
 					$device_vendor = "panasonic";
 					break;
+				case "0021f2":
+					$device_vendor = "flyingvoice";
+					break;					
 				default:
 					$device_vendor = "";
 				}
@@ -214,6 +220,9 @@ include "root.php";
 					}
 					if (preg_replace('/^.*?(fanvil).*$/i', '$1', $agent) == "fanvil") {
 						return "fanvil";
+					}
+					if (preg_replace('/^.*?(flyingvoice).*$/i', '$1', $agent) == "flyingvoice") {
+						return "flyingvoice";
 					}
 					// unknown vendor
 					return "";
@@ -311,6 +320,12 @@ include "root.php";
 						//build the delete array
 							foreach ($records as $x => $record) {
 								if ($record['checked'] == 'true' && is_uuid($record['uuid'])) {
+									$sql = "update v_devices set device_uuid_alternate = null where device_uuid_alternate = :device_uuid_alternate; ";
+									$parameters['device_uuid_alternate'] = $record['uuid'];
+									$database = new database;
+									$database->execute($sql, $parameters);
+									unset($sql, $parameters);
+
 									$array[$this->table][$x][$this->uuid_prefix.'uuid'] = $record['uuid'];
 									$array['device_settings'][$x]['device_uuid'] = $record['uuid'];
 									$array['device_lines'][$x]['device_uuid'] = $record['uuid'];

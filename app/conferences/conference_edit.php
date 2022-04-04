@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2020
+	Portions created by the Initial Developer are Copyright (C) 2008-2021
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -59,6 +59,8 @@
 		$conference_pin_number = $_POST["conference_pin_number"];
 		$conference_profile = $_POST["conference_profile"];
 		$conference_flags = $_POST["conference_flags"];
+		$conference_email_address = $_POST["conference_email_address"];
+		$conference_account_code = $_POST["conference_account_code"];
 		$conference_order = $_POST["conference_order"];
 		$conference_description = $_POST["conference_description"];
 		$conference_enabled = $_POST["conference_enabled"];
@@ -182,6 +184,12 @@
 					$array['conferences'][0]['conference_pin_number'] = $conference_pin_number;
 					$array['conferences'][0]['conference_profile'] = $conference_profile;
 					$array['conferences'][0]['conference_flags'] = $conference_flags;
+					if (permission_exists('conference_email_address')) {
+						$array['conferences'][0]['conference_email_address'] = $conference_email_address;
+					}
+					if (permission_exists('conference_account_code')) {
+						$array['conferences'][0]['conference_account_code'] = $conference_account_code;
+					}
 					$array['conferences'][0]['conference_order'] = $conference_order;
 					$array['conferences'][0]['conference_description'] = $conference_description;
 					$array['conferences'][0]['conference_enabled'] = $conference_enabled;
@@ -193,7 +201,10 @@
 					$dialplan_xml = "<extension name=\"".$conference_name."\" continue=\"\" uuid=\"".$dialplan_uuid."\">\n";
 					$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".$conference_extension."$\">\n";
 					$dialplan_xml .= "		<action application=\"answer\" data=\"\"/>\n";
-					$dialplan_xml .= "		<action application=\"conference\" data=\"".$conference_uuid."@".$_SESSION['domain_name']."@".$conference_profile.$pin_number."+flags{'".$conference_flags."'}\"/>\n";
+					$dialplan_xml .= "		<action application=\"set\" data=\"conference_uuid=".$conference_uuid."\" inline=\"true\"/>\n";
+					//$dialplan_xml .= "		<action application=\"set\" data=\"conference_name=".$conference_name."\" inline=\"true\"/>\n";
+					$dialplan_xml .= "		<action application=\"set\" data=\"conference_extension=".$conference_extension."\" inline=\"true\"/>\n";
+					$dialplan_xml .= "		<action application=\"conference\" data=\"".$conference_extension."@".$_SESSION['domain_name']."@".$conference_profile.$pin_number."+flags{'".$conference_flags."'}\"/>\n";
 					$dialplan_xml .= "	</condition>\n";
 					$dialplan_xml .= "</extension>\n";
 
@@ -205,7 +216,7 @@
 					$array['dialplans'][0]['app_uuid'] = 'b81412e8-7253-91f4-e48e-42fc2c9a38d9';
 					$array['dialplans'][0]['dialplan_xml'] = $dialplan_xml;
 					$array['dialplans'][0]['dialplan_order'] = '333';
-					$array['dialplans'][0]['dialplan_context'] = $_SESSION['context'];
+					$array['dialplans'][0]['dialplan_context'] = $_SESSION['domain_name'];
 					$array['dialplans'][0]['dialplan_enabled'] = $conference_enabled;
 					$array['dialplans'][0]['dialplan_description'] = $conference_description;
 
@@ -241,7 +252,12 @@
 
 				//clear the cache
 					$cache = new cache;
-					$cache->delete("dialplan:".$_SESSION["context"]);
+					$cache->delete("dialplan:".$_SESSION["domain_name"]);
+
+				//clear the destinations session array
+					if (isset($_SESSION['destinations']['array'])) {
+						unset($_SESSION['destinations']['array']);
+					}
 
 				//redirect the browser
 					header("Location: conferences.php");
@@ -267,6 +283,8 @@
 			$conference_pin_number = $row["conference_pin_number"];
 			$conference_profile = $row["conference_profile"];
 			$conference_flags = $row["conference_flags"];
+			$conference_email_address = $row["conference_email_address"];
+			$conference_account_code = $row["conference_account_code"];
 			$conference_order = $row["conference_order"];
 			$conference_description = $row["conference_description"];
 			$conference_enabled = $row["conference_enabled"];
@@ -324,9 +342,15 @@
 	echo "		<b>".$text['title-conference']."</b>";
 	echo "	</div>\n";
 	echo "	<div class='actions'>\n";
+
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'conferences.php']);
-	if ($action == 'update' && permission_exists('conference_active_view')) {
-		echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'style'=>'margin-right: 15px;','link'=>'../conferences_active/conferences_active.php?c='.urlencode(str_replace(' ', '-', $conference_name))]);
+	if ($action == 'update') {
+		if (permission_exists('conference_cdr_view')) {
+			echo button::create(['type'=>'button','label'=>$text['button-cdr'],'icon'=>'list','link'=>PROJECT_PATH.'/app/conference_cdr/conference_cdr.php?id='.urlencode($conference_uuid)]);
+		}
+		if (permission_exists('conference_active_view')) {
+			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'style'=>'','link'=>'../conferences_active/conferences_active.php?c='.urlencode(str_replace(' ', '-', $conference_name))]);
+		}
 	}
 	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save']);
 	echo "	</div>\n";
@@ -437,6 +461,32 @@
 	echo "".$text['description-flags']."\n";
 	echo "</td>\n";
 	echo "</tr>\n";
+
+	if (permission_exists('conference_email_address')) {
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	".$text['label-email_address']."\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<input class='formfld' type='text' name='conference_email_address' maxlength='255' value=\"".escape($conference_email_address)."\">\n";
+		echo "<br />\n";
+		echo "".$text['description-email_address']."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	if (permission_exists('conference_account_code')) {
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	".$text['label-account_code']."\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<input class='formfld' type='text' name='conference_account_code' maxlength='255' value=\"".escape($conference_account_code)."\">\n";
+		echo "<br />\n";
+		echo "".$text['description-account_code']."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";

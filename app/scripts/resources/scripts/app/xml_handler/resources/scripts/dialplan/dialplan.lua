@@ -116,10 +116,12 @@
 
 		--get the dialplan xml
 			if (context_name == 'public' and dialplan_mode == 'single') then
-				sql = "SELECT d.domain_name, dialplan_xml FROM v_dialplans AS p, v_domains AS d ";
+				sql = "SELECT (SELECT domain_name FROM v_domains WHERE domain_uuid = p.domain_uuid) as domain_name, "
+				sql = sql .. "(SELECT domain_enabled FROM v_domains WHERE domain_uuid = p.domain_uuid) as domain_enabled, p.dialplan_xml ";
+				sql = sql .. "FROM v_dialplans AS p ";
 				sql = sql .. "WHERE ( ";
 				sql = sql .. "	p.dialplan_uuid IN ( ";
-				sql = sql .. "		SELECT dialplan_uuid FROM v_destinations "
+				sql = sql .. "		SELECT dialplan_uuid FROM v_destinations ";
 				sql = sql .. "		WHERE ( ";
 				sql = sql .. "			destination_prefix || destination_area_code || destination_number = :destination_number ";
 				sql = sql .. "			OR destination_trunk_prefix || destination_area_code || destination_number = :destination_number ";
@@ -132,7 +134,6 @@
 				sql = sql .. "	) ";
 				sql = sql .. "	or (p.dialplan_context like '%public%' and p.domain_uuid IS NULL) ";
 				sql = sql .. ") ";
-				sql = sql .. "AND p.domain_uuid = d.domain_uuid ";
 				sql = sql .. "AND (p.hostname = :hostname OR p.hostname IS NULL) ";
 				sql = sql .. "AND p.dialplan_enabled = 'true' ";
 				sql = sql .. "ORDER BY p.dialplan_order ASC ";
@@ -140,15 +141,17 @@
 				if (debug["sql"]) then
 					freeswitch.consoleLog("notice", "[dialplan] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
 				end
-				local found = false;
 				dbh:query(sql, params, function(row)
 					if (row.domain_uuid ~= nil) then
 						domain_name = row.domain_name;
+					else
+						table.insert(xml, row.dialplan_xml);
 					end
-					table.insert(xml, row.dialplan_xml);
-					found = true;
+					if (row.domain_enabled == true) then
+						table.insert(xml, row.dialplan_xml);
+					end
 				end);
-				if (not found) then
+				if (xml == nil) then
 					table.insert(xml, [[		<extension name="not-found" continue="false" uuid="9913df49-0757-414b-8cf9-bcae2fd81ae7">]]);
 					table.insert(xml, [[			<condition field="" expression="">]]);
 					table.insert(xml, [[				<action application="set" data="call_direction=inbound" inline="true"/>]]);

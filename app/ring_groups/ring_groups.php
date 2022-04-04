@@ -77,16 +77,8 @@
 	$order = $_GET["order"];
 
 //add the search term
-	$search = strtolower($_GET["search"]);
-	if (strlen($search) > 0) {
-		$sql_search = "and (";
-		$sql_search .= "lower(ring_group_name) like :search ";
-		$sql_search .= "or lower(ring_group_extension) like :search ";
-		$sql_search .= "or lower(ring_group_description) like :search ";
-		$sql_search .= "or lower(ring_group_enabled) like :search ";
-		$sql_search .= "or lower(ring_group_strategy) like :search ";
-		$sql_search .= ") ";
-		$parameters['search'] = '%'.$search.'%';
+	if (isset($_GET["search"])) {
+		$search = strtolower($_GET["search"]);
 	}
 
 //get total domain ring group count
@@ -100,14 +92,24 @@
 //get filtered ring group count
 	if ($search) {
 		$sql = "select count(*) from v_ring_groups where true ";
-		if (!$_GET['show'] == "all" || permission_exists('ring_group_all')) {
+		if ($_GET['show'] != "all" || !permission_exists('ring_group_all')) {
 			$sql .= "and domain_uuid = :domain_uuid ";
 			$parameters['domain_uuid'] = $domain_uuid;
 		}
-		$sql .= $sql_search;
+		if (isset($search)) {
+			$sql .= "and (";
+			$sql .= "lower(ring_group_name) like :search ";
+			$sql .= "or lower(ring_group_extension) like :search ";
+			$sql .= "or lower(ring_group_description) like :search ";
+			$sql .= "or lower(ring_group_enabled) like :search ";
+			$sql .= "or lower(ring_group_strategy) like :search ";
+			$sql .= ") ";
+			$parameters['search'] = '%'.$search.'%';
+		}
 		$database = new database;
 		$num_rows = $database->select($sql, $parameters, 'column');
 	}
+	unset($sql, $parameters);
 
 //prepare to page the results
 	$rows_per_page = ($_SESSION['domain']['paging']['numeric'] != '') ? $_SESSION['domain']['paging']['numeric'] : 50;
@@ -119,7 +121,21 @@
 	$offset = $rows_per_page * $page;
 
 //get the list
-	$sql = str_replace('count(*)', '*', $sql);
+	$sql = "select * from v_ring_groups where true ";
+	if ($_GET['show'] != "all" || !permission_exists('ring_group_all')) {
+		$sql .= "and domain_uuid = :domain_uuid ";
+		$parameters['domain_uuid'] = $domain_uuid;
+	}
+	if (isset($search)) {
+		$sql .= "and (";
+		$sql .= "lower(ring_group_name) like :search ";
+		$sql .= "or lower(ring_group_extension) like :search ";
+		$sql .= "or lower(ring_group_description) like :search ";
+		$sql .= "or lower(ring_group_enabled) like :search ";
+		$sql .= "or lower(ring_group_strategy) like :search ";
+		$sql .= ") ";
+		$parameters['search'] = '%'.$search.'%';
+	}
 	$sql .= ($order_by) ? order_by($order_by, $order) : "order by ring_group_name asc, ring_group_extension asc ";
 	$sql .= limit_offset($rows_per_page, $offset);
 	$ring_groups = $database->select($sql, $parameters, 'all');
@@ -158,9 +174,9 @@
 			echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$_SESSION['theme']['button_icon_all'],'link'=>'?show=all']);
 		}
 	}
-	echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown='list_search_reset();'>";
-	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search','style'=>($search != '' ? 'display: none;' : null)]);
-	echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','link'=>'ring_groups.php','style'=>($search == '' ? 'display: none;' : null)]);
+	echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown=''>";
+	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search']);
+	//echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','link'=>'ring_groups.php','style'=>($search == '' ? 'display: none;' : null)]);
 	if ($paging_controls_mini != '') {
 		echo 	"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>";
 	}

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2019
+	Portions created by the Initial Developer are Copyright (C) 2008-2021
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -75,37 +75,51 @@
 	$order_by = $_GET["order_by"];
 	$order = $_GET["order"];
 
-//add the search term
-	$search = strtolower($_GET["search"]);
-	if (strlen($search) > 0) {
-		$sql_search = "and (";
-		$sql_search .= "lower(fax_name) like :search ";
-		$sql_search .= "or lower(fax_email) like :search ";
-		$sql_search .= "or lower(fax_extension) like :search ";
-		$sql_search .= "or lower(fax_destination_number) like :search ";
-		$sql_search .= "or lower(fax_caller_id_name) like :search ";
-		$sql_search .= "or lower(fax_caller_id_number) like :search ";
-		$sql_search .= "or lower(fax_forward_number) like :search ";
-		$sql_search .= "or lower(fax_description) like :search ";
-		$sql_search .= ") ";
-		$parameters['search'] = '%'.$search.'%';
+//add the search
+	if (isset($_GET["search"])) {
+		$search = strtolower($_GET["search"]);
 	}
 
 //get record counts
-	if (if_group("superadmin") || if_group("admin")) {
-		//show all fax extensions
-		$sql = "select count(*) from v_fax as f ";
+	if (permission_exists('fax_extension_view_domain')) {
+		//count the fax extensions
+		$sql = "select count(f.fax_uuid) from v_fax as f ";
 		$sql .= "where f.domain_uuid = :domain_uuid ";
-		$sql .= $sql_search;
+		if (isset($search)) {
+			$sql .= "and (";
+			$sql .= "	lower(fax_name) like :search ";
+			$sql .= "	or lower(fax_email) like :search ";
+			$sql .= "	or lower(fax_extension) like :search ";
+			$sql .= "	or lower(fax_destination_number) like :search ";
+			$sql .= "	or lower(fax_caller_id_name) like :search ";
+			$sql .= "	or lower(fax_caller_id_number) like :search ";
+			$sql .= "	or lower(fax_forward_number) like :search ";
+			$sql .= "	or lower(fax_description) like :search ";
+			$sql .= ") ";
+			$parameters['search'] = '%'.$search.'%';
+		}
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 	}
 	else {
-		//show only assigned fax extensions
-		$sql = "select count(*) from v_fax as f, v_fax_users as u ";
+		//ciount the assigned fax extensions
+		$sql = "select count(f.fax_uuid) ";
+		$sql .= "from v_fax as f, v_fax_users as u ";
 		$sql .= "where f.fax_uuid = u.fax_uuid ";
 		$sql .= "and f.domain_uuid = :domain_uuid ";
 		$sql .= "and u.user_uuid = :user_uuid ";
-		$sql .= $sql_search;
+		if (isset($search)) {
+			$sql .= "and (";
+			$sql .= "	lower(fax_name) like :search ";
+			$sql .= "	or lower(fax_email) like :search ";
+			$sql .= "	or lower(fax_extension) like :search ";
+			$sql .= "	or lower(fax_destination_number) like :search ";
+			$sql .= "	or lower(fax_caller_id_name) like :search ";
+			$sql .= "	or lower(fax_caller_id_number) like :search ";
+			$sql .= "	or lower(fax_forward_number) like :search ";
+			$sql .= "	or lower(fax_description) like :search ";
+			$sql .= ") ";
+			$parameters['search'] = '%'.$search.'%';
+		}
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 		$parameters['user_uuid'] = $_SESSION['user_uuid'];
 	}
@@ -120,10 +134,54 @@
 	list($paging_controls_mini, $rows_per_page) = paging($num_rows, $param, $rows_per_page, true);
 	$offset = $rows_per_page * $page;
 
-//get records
-	$sql = str_replace('count(*)', '*', $sql);
+//get fax extensions
+	if (permission_exists('fax_extension_view_domain')) {
+		//show all fax extensions
+		$sql = "select f.fax_uuid, fax_extension, fax_prefix, fax_name, fax_email, fax_description ";
+		$sql .= "from v_fax as f ";
+		$sql .= "where f.domain_uuid = :domain_uuid ";
+		if (isset($search)) {
+			$sql = "and (";
+			$sql .= "	lower(fax_name) like :search ";
+			$sql .= "	or lower(fax_email) like :search ";
+			$sql .= "	or lower(fax_extension) like :search ";
+			$sql .= "	or lower(fax_destination_number) like :search ";
+			$sql .= "	or lower(fax_caller_id_name) like :search ";
+			$sql .= "	or lower(fax_caller_id_number) like :search ";
+			$sql .= "	or lower(fax_forward_number) like :search ";
+			$sql .= "	or lower(fax_description) like :search ";
+			$sql .= ") ";
+			$parameters['search'] = '%'.$search.'%';
+		}
+		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+	}
+	else {
+		//show only assigned fax extensions
+		$sql = "select f.fax_uuid, fax_extension, fax_prefix, fax_name, fax_email, fax_description ";
+		$sql .= "from v_fax as f, v_fax_users as u ";
+		$sql .= "where f.fax_uuid = u.fax_uuid ";
+		$sql .= "and f.domain_uuid = :domain_uuid ";
+		$sql .= "and u.user_uuid = :user_uuid ";
+		if (isset($search)) {
+			$sql = "and (";
+			$sql .= "	lower(fax_name) like :search ";
+			$sql .= "	or lower(fax_email) like :search ";
+			$sql .= "	or lower(fax_extension) like :search ";
+			$sql .= "	or lower(fax_destination_number) like :search ";
+			$sql .= "	or lower(fax_caller_id_name) like :search ";
+			$sql .= "	or lower(fax_caller_id_number) like :search ";
+			$sql .= "	or lower(fax_forward_number) like :search ";
+			$sql .= "	or lower(fax_description) like :search ";
+			$sql .= ") ";
+			$parameters['search'] = '%'.$search.'%';
+		}
+		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
+	}
 	$sql .= order_by($order_by, $order, 'f.fax_name', 'asc');
 	$sql .= limit_offset($rows_per_page, $offset);
+//echo $sql."\n";
+//view_array($parameters);
 	$database = new database;
 	$result = $database->select($sql, $parameters, 'all');
 	unset($sql, $parameters);
@@ -144,15 +202,15 @@
 		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_add','link'=>'fax_edit.php']);
 	}
 	if (permission_exists('fax_extension_add') && $result) {
-		echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'name'=>'btn_copy','onclick'=>"modal_open('modal-copy','btn_copy');"]);
+		echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'id'=>'btn_copy','name'=>'btn_copy','style'=>'display: none;','onclick'=>"modal_open('modal-copy','btn_copy');"]);
 	}
 	if (permission_exists('fax_extension_delete') && $result) {
-		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
 	}
 	echo 		"<form id='form_search' class='inline' method='get'>\n";
-	echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown='list_search_reset();'>";
-	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search','style'=>($search != '' ? 'display: none;' : null)]);
-	echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','link'=>'fax.php','style'=>($search == '' ? 'display: none;' : null)]);
+	echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown=''>";
+	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search']);
+	//echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','link'=>'fax.php','style'=>($search == '' ? 'display: none;' : null)]);
 	if ($paging_controls_mini != '') {
 		echo 	"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>";
 	}
@@ -179,7 +237,7 @@
 	echo "<tr class='list-header'>\n";
 	if (permission_exists('fax_extension_add') || permission_exists('fax_extension_delete')) {
 		echo "	<th class='checkbox'>\n";
-		echo "		<input type='checkbox' id='checkbox_all' name='checkbox_all' onclick='list_all_toggle();' ".($result ?: "style='visibility: hidden;'").">\n";
+		echo "		<input type='checkbox' id='checkbox_all' name='checkbox_all' onclick='list_all_toggle(); checkbox_on_change(this);' ".($result ?: "style='visibility: hidden;'").">\n";
 		echo "	</th>\n";
 	}
 	echo th_order_by('fax_name', $text['label-name'], $order_by, $order);
@@ -201,7 +259,7 @@
 			echo "<tr class='list-row' href='".$list_row_url."'>\n";
 			if (permission_exists('fax_extension_add') || permission_exists('fax_extension_delete')) {
 				echo "	<td class='checkbox'>\n";
-				echo "		<input type='checkbox' name='fax_servers[$x][checked]' id='checkbox_".$x."' value='true' onclick=\"if (!this.checked) { document.getElementById('checkbox_all').checked = false; }\">\n";
+				echo "		<input type='checkbox' name='fax_servers[$x][checked]' id='checkbox_".$x."' value='true' onclick=\"checkbox_on_change(this); if (!this.checked) { document.getElementById('checkbox_all').checked = false; }\">\n";
 				echo "		<input type='hidden' name='fax_servers[$x][uuid]' value='".escape($row['fax_uuid'])."' />\n";
 				echo "	</td>\n";
 			}
@@ -229,6 +287,7 @@
 					$box = 'inbox';
 				}
 				echo "		<a href='".$file."?order_by=fax_date&order=desc&id=".urlencode($row['fax_uuid'])."&box=".$box."'>".$text['label-inbox']."</a>&nbsp;&nbsp;";
+				//echo "		<a href='fax_outbox.php?id=".urlencode($row['fax_uuid'])."'>".$text['label-outbox']."</a>&nbsp;&nbsp;";
 			}
 			if (permission_exists('fax_sent_view')) {
 				echo "		<a href='fax_files.php?order_by=fax_date&order=desc&id=".urlencode($row['fax_uuid'])."&box=sent'>".$text['label-sent']."</a>&nbsp;&nbsp;";
