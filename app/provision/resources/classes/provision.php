@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2014-2018
+	Copyright (C) 2014-2021
 	All Rights Reserved.
 
 	Contributor(s):
@@ -186,7 +186,8 @@ include "root.php";
 			}
 		}
 
-		private function contact_append(&$contacts, &$line, $domain_uuid, $device_user_uuid, $is_group) {
+		private function contact_append(&$contacts, &$line, $domain_uuid, $device_user_uuid, $category) {
+
 			$sql = "select c.contact_uuid, c.contact_organization, c.contact_name_given, c.contact_name_family, ";
 			$sql .= "c.contact_type, c.contact_category, p.phone_label,";
 			$sql .= "p.phone_number, p.phone_extension, p.phone_primary ";
@@ -194,7 +195,7 @@ include "root.php";
 			$sql .= "where c.contact_uuid = p.contact_uuid ";
 			$sql .= "and p.phone_type_voice = '1' ";
 			$sql .= "and c.domain_uuid = :domain_uuid ";
-			if ($is_group) {
+			if ($category == 'groups') {
 				$sql .= "and c.contact_uuid in ( ";
 				$sql .= "	select contact_uuid from v_contact_groups ";
 				$sql .= "	where group_uuid in ( ";
@@ -202,55 +203,57 @@ include "root.php";
 				$sql .= "		where user_uuid = :device_user_uuid ";
 				$sql .= "		and domain_uuid = :domain_uuid ";
 				$sql .= "	)) ";
+				$parameters['device_user_uuid'] = $device_user_uuid;
 			}
-			else {
+			if ($category == 'users') {
 				$sql .= "and c.contact_uuid in ( ";
 				$sql .= "	select contact_uuid from v_contact_users ";
 				$sql .= "	where user_uuid = :device_user_uuid ";
 				$sql .= "	and domain_uuid = :domain_uuid ";
 				$sql .= ") ";
+				$parameters['device_user_uuid'] = $device_user_uuid;
 			}
-			$parameters['device_user_uuid'] = $device_user_uuid;
 			$parameters['domain_uuid'] = $domain_uuid;
 			$database = new database;
-			$user_contacts = $database->select($sql, $parameters, 'all');
-			if (is_array($user_contacts)) {
-				foreach ($user_contacts as &$row) {
+			$database_contacts = $database->select($sql, $parameters, 'all');
+			if (is_array($database_contacts)) {
+				$x = 0;
+				foreach ($database_contacts as &$row) {
 					$uuid = $row['contact_uuid'];
 					$phone_label = strtolower($row['phone_label']);
 					$contact_category = strtolower($row['contact_category']);
 
 					$contact = array();
 					$contacts[] = &$contact;
-					$contact['category']             = $is_group ? 'groups' : 'users';
-					$contact['contact_uuid']         = $row['contact_uuid'];
-					$contact['contact_type']         = $row['contact_type'];
-					$contact['contact_category']     = $row['contact_category'];
-					$contact['contact_organization'] = $row['contact_organization'];
-					$contact['contact_name_given']   = $row['contact_name_given'];
-					$contact['contact_name_family']  = $row['contact_name_family'];
-					$contact['numbers']              = array();
+					$contact['category']				= ($category == 'all') ? 'groups' : $category;
+					$contact['contact_uuid']			= $row['contact_uuid'];
+					$contact['contact_type']			= $row['contact_type'];
+					$contact['contact_category']		= $row['contact_category'];
+					$contact['contact_organization']	= $row['contact_organization'];
+					$contact['contact_name_given']		= $row['contact_name_given'];
+					$contact['contact_name_family']		= $row['contact_name_family'];
 
+					$contact['numbers']					= array();
 					$numbers = &$contact['numbers'];
 
 					if (($row['phone_primary'] == '1') || (!isset($contact['phone_number']))) {
-						$contact['phone_label']		= $phone_label;
-						$contact['phone_number']	= $row['phone_number'];
-						$contact['phone_extension']	= $row['phone_extension'];
+						$contact['phone_label']			= $phone_label;
+						$contact['phone_number']		= $row['phone_number'];
+						$contact['phone_extension']		= $row['phone_extension'];
 					}
 
-					$numbers[] = array(
-						line_number			=> $line['line_number'],
-						phone_label			=> $phone_label,
-						phone_number		=> $row['phone_number'],
-						phone_extension		=> $row['phone_extension'],
-						phone_primary		=> $row['phone_primary'],
-					);
+					$numbers[$x]['line_number']			= $line['line_number'];
+					$numbers[$x]['phone_label']			= $phone_label;
+					$numbers[$x]['phone_number']		= $row['phone_number'];
+					$numbers[$x]['phone_extension']		= $row['phone_extension'];
+					$numbers[$x]['phone_primary']		= $row['phone_primary'];
 
 					$contact['phone_number_' . $phone_label] = $row['phone_number'];
 					unset($contact, $numbers, $uuid, $phone_label);
+					$x++;
 				}
 				unset($parameters);
+
 			}
 		}
 
@@ -300,7 +303,11 @@ include "root.php";
 						elseif (isset($val['boolean'])) { $value = $val['boolean']; }
 						elseif (isset($val['numeric'])) { $value = $val['numeric']; }
 						elseif (is_array($val) && !is_uuid($val['uuid'])) { $value = $val; }
-						if (isset($value)) { $provision[$key] = $value; }
+						if (isset($value)) {
+							$value = str_replace('${domain_name}', $domain_name, $value);
+							$value = str_replace('${mac_address}', $mac, $value);
+							$provision[$key] = $value;
+						}
 						unset($value);
 					}
 				}
@@ -341,13 +348,14 @@ include "root.php";
 
 								//register that we have seen the device
 									$sql = "update v_devices ";
-									$sql .= "set device_provisioned_date = :device_provisioned_date, device_provisioned_method = :device_provisioned_method, device_provisioned_ip = :device_provisioned_ip ";
+									$sql .= "set device_provisioned_date = :device_provisioned_date, device_provisioned_method = :device_provisioned_method, device_provisioned_ip = :device_provisioned_ip, device_provisioned_agent = :device_provisioned_agent ";
 									$sql .= "where domain_uuid = :domain_uuid and device_mac_address = :device_mac_address ";
 									$parameters['domain_uuid'] = $domain_uuid;
 									$parameters['device_mac_address'] = strtolower($mac);
 									$parameters['device_provisioned_date'] = date("Y-m-d H:i:s");
 									$parameters['device_provisioned_method'] = (isset($_SERVER["HTTPS"]) ? 'https' : 'http');
 									$parameters['device_provisioned_ip'] = $_SERVER['REMOTE_ADDR'];
+									$parameters['device_provisioned_agent'] = $_SERVER['HTTP_USER_AGENT'];
 									$database = new database;
 									$database->execute($sql, $parameters);
 									unset($parameters);
@@ -355,15 +363,16 @@ include "root.php";
 								//set the variables from values in the database
 									$device_uuid = $row["device_uuid"];
 									$device_label = $row["device_label"];
-									if (strlen($row["device_vendor"]) > 0) {
-										$device_vendor = strtolower($row["device_vendor"]);
-									}
+									$device_template = $row["device_template"];
+									$device_profile_uuid = $row["device_profile_uuid"];
 									$device_user_uuid = $row["device_user_uuid"];
 									$device_model = $row["device_model"];
 									$device_firmware_version = $row["device_firmware_version"];
+									if (strlen($row["device_vendor"]) > 0) {
+										$device_vendor = strtolower($row["device_vendor"]);
+									}
+									$device_location = $row["device_location"];
 									$device_enabled = $row["device_enabled"];
-									$device_template = $row["device_template"];
-									$device_profile_uuid = $row["device_profile_uuid"];
 									$device_description = $row["device_description"];
 							}
 							unset($row);
@@ -379,12 +388,13 @@ include "root.php";
 								$row = $database->select($sql, $parameters, 'row');
 								if (is_array($row) && sizeof($row) != 0) {
 									$device_label = $row["device_label"];
-									$device_vendor = strtolower($row["device_vendor"]);
-									$device_model = $row["device_model"];
-									$device_firmware_version = $row["device_firmware_version"];
-									$device_enabled = $row["device_enabled"];
 									$device_template = $row["device_template"];
 									$device_profile_uuid = $row["device_profile_uuid"];
+									$device_model = $row["device_model"];
+									$device_firmware_version = $row["device_firmware_version"];
+									$device_vendor = strtolower($row["device_vendor"]);
+									$device_location = strtolower($row["device_location"]);
+									$device_enabled = $row["device_enabled"];
 									$device_description = $row["device_description"];
 								}
 								unset($row, $parameters);
@@ -434,6 +444,7 @@ include "root.php";
 							$templates['Yealink SIP-T29G'] = 'yealink/t29g';
 							$templates['yealink SIP-T29P'] = 'yealink/t29p';
 							$templates['Yealink SIP-T32G'] = 'yealink/t32g';
+							$templates['Yealink SIP-T33G'] = 'yealink/t33g';
 							$templates['Yealink SIP-T38G'] = 'yealink/t38g';
 							$templates['Yealink SIP-T40P'] = 'yealink/t40p';
 							$templates['Yealink SIP-T41G'] = 'yealink/t41g';
@@ -501,6 +512,16 @@ include "root.php";
 
 							$templates['Vesa VCS754'] = 'vtech/vcs754';
 							$templates['Wget/1.11.3'] = 'konftel/kt300ip';
+
+							$templates['Flyingvoice FIP10'] = 'flyingvoice/fip10';
+							$templates['Flyingvoice FIP11C'] = 'flyingvoice/fip11c';
+							$templates['Flyingvoice FIP12WP'] = 'flyingvoice/fip12wp';
+							$templates['Flyingvoice FIP13G'] = 'flyingvoice/fip13g';
+							$templates['Flyingvoice FIP14G'] = 'flyingvoice/fip14g';
+							$templates['Flyingvoice FIP15G'] = 'flyingvoice/fip15g';
+							$templates['Flyingvoice FIP16'] = 'flyingvoice/fip16';
+							$templates['Flyingvoice FIP16PLUS'] = 'flyingvoice/fip16plus';
+							
 							foreach ($templates as $key=>$value){
 								if(stripos($_SERVER['HTTP_USER_AGENT'],$key)!== false) {
 									$device_template = $value;
@@ -578,11 +599,13 @@ include "root.php";
 								if (is_array($row) && sizeof($row) != 0) {
 									if ($row["device_enabled"] == "true") {
 										$device_label = $row["device_label"];
+										$device_profile_uuid = $row["device_profile_uuid"];
 										$device_firmware_version = $row["device_firmware_version"];
 										$device_user_uuid = $row["device_user_uuid"];
+										$device_location = strtolower($row["device_location"]);
+										$device_vendor = strtolower($row["device_vendor"]);
 										$device_enabled = $row["device_enabled"];
 										//keep the original template
-										$device_profile_uuid = $row["device_profile_uuid"];
 										$device_description = $row["device_description"];
 									}
 								}
@@ -654,7 +677,7 @@ include "root.php";
 				//create a mac address with back slashes for backwards compatability
 					$mac_dash = substr($mac, 0,2).'-'.substr($mac, 2,2).'-'.substr($mac, 4,2).'-'.substr($mac, 6,2).'-'.substr($mac, 8,2).'-'.substr($mac, 10,2);
 
-				//get the provisioning information from device lines table
+				//get the provisioning information
 					if (is_uuid($device_uuid)) {
 						//get the device lines array
 							$sql = "select * from v_device_lines ";
@@ -662,8 +685,131 @@ include "root.php";
 							$sql .= "and (enabled = 'true' or enabled is null or enabled = '') ";
 							$parameters['device_uuid'] = $device_uuid;
 							$database = new database;
-							$device_lines = $database->select($sql, $parameters, 'all');
+							//$database_device_lines = $database->select($sql, $parameters, 'all');
+							foreach ($database->select($sql, $parameters, 'all') as $row) {
+								$id = $row['line_number'];
+								$device_lines[$id] = $row;
+							}
 							unset($parameters);
+
+						//get the device profile keys
+							if (is_uuid($device_profile_uuid)) {
+								$sql = "select ";
+								$sql .= "profile_key_id as device_key_id, ";
+								$sql .= "profile_key_category as device_key_category, ";
+								$sql .= "profile_key_vendor as device_key_vendor, ";
+								$sql .= "profile_key_type as device_key_type, ";
+								$sql .= "profile_key_line as device_key_line, ";
+								$sql .= "profile_key_value as device_key_value, ";
+								$sql .= "profile_key_extension as device_key_extension, ";
+								$sql .= "profile_key_protected as device_key_protected, ";
+								$sql .= "profile_key_label as device_key_label, ";
+								$sql .= "profile_key_icon as device_key_icon ";
+								$sql .= "from v_device_profile_keys ";
+								$sql .= "where device_profile_uuid = :device_profile_uuid ";
+								if (strtolower($device_vendor) == 'escene'){
+									$sql .= "and (lower(profile_key_vendor) = 'escene' or lower(profile_key_vendor) = 'escene programmable' or profile_key_vendor is null) ";
+								}
+								else {
+									$sql .= "and (lower(profile_key_vendor) = :device_vendor or profile_key_vendor is null) ";
+									$parameters['device_vendor'] = $device_vendor;
+								}
+								$sql .= "order by ";
+								$sql .= "profile_key_vendor asc, ";
+								$sql .= "case profile_key_category ";
+								$sql .= "when 'line' then 1 ";
+								$sql .= "when 'memory' then 2 ";
+								$sql .= "when 'programmable' then 3 ";
+								$sql .= "when 'expansion' then 4 ";
+								$sql .= "else 100 end, ";
+								if ($GLOBALS['db_type'] == "mysql") {
+									$sql .= "profile_key_id asc ";
+								}
+								else {
+									$sql .= "cast(profile_key_id as numeric) asc ";
+								}
+								$parameters['device_profile_uuid'] = $device_profile_uuid;
+								$database = new database;
+								$keys = $database->select($sql, $parameters, 'all');
+
+								//add the profile keys to the device keys array
+								if (is_array($keys) && sizeof($keys) != 0) {
+									foreach($keys as $row) {
+										//set the variables
+										$id = $row['device_key_id'];
+										$category = $row['device_key_category'];
+										$device_key_vendor = $row['device_key_vendor'];
+										$device_key_line = $row['device_key_line'];
+
+										//build the device keys array
+										$device_keys[$category][$id] = $row;
+										$device_lines[$device_key_line]['device_key_owner'] = "profile";
+
+										//add line_keys to the polycom array
+										if ($row['device_key_vendor'] == 'polycom' && $row['device_key_type'] == 'line') {
+											$device_lines[$device_key_line]['line_keys'] = $row['device_key_value'];
+										}
+
+										//kept temporarily for backwards comptability to allow custom templates to be updated
+										$device_keys[$id] = $row;
+										$device_keys[$id]['device_key_owner'] = "profile";
+									}
+								}
+								unset($parameters, $keys);
+							}
+
+						//get the device keys
+							$sql = "select * from v_device_keys ";
+							$sql .= "where device_uuid = :device_uuid ";
+							if (strtolower($device_vendor) == 'escene'){
+								$sql .= "and (lower(device_key_vendor) = 'escene' or lower(device_key_vendor) = 'escene programmable' or device_key_vendor is null) ";
+							}
+							else {
+								$sql .= "and (lower(device_key_vendor) = :device_vendor or device_key_vendor is null) ";
+								$parameters['device_vendor'] = $device_vendor;
+							}
+							$sql .= "order by ";
+							$sql .= "device_key_vendor asc, ";
+							$sql .= "case device_key_category ";
+							$sql .= "when 'line' then 1 ";
+							$sql .= "when 'memory' then 2 ";
+							$sql .= "when 'programmable' then 3 ";
+							$sql .= "when 'expansion' then 4 ";
+							$sql .= "else 100 end, ";
+							if ($GLOBALS['db_type'] == "mysql") {
+								$sql .= "device_key_id asc ";
+							}
+							else {
+								$sql .= "cast(device_key_id as numeric) asc ";
+							}
+							$parameters['device_uuid'] = $device_uuid;
+							$database = new database;
+							$keys = $database->select($sql, $parameters, 'all');
+
+						//override profile keys with the device keys
+							if (is_array($keys)) {
+								foreach($keys as $row) {
+									//set the variables
+									$id = $row['device_key_id'];
+									$category = $row['device_key_category'];
+									$device_key_line = $row['device_key_line'];
+
+									//add line_keys to the polycom array
+									if ($row['device_key_vendor'] == 'polycom' && $row['device_key_type'] == 'line') {
+										$device_lines[$device_key_line]['line_keys'] = $row['device_key_value'];
+									}
+
+									//build the device keys array
+									$device_keys[$category][$id] = $row;
+									$device_keys[$category][$id]['device_key_owner'] = "device";
+
+									//kept temporarily for backwards comptability to allow custom templates to be updated
+									$device_keys[$id] = $row;
+									$device_keys[$id]['device_key_owner'] = "device";
+								}
+							}
+							unset($parameters, $keys);
+
 						//set the variables
 							if (is_array($device_lines) && sizeof($device_lines) != 0) {
 								foreach($device_lines as $row) {
@@ -746,16 +892,22 @@ include "root.php";
 					$view->assign("user", $lines);
 
 				//get the list of contact directly assigned to the user
-					if (is_uuid($device_user_uuid) && is_uuid($domain_uuid)) {
-						//get the contacts assigned to the groups and add to the contacts array
-							if ($_SESSION['provision']['contact_groups']['boolean'] == "true") {
-								$this->contact_append($contacts, $line, $domain_uuid, $device_user_uuid, true);
-							}
-
-						//get the contacts assigned to the user and add to the contacts array
-							if ($_SESSION['provision']['contact_users']['boolean'] == "true") {
-								$this->contact_append($contacts, $line, $domain_uuid, $device_user_uuid, false);
-							}
+					if (is_uuid($domain_uuid)) {
+						if ($_SESSION['contact']['permissions']['boolean'] == "true") {
+							//get the contacts assigned to the groups and add to the contacts array
+								if (is_uuid($device_user_uuid) && $_SESSION['provision']['contact_groups']['boolean'] == "true") {
+									$this->contact_append($contacts, $line, $domain_uuid, $device_user_uuid, 'groups');
+								}
+	
+							//get the contacts assigned to the user and add to the contacts array
+								if (is_uuid($device_user_uuid) && $_SESSION['provision']['contact_users']['boolean'] == "true") {
+									$this->contact_append($contacts, $line, $domain_uuid, $device_user_uuid, 'users');
+								}
+						}
+						else {
+							//show all contacts for the domain
+								$this->contact_append($contacts, $line, $domain_uuid, null, 'all');
+						}
 					}
 
 				//get the extensions and add them to the contacts array
@@ -813,117 +965,10 @@ include "root.php";
 						unset($contacts);
 					}
 
-				//get the provisioning information from device keys
-					if (is_uuid($device_uuid)) {
-
-						//get the device profile keys
-							if (is_uuid($device_profile_uuid)) {
-								$sql = "select ";
-								$sql .= "profile_key_id as device_key_id, ";
-								$sql .= "profile_key_category as device_key_category, ";
-								$sql .= "profile_key_vendor as device_key_vendor, ";
-								$sql .= "profile_key_type as device_key_type, ";
-								$sql .= "profile_key_line as device_key_line, ";
-								$sql .= "profile_key_value as device_key_value, ";
-								$sql .= "profile_key_extension as device_key_extension, ";
-								$sql .= "profile_key_protected as device_key_protected, ";
-								$sql .= "profile_key_label as device_key_label, ";
-								$sql .= "profile_key_icon as device_key_icon ";
-								$sql .= "from v_device_profile_keys ";
-								$sql .= "where device_profile_uuid = :device_profile_uuid ";
-								if (strtolower($device_vendor) == 'escene'){
-									$sql .= "and (lower(profile_key_vendor) = 'escene' or lower(profile_key_vendor) = 'escene programmable' or profile_key_vendor is null) ";
-								}
-								else {
-									$sql .= "and (lower(profile_key_vendor) = :device_vendor or profile_key_vendor is null) ";
-									$parameters['device_vendor'] = $device_vendor;
-								}
-								$sql .= "order by ";
-								$sql .= "profile_key_vendor asc, ";
-								$sql .= "case profile_key_category ";
-								$sql .= "when 'line' then 1 ";
-								$sql .= "when 'memory' then 2 ";
-								$sql .= "when 'programmable' then 3 ";
-								$sql .= "when 'expansion' then 4 ";
-								$sql .= "else 100 end, ";
-								if ($GLOBALS['db_type'] == "mysql") {
-									$sql .= "profile_key_id asc ";
-								}
-								else {
-									$sql .= "cast(profile_key_id as numeric) asc ";
-								}
-								$parameters['device_profile_uuid'] = $device_profile_uuid;
-								$database = new database;
-								$keys = $database->select($sql, $parameters, 'all');
-								//add the profile keys to the device keys array
-								if (is_array($keys) && sizeof($keys) != 0) {
-									foreach($keys as $row) {
-										//set the variables
-										$id = $row['device_key_id'];
-										$category = $row['device_key_category'];
-
-										//build the device keys array
-										$device_keys[$category][$id] = $row;
-										$device_keys[$category][$id]['device_key_owner'] = "profile";
-
-										//kept temporarily for backwards comptability to allow custom templates to be updated
-										$device_keys[$id] = $row;
-										$device_keys[$id]['device_key_owner'] = "profile";
-									}
-								}
-								unset($parameters, $keys);
-							}
-
-						//get the device keys
-							$sql = "select * from v_device_keys ";
-							$sql .= "where device_uuid = :device_uuid ";
-							if (strtolower($device_vendor) == 'escene'){
-								$sql .= "and (lower(device_key_vendor) = 'escene' or lower(device_key_vendor) = 'escene programmable' or device_key_vendor is null) ";
-							}
-							else {
-								$sql .= "and (lower(device_key_vendor) = :device_vendor or device_key_vendor is null) ";
-								$parameters['device_vendor'] = $device_vendor;
-							}
-							$sql .= "order by ";
-							$sql .= "device_key_vendor asc, ";
-							$sql .= "case device_key_category ";
-							$sql .= "when 'line' then 1 ";
-							$sql .= "when 'memory' then 2 ";
-							$sql .= "when 'programmable' then 3 ";
-							$sql .= "when 'expansion' then 4 ";
-							$sql .= "else 100 end, ";
-							if ($GLOBALS['db_type'] == "mysql") {
-								$sql .= "device_key_id asc ";
-							}
-							else {
-								$sql .= "cast(device_key_id as numeric) asc ";
-							}
-							$parameters['device_uuid'] = $device_uuid;
-							$database = new database;
-							$keys = $database->select($sql, $parameters, 'all');
-
-						//override profile keys with the device keys
-							if (is_array($keys)) {
-								foreach($keys as $row) {
-									//set the variables
-									$id = $row['device_key_id'];
-									$category = $row['device_key_category'];
-
-									//build the device keys array
-									$device_keys[$category][$id] = $row;
-									$device_keys[$category][$id]['device_key_owner'] = "device";
-
-									//kept temporarily for backwards comptability to allow custom templates to be updated
-									$device_keys[$id] = $row;
-									$device_keys[$id]['device_key_owner'] = "device";
-								}
-							}
-							unset($parameters, $keys);
-					}
-
 				//debug information
 					if ($debug == "array") {
 						echo "<pre>\n";
+						print_r($device_lines);
 						print_r($device_keys);
 						echo "<pre>\n";
 						exit;
@@ -1097,6 +1142,8 @@ include "root.php";
 					$view->assign("user_id",$user_id);
 					$view->assign("password",$password);
 					$view->assign("template",$device_template);
+					$view->assign("location",$device_location);
+					$view->assign("device_location",$device_location);
 					$view->assign("microtime",microtime(true));
 
 				//personal ldap password
@@ -1166,7 +1213,7 @@ include "root.php";
 					else {
 						//make sure the file exists
 						if (!file_exists($template_dir."/".$device_template ."/".$file)) {
-							echo "file not found ".$template_dir."/".$device_template ."/".$file;
+							$this->http_error('404');
 							if ($_SESSION['provision']['debug']['boolean'] == 'true') {
 								echo ":$template_dir/$device_template/$file<br/>";
 								echo "template_dir: $template_dir<br/>";

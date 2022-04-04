@@ -295,14 +295,29 @@
 				}
 			}
 
-		//redirect the user
-			if (check_str($_REQUEST["rdr"]) !== 'n'){
-				$path = check_str($_POST["path"]);
-				if (isset($path) && !empty($path) && $path!="index2.php" && $path!="/install.php") {
-					header("Location: ".$path);
-					exit();
+		//if logged in, redirect to login destination
+			if (!isset($_REQUEST["key"])) {
+				if (isset($_SESSION['redirect_path'])) {
+					$redirect_path = $_SESSION['redirect_path'];
+					unset($_SESSION['redirect_path']);
+					// prevent open redirect attacks. redirect url shouldn't contain a hostname
+					$parsed_url = parse_url($redirect_path);
+					if ($parsed_url['host']) {
+						die("Was someone trying to hack you?");
+					}
+					header("Location: ".$redirect_path);
+				}
+				elseif (isset($_SESSION['login']['destination']['url'])) {
+					header("Location: ".$_SESSION['login']['destination']['url']);
+				} elseif (file_exists($_SERVER["PROJECT_ROOT"]."/core/dashboard/app_config.php")) {
+					header("Location: ".PROJECT_PATH."/core/dashboard/");
+				}
+				else {
+					require_once "resources/header.php";
+					require_once "resources/footer.php";
 				}
 			}
+
 	}
 
 //set the time zone

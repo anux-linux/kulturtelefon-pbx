@@ -1,6 +1,6 @@
 --	xml_handler.lua
 --	Part of FusionPBX
---	Copyright (C) 2013 - 2019 Mark J Crane <markjcrane@fusionpbx.com>
+--	Copyright (C) 2013 - 2021 Mark J Crane <markjcrane@fusionpbx.com>
 --	All rights reserved.
 --
 --	Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 --	Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 
 --set the default
-	continue = true;
+continue = true;
 
 --get the action
 	action = params:getHeader("action");
@@ -273,9 +273,12 @@
 
 				--get the extension from the database
 					if (continue) then
-						local sql = "SELECT * FROM v_extensions WHERE domain_uuid = :domain_uuid "
-							.. "and (extension = :user or number_alias = :user) "
-							.. "and enabled = 'true' ";
+						local sql = "SELECT e.* FROM v_extensions as e, v_domains as d "
+							.. "WHERE e.domain_uuid = :domain_uuid "
+							.. "AND d.domain_uuid = :domain_uuid "
+							.. "AND d.domain_enabled = 'true' "
+							.. "AND (e.extension = :user or e.number_alias = :user) "
+							.. "AND e.enabled = 'true' ";
 						local params = {domain_uuid=domain_uuid, user=user};
 						if (debug["sql"]) then
 							freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
@@ -337,6 +340,7 @@
 								directory_exten_visible = row.directory_exten_visible;
 								limit_max = row.limit_max;
 								call_timeout = row.call_timeout;
+								max_registrations = row.max_registrations;
 								limit_destination = row.limit_destination;
 								sip_force_contact = row.sip_force_contact;
 								sip_force_expires = row.sip_force_expires;
@@ -357,8 +361,11 @@
 							-- get the follow me information
 								if (row.follow_me_uuid ~= nil and string.len(row.follow_me_uuid) > 0) then
 									follow_me_uuid = row.follow_me_uuid;
-									follow_me_enabled = row.follow_me_enabled;
-									--follow_me_destinations= row.follow_me_destinations;
+									if (do_not_disturb == "true" or forward_all_enabled == "true") then
+										follow_me_enabled = "false";
+									else
+										follow_me_enabled = row.follow_me_enabled;
+									end
 								end
 
 							-- check matching UserID and AuthName
@@ -379,7 +386,9 @@
 								presence_id = (NUMBER_AS_PRESENCE_ID and sip_from_number or sip_from_user) .. "@" .. domain_name;
 
 							--set the dial_string
-								if (string.len(row.dial_string) > 0) then
+								if (do_not_disturb == "true") then
+									dial_string = "error/user_busy";
+								elseif (string.len(row.dial_string) > 0) then
 									dial_string = row.dial_string;
 								else
 										local destination = (DIAL_STRING_BASED_ON_USERID and sip_from_number or sip_from_user) .. "@" .. domain_name;
@@ -530,6 +539,7 @@
 							table.insert(xml, [[								<param name="verto-dialplan" value="XML"/>]]);
 							table.insert(xml, [[								<param name="jsonrpc-allowed-methods" value="verto"/>]]);
 							table.insert(xml, [[								<param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/>]]);
+							table.insert(xml, [[								<param name="max-registrations-per-extension" value="]] .. max_registrations .. [["/>]]);
 							for key,row in pairs(extension_settings) do
 								if (row.extension_setting_type == 'param') then
 									table.insert(xml, [[								<param name="]]..row.extension_setting_name..[[" value="]]..row.extension_setting_value..[["/>]]);

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2010 - 2020
+	Copyright (C) 2010 - 2022
 	All Rights Reserved.
 
 	Contributor(s):
@@ -308,6 +308,34 @@ include "root.php";
 					$prep_statement->execute();
 				//set the result array
 					return $prep_statement->fetchAll(PDO::FETCH_ASSOC);
+			}
+
+			public function table_exists ($db_type, $db_name, $table_name) {
+				//connect to the database if needed
+				if (!$this->db) {
+					$this->connect();
+				}
+
+				//query table store to see if the table exists
+				$sql = "";
+				if ($db_type == "sqlite") {
+					$sql .= "SELECT * FROM sqlite_master WHERE type='table' and name='$table_name' ";
+				}
+				if ($db_type == "pgsql") {
+					$sql .= "select * from pg_tables where schemaname='public' and tablename = '$table_name' ";
+				}
+				if ($db_type == "mysql") {
+					$sql .= "SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = '$db_name' and TABLE_NAME = '$table_name' ";
+				}
+				$prep_statement = $this->db->prepare($sql);
+				$prep_statement->execute();
+				$result = $prep_statement->fetchAll(PDO::FETCH_NAMED);
+				if (count($result) > 0) {
+					return true; //table exists
+				}
+				else {
+					return false; //table doesn't exist
+				}
 			}
 
 			public function fields() {
@@ -1011,12 +1039,15 @@ include "root.php";
 						}
 						$statement->bindParam(':remote_address', $_SERVER['REMOTE_ADDR']);
 						if (is_array($old_array)) {
-							$statement->bindParam(':transaction_old', json_encode($old_array, JSON_PRETTY_PRINT));
+							$old_json = json_encode($old_array, JSON_PRETTY_PRINT);
+							$statement->bindParam(':transaction_old', $old_json);
 						}
 						if (is_array($new_array)) {
-							$statement->bindParam(':transaction_new', json_encode($new_array, JSON_PRETTY_PRINT));
+							$new_json = json_encode($new_array, JSON_PRETTY_PRINT);
+							$statement->bindParam(':transaction_new', $new_json);
 						}
-						$statement->bindParam(':transaction_result', json_encode($this->message, JSON_PRETTY_PRINT));
+						$result = json_encode($this->message, JSON_PRETTY_PRINT);
+						$statement->bindParam(':transaction_result', $result);
 						$statement->execute();
 						unset($sql);
 					}

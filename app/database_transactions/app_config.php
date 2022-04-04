@@ -102,7 +102,9 @@
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Type: add, update, delete, select";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "transaction_date";
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = "timestamp";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "timestamptz";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "date";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "timestamp";
 		$apps[$x]['db'][$y]['fields'][$z]['search'] = 'true';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Transaction date.";
 		$z++;
@@ -110,12 +112,14 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "longtext";
+		$apps[$x]['db'][$y]['fields'][$z]['search'] = 'true';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Before the transaction.";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "transaction_new";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "longtext";
+		$apps[$x]['db'][$y]['fields'][$z]['search'] = 'true';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "After the transaction.";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "transaction_result";

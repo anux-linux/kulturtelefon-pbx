@@ -57,7 +57,7 @@
 //get http variables and set them to php variables
 	$referer_path = $_REQUEST["referer_path"];
 	$referer_query = $_REQUEST["referer_query"];
-	if (count($_POST)>0) {
+	if (count($_POST) > 0) {
 
 		//process the http post data by submitted action
 			if ($_POST['action'] != '' && is_uuid($_POST['voicemail_uuid'])) {
@@ -94,6 +94,7 @@
 			$voicemail_tutorial = $_POST["voicemail_tutorial"];
 			$voicemail_options_delete = $_POST["voicemail_options_delete"];
 			$voicemail_destinations_delete = $_POST["voicemail_destinations_delete"];
+
 		//remove the space
 			$voicemail_mail_to = str_replace(" ", "", $voicemail_mail_to);
 	}
@@ -137,8 +138,10 @@
 				//get a new voicemail_uuid
 					if ($action == "add" && permission_exists('voicemail_add')) {
 						$voicemail_uuid = uuid();
-						//If adding a mailbox, set the default transcribe behavior
-						$voicemail_transcription_enabled = $_SESSION['voicemail']['transcription_enabled_default']['boolean'];
+						//if adding a mailbox and don't have the transcription permission, set the default transcribe behavior
+						if (!permission_exists('voicemail_transcription_enabled') && isset($_SESSION['voicemail']['transcription_enabled_default']['boolean'])) {
+							$voicemail_transcription_enabled = $_SESSION['voicemail']['transcription_enabled_default']['boolean'];
+						}
 					}
 
 				//add common array fields
@@ -221,6 +224,13 @@
 				//revoke any temporary permissions granted
 					$p->delete('voicemail_option_add', 'temp');
 					$p->delete('voicemail_destination_add', 'temp');
+
+				//make sure the voicemail directory exists
+					if (is_numeric($voicemail_id)) {
+						if (!file_exists($_SESSION['switch']['voicemail']['dir']."/default/".$_SESSION['domain_name']."/".$voicemail_id)) {
+							mkdir($_SESSION['switch']['voicemail']['dir']."/default/".$_SESSION['domain_name']."/".$voicemail_id, 0770);
+						}
+					}
 
 				//remove checked voicemail options
 					if (
@@ -307,7 +317,7 @@
 //set defaults
 	if (strlen($voicemail_local_after_email) == 0) { $voicemail_local_after_email = "true"; }
 	if (strlen($voicemail_enabled) == 0) { $voicemail_enabled = "true"; }
-	if (strlen($voicemail_transcription_enabled) == 0) { $voicemail_transcription_enabled = $_SESSION['voicemail']['transcription_enabled_default']['boolean'] ?: "false"; }	
+	if (strlen($voicemail_transcription_enabled) == 0) { $voicemail_transcription_enabled = $_SESSION['voicemail']['transcription_enabled_default']['boolean']; }	
 	if (strlen($voicemail_tutorial) == 0) { $voicemail_tutorial = "false"; }
 
 //get the greetings list
@@ -640,7 +650,7 @@
 		echo "</tr>\n";
 	}
 
-	if (permission_exists('voicemail_transcription_edit') && $_SESSION['voicemail']['transcribe_enabled']['boolean'] == "true") {
+	if (permission_exists('voicemail_transcription_enabled') && $_SESSION['voicemail']['transcribe_enabled']['boolean'] == "true") {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "	".$text['label-voicemail_transcription_enabled']."\n";

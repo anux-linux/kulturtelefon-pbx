@@ -1,6 +1,6 @@
 --      xml_handler.lua
 --      Part of FusionPBX
---      Copyright (C) 2015-2020 Mark J Crane <markjcrane@fusionpbx.com>
+--      Copyright (C) 2015-2021 Mark J Crane <markjcrane@fusionpbx.com>
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -101,7 +101,7 @@
 					queue_name = queue_name:gsub(" ", "-");
 
 				--start the xml
-					table.insert(xml, [[                            <queue name="]]..queue_uuid..[[" label="]]..queue_name..[[@]]..domain_name..[[">]]);
+					table.insert(xml, [[                            <queue name="]]..queue_extension..[[@]]..domain_name..[[" label="]]..queue_name..[[@]]..domain_name..[[">]]);
 					table.insert(xml, [[                                    <param name="strategy" value="]]..queue_strategy..[["/>]]);
 				--set ringback
 					queue_ringback = format_ringback(queue_moh_sound);
@@ -206,24 +206,27 @@
 								if (string.find(agent_contact, 'call_timeout') == nil) then
 										--add the call_timeout
 										pos = string.find(agent_contact, "}");
-										first = string.sub(agent_contact, 0, pos);
+										first = string.sub(agent_contact, 0, pos -1);
+										last = string.sub(agent_contact, pos);
+										agent_contact = first..[[,domain_name=]]..domain_name..[[,domain_uuid=]]..domain_uuid..[[,sip_h_caller_destination=${caller_destination},call_timeout=]]..agent_call_timeout..last;
+								else
+										--add the call_timeout
+										pos = string.find(agent_contact, "}");
+										first = string.sub(agent_contact, 0, pos - 1);
 										last = string.sub(agent_contact, pos);
 										agent_contact = first..[[,sip_h_caller_destination=${caller_destination},call_timeout=]]..agent_call_timeout..last;
-								else
-										--the string has the call timeout
-										agent_contact = agent_contact;
 								end
-							else
+						else
 								--found
 								pos = string.find(agent_contact, "}");
-								first = string.sub(agent_contact, 0, pos);
+								first = string.sub(agent_contact, 0, pos - 1);
 								last = string.sub(agent_contact, pos);
 								if (string.find(agent_contact, 'call_timeout') == nil) then
 									--add the call_timeout and confirm
-									agent_contact = first..','..confirm..',sip_h_caller_destination=${caller_destination},call_timeout='..agent_call_timeout..last;
+									agent_contact = first..','..confirm..',sip_h_caller_destination=${caller_destination},domain_name="..domain_name..",domain_uuid="..domain_uuid..",sip_h_caller_destination=${caller_destination},call_timeout='..agent_call_timeout..last;
 								else
 									--add confirm
-									agent_contact = tmp_first..',sip_h_caller_destination=${caller_destination},'..confirm..tmp_last;
+									agent_contact = tmp_first..',domain_name="..domain_name..",domain_uuid="..domain_uuid..",sip_h_caller_destination=${caller_destination},'..confirm..tmp_last;
 								end
 							end
 						end
@@ -255,8 +258,10 @@
 			table.insert(xml, [[                    </agents>]]);
 
 		--get the tiers
-			sql = "select * from v_call_center_tiers as t, v_domains as d ";
-			sql = sql .. "where d.domain_uuid = t.domain_uuid; ";
+			sql = "select t.domain_uuid, d.domain_name, t.call_center_agent_uuid, t.call_center_queue_uuid, q.queue_extension, t.tier_level, t.tier_position ";
+			sql = sql .. "from v_call_center_tiers as t, v_domains as d, v_call_center_queues as q ";
+			sql = sql .. "where d.domain_uuid = t.domain_uuid ";
+			sql = sql .. "and t.call_center_queue_uuid = q.call_center_queue_uuid; ";
 			if (debug["sql"]) then
 				freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "\n");
 			end
@@ -267,12 +272,13 @@
 					domain_name = row.domain_name;
 					agent_uuid = row.call_center_agent_uuid;
 					queue_uuid = row.call_center_queue_uuid;
+					queue_extension = row.queue_extension;
 					tier_level = row.tier_level;
 					tier_position = row.tier_position;
 				--build the xml
 					table.insert(xml, [[                            <tier ]]);
 					table.insert(xml, [[                            	agent="]]..agent_uuid..[[" ]]);
-					table.insert(xml, [[                            	queue="]]..queue_uuid..[[" ]]);
+					table.insert(xml, [[                            	queue="]]..queue_extension..[[@]]..domain_name..[[" ]]);
 					table.insert(xml, [[                            	domain_name="]]..domain_name..[[" ]]);
 					--table.insert(xml, [[                            	agent_name="]]..agent_name..[[" ]]);
 					--table.insert(xml, [[                            	queue_name="]]..queue_name..[[" ]]);

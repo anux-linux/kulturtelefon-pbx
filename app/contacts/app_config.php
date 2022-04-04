@@ -5,7 +5,7 @@
 		$apps[$x]['uuid'] = "04481e0e-a478-c559-adad-52bd4174574c";
 		$apps[$x]['category'] = "CRM";
 		$apps[$x]['subcategory'] = "";
-		$apps[$x]['version'] = "1.1";
+		$apps[$x]['version'] = "2.0";
 		$apps[$x]['license'] = "Mozilla Public License 1.1";
 		$apps[$x]['contact_url'] = "http://www.fusionpbx.com";
 		$apps[$x]['description']['en-us'] = "Provides a place to store contact information for individuals and organizations.";
@@ -48,7 +48,14 @@
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
 		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "contact_all";
+		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+		$y++;
 		$apps[$x]['permissions'][$y]['name'] = "contact_upload";
+		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+		$apps[$x]['permissions'][$y]['groups'][] = "admin";
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "contact_domain_view";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
 		$y++;
@@ -455,6 +462,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "contact_uuid";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_label";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Custom label for the number";
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_type_voice";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "numeric";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Number is used for voice calls.";
@@ -471,13 +482,13 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "numeric";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Number is used for text messages.";
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_label";
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_speed_dial";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Custom label for the number";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Enter the speed dial.";
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_primary";
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_country_code";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "numeric";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Designate a primary number.";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Enter the country code.";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_number";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
@@ -487,10 +498,11 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Enter the extension.";
 		$z++;
-		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_speed_dial";
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Enter the speed dial.";
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_primary";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "numeric";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Designate a primary number.";
 		$z++;
+		
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "phone_description";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Enter the description.";
@@ -855,11 +867,15 @@
 		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = "user_uuid";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "time_start";
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = "timestamp";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "timestamptz";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "date";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "timestamp";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Start";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "time_stop";
-		$apps[$x]['db'][$y]['fields'][$z]['type'] = "timestamp";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = "timestamptz";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['sqlite'] = "date";
+		$apps[$x]['db'][$y]['fields'][$z]['type']['mysql'] = "timestamp";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Stop";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "time_description";
@@ -925,7 +941,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['table'] = 'v_users';
 		$apps[$x]['db'][$y]['fields'][$z]['key']['reference']['field'] = 'user_uuid';
 
-
 	//default settings
 		$y=0;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "38a67445-577d-483d-a176-09549cfdaa69";
@@ -936,5 +951,12 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Define the allowed file attachment extensions and their mime types in a JSON array.";
 		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "d8998b7f-c27c-43ac-ad1b-a9c66187bb10";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "contact";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "permissions";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
 
 ?>

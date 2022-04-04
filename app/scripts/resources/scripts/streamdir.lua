@@ -101,8 +101,10 @@
         local i = 0;
         local soundfiles = {};
         local popen = io.popen;
+
         freeswitch.consoleLog("notice", 'find "'..dir_name..'" -type f -print | sort | grep -E "*.wav|*.mp3|*.ogg" \n')
         for filename in popen('find "'..dir_name..'" -type f -print | sort | grep -E "*.wav|*.mp3|*.ogg"'):lines() do
+
             freeswitch.consoleLog("notice", "[streamdir] found file: "..filename.."\n");
             i = i + 1;
             soundfiles[i] = filename
