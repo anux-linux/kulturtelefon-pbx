@@ -35,7 +35,6 @@
 {*//remote javascript *}
 	<script language='JavaScript' type='text/javascript' src='{$project_path}/resources/jquery/jquery.min.js.php'></script>
 	<script language='JavaScript' type='text/javascript' src='{$project_path}/resources/jquery/jquery.autosize.input.js.php'></script>
-	<script language='JavaScript' type='text/javascript' src='{$project_path}/resources/momentjs/moment-with-locales.min.js.php'></script>
 	<script language='JavaScript' type='text/javascript' src='{$project_path}/resources/bootstrap/js/bootstrap.min.js.php'></script>
 	<script language='JavaScript' type='text/javascript' src='{$project_path}/resources/bootstrap/js/bootstrap-tempusdominus.min.js.php'></script>
 	<script language='JavaScript' type='text/javascript' src='{$project_path}/resources/bootstrap/js/bootstrap-colorpicker.min.js.php'></script>
@@ -213,9 +212,15 @@
 					$('#sub_arrow_'+item_id).toggleClass(['fa-{/literal}{$settings.theme.menu_side_item_main_sub_icon_contract}{literal}','fa-{/literal}{$settings.theme.menu_side_item_main_sub_icon_expand}{literal}']);
 					$('.sub_arrows').not('#sub_arrow_'+item_id).removeClass('fa-{/literal}{$settings.theme.menu_side_item_main_sub_icon_contract}{literal}').addClass('fa-{/literal}{$settings.theme.menu_side_item_main_sub_icon_expand}{literal}');
 					$('#sub_'+item_id).slideToggle(180, function() {
-						if (!$(this).is(':hidden')) {
-							$('.menu_side_sub').not($(this)).slideUp(180);
-						}
+						{/literal}
+						{if $settings.theme.menu_side_item_main_sub_close != 'manual'}
+							{literal}
+							if (!$(this).is(':hidden')) {
+								$('.menu_side_sub').not($(this)).slideUp(180);
+							}
+							{/literal}
+						{/if}
+						{literal}
 					});
 				}
 

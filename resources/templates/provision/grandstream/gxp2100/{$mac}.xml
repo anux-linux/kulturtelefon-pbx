@@ -38,7 +38,7 @@
 
 <!--# SIP User ID-->
 <!--# String-->
-    <P35>{$account.1.display_name}</P35>
+    <P35>{$account.1.user_id}</P35>
 
 <!--# Authenticate ID-->
 <!--# String-->
@@ -3265,7 +3265,11 @@
 <!--# Enable Idle Mute. 0 - No, 1 - Yes. Default is 0-->
 <!--# Number: 0, 1-->
 <!--# Mandatory-->
+{if isset($grandstream_idle_mute_function_old)}
+    <P1565>{$grandstream_idle_mute_function_old}</P1565>
+{else}
     <P1565>0</P1565>
+{/if}
 
 <!--# Disable Transfer. 0 - No, 1 - Yes. Defauls is 0-->
 <!--# Number: 0, 1-->
@@ -3623,7 +3627,7 @@
 <!--# When set to Yes(1), it will override the configured Time Zone setting if available -->
 <!--# Number: 0, 1-->
 <!--# Mandatory-->
-    <P143>1</P143>
+    {if isset($grandstream_dhcp_time_zone)}<P143>{$grandstream_dhcp_time_zone}</P143>{else}<P143>0</P143>{/if}
 
 <!--# Self Defined Time zone. Max length allowed is 64 characters-->
 <!--# String-->
@@ -3719,7 +3723,7 @@
 <!--# This is a string of up to 256 characters that should contain a path to the XML file-->
 <!--# It MUST be in the host/path format. For example: directory.grandstream.com/engineering-->
 <!--# String-->
-    <P341></P341>
+    <P341>{$grandstream_idle_screen_server_path}</P341>
 
 <!--# Server Path-->
 <!--# This is a string of up to 256 characters that should contain a path to the XML Application file-->

@@ -234,7 +234,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "grandstream_phonebook_xml_server_path";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "mydomain.com/app/provision/pb/";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "mydomain.com/app/provision/";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Grandstream Phonebook Server Path - NOTE template adds MAC on the end of this if contact_grandstream is enabled.  This also requires nginx rewrite rules for phonebook.xml";
 		$y++;
@@ -797,6 +797,30 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "0";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Disable Active MPK Page. 0 - No, 1 - Yes. Default is 0";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "f4a764b1-7c31-406c-ba81-4fe3328450f6";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "grandstream_long_label";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "1";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Use Long Label. 0 - No, 1 - Yes. Default is 0";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "39fc74a8-1af6-4150-ba2b-52a2597f324c";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "grandstream_configuration_via_keypad";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "0";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Configuration Via Keypad Menu. 0 - Unrestricted, 1 - Basic settings only, 2 - Constraint mode, 3 - Locked Mode. Default is 0";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "06e28a20-25ed-484f-b385-a64361c9aed1";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "grandstream_dhcp_time_zone";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "0";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Allow DHCP server to set Time Zone. 0 - No, 1 - Yes";
 		$y++;
 
 ?>
