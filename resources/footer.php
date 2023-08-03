@@ -142,6 +142,7 @@
 				}
 
 			//pre-process some settings
+
 				$settings['theme']['favicon'] = !empty($settings['theme']['favicon']) ? $settings['theme']['favicon'] : PROJECT_PATH.'/themes/default/favicon.ico';
 				$settings['theme']['font_loader_version'] = !empty($settings['theme']['font_loader_version']) ? urlencode($settings['theme']['font_loader_version']) : '1';
 				$settings['theme']['message_delay'] = isset($settings['theme']['message_delay']) ? 1000 * (float) $settings['theme']['message_delay'] : 3000;
@@ -155,6 +156,7 @@
 
 			//assign the setings
 				$view->assign('settings', $settings);
+
 		}
 	//document title
 		if (isset($_SESSION['theme']['title']['text']) && $_SESSION['theme']['title']['text'] != '') {
@@ -163,7 +165,9 @@
 		else if (isset($_SESSION['software_name'])) {
 			$document_title = $_SESSION['software_name'];
 		}
+
 		$document_title = (!empty($document['title']) ? 'Gottesdienst Telefon - '.$document['title'] : null).$document_title;
+
 		$view->assign('document_title', $document_title);
 	//domain selector control
 		$domain_selector_enabled = permission_exists('domain_select') && count($_SESSION['domains']) > 1 ? true : false;

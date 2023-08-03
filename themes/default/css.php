@@ -539,7 +539,9 @@ else { //default: white
 			background-repeat: repeat-x;
 		<?php } else {?>
 			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(178,214,202)'; ?>;
+
 			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(178,214,202)'; ?>;
+
 		<?php } ?>
 		-webkit-box-shadow: <?=$menu_main_shadow_color?>;
 		-moz-box-shadow: <?=$menu_main_shadow_color?>;
@@ -854,6 +856,26 @@ else { //default: white
 		margin-left: -6px;
 		}
 
+
+	/* menu side logo */
+	img#menu_brand_image_contracted {
+		border: none;
+		width: auto;
+		max-height: 30px;
+		max-width: 30px;
+		margin-right: 10px;
+		}
+
+	img#menu_brand_image_expanded {
+		border: none;
+		height: auto;
+		max-width: 145px;
+		max-height: 35px;
+		margin-top: -3px;
+		margin-left: -6px;
+		}
+
+
 	/* menu brand text */
 	.menu_brand_text {
 		color: <?php echo ($_SESSION['theme']['menu_brand_text_color']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color']['text'] : '#000'; ?>;
@@ -886,6 +908,7 @@ else { //default: white
 	div#menu_side_container > div > a.menu_side_item_main:hover,
 	div#menu_side_container > div > a.menu_side_item_main:focus,
 	div#menu_side_container > div > a.menu_side_item_main:active,
+
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:hover,
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:focus,
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:active {
