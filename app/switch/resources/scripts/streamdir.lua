@@ -1,6 +1,6 @@
 --	streamdir.lua
 --	Part of Gottesdienst Telefon
---	Copyright (C) 2020 Antonio Mar <antonio.mark@gottesdienst-telefon.de>
+--	Copyright (C) 2023 Antonio Mar <antonio.mark@gottesdienst-telefon.de>
 --	All rights reserved.
 --
 --	Redistribution and use in source and binary forms, with or without
@@ -127,7 +127,7 @@
                         session:streamFile(value);
                         session:unsetInputCallback();
                 else
-                        stream:write(file_name);
+                        stream:write(value);
                 end
         end
 
