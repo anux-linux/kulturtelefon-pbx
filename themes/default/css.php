@@ -539,6 +539,7 @@ else { //default: white
 			background-repeat: repeat-x;
 		<?php } else {?>
 			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(178,214,202)'; ?>;
+			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(178,214,202)'; ?>;
 		<?php } ?>
 		-webkit-box-shadow: <?=$menu_main_shadow_color?>;
 		-moz-box-shadow: <?=$menu_main_shadow_color?>;
@@ -823,8 +824,8 @@ else { //default: white
 			background-image: url("<?=$menu_main_background_image?>");
 			background-position: 0px 0px;
 			background-repeat: repeat-y;
-		<?php } else { ?>
-			background: <?=$menu_main_background_color?>;
+		<?php } else {?>
+			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : '#b2d6ca'; ?>;
 		<?php } ?>
 		border-color: <?=$menu_main_border_color?>;
 		border-width: <?=$menu_main_border_size?>;
@@ -833,6 +834,38 @@ else { //default: white
 		-khtml-border-radius: <?=$menu_main_border_radius?>;
 		border-radius: <?=$menu_main_border_radius?>;
 		}
+
+
+	/* menu side logo */
+	img#menu_brand_image_contracted {
+		border: none;
+		width: auto;
+		max-height: 30px;
+		max-width: 30px;
+		margin-right: 10px;
+		}
+
+	img#menu_brand_image_expanded {
+		border: none;
+		height: auto;
+		max-width: 145px;
+		max-height: 35px;
+		margin-top: -3px;
+		margin-left: -6px;
+		}
+
+	/* menu brand text */
+	.menu_brand_text {
+		color: <?php echo ($_SESSION['theme']['menu_brand_text_color']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color']['text'] : '#000'; ?>;
+		font-weight: 600;
+		white-space: nowrap;
+		}
+
+	.menu_brand_text:hover {
+		color: <?php echo ($_SESSION['theme']['menu_brand_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_brand_text_color_hover']['text'] : '#024b40'; ?>;
+		text-decoration: none;
+		}
+
 
 	div#menu_side_container > a.menu_side_item_main,
 	div#menu_side_container > div > a.menu_side_item_main,
