@@ -18,16 +18,6 @@ class cache {
 	}
 
 	/**
-	 * Called when there are no references to a particular object
-	 * unset the variables used in the class
-	 */
-	public function __destruct() {
-		foreach ($this as $key => $value) {
-			unset($this->$key);
-		}
-	}
-
-	/**
 	 * Add a specific item in the cache
 	 * @var string $key		the cache id
 	 * @var string $value	string to be cached
@@ -97,7 +87,7 @@ class cache {
 			}
 
 		//return result
-			return $result;
+			return $result ?? null;
 	}
 
 	/**
@@ -106,8 +96,15 @@ class cache {
 	 */
 	public function delete($key) {
 
+		//debug information
+			if (isset($_SESSION['cache']['syslog']['boolean']) && $_SESSION['cache']['syslog']['boolean'] == "true") {
+				openlog("fusionpbx", LOG_PID | LOG_PERROR, LOG_USER);
+				syslog(LOG_WARNING, "debug: cache: [key: ".$key.", script: ".$_SERVER['SCRIPT_NAME'].", line: ".__line__."]");
+				closelog();
+			}
+
 		//cache method memcache 
-			if ($_SESSION['cache']['method']['text'] == "memcache") {
+			if (!empty($_SESSION['cache']['method']['text']) && $_SESSION['cache']['method']['text'] == "memcache") {
 				//connect to event socket
 					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 					if ($fp === false) {
@@ -131,7 +128,7 @@ class cache {
 			}
 
 		//cache method file
-			if ($_SESSION['cache']['method']['text'] == "file") {
+			if (!empty($_SESSION['cache']['method']['text']) && $_SESSION['cache']['method']['text'] == "file") {
 				//change the delimiter
 					$key = str_replace(":", ".", $key);
 
@@ -166,6 +163,14 @@ class cache {
 	 * Delete the entire cache
 	 */
 	public function flush() {
+
+		//debug information
+			if (isset($_SESSION['cache']['syslog']['boolean']) && $_SESSION['cache']['syslog']['boolean'] == "true") {
+				openlog("fusionpbx", LOG_PID | LOG_PERROR, LOG_USER);
+				syslog(LOG_WARNING, "debug: cache: [flush: all, script: ".$_SERVER['SCRIPT_NAME'].", line: ".__line__."]");
+				closelog();
+			}
+
 		//cache method memcache 
 			if ($_SESSION['cache']['method']['text'] == "memcache") {
 				// connect to event socket

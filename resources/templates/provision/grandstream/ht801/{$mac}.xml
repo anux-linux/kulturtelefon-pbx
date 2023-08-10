@@ -222,7 +222,12 @@
     <!-- # Enable TR-069. 0 - No, 1 - Yes (default is Yes) -->
     <!-- # Number: 0, 1 -->
     <!-- # Mandatory -->
-    <P1409>1</P1409>
+    {if isset ($grandstream_tr069_enable)}
+<P1409>{$grandstream_tr069_enable}</P1409>
+{else}
+<P1409>0</P1409>
+{/if}
+
 
     <!-- # ACS URL -->
     <!-- #P4503= -->
@@ -238,7 +243,12 @@
     <!-- # Periodic Inform Enable 0 - No, 1 - Yes (default is No) -->
     <!-- # Number: 0, 1 -->
     <!-- # Mandatory -->
-    <P4506>0</P4506>
+    {if isset ($grandstream_tr069_periodic_inform_enable)}
+<P4506>{$grandstream_tr069_periodic_inform_enable}</P4506>
+{else}
+<P4506>0</P4506>
+{/if}
+
 
     <!-- # Periodic Inform Interval (default is 300) -->
     <!-- # Number: 1-99999 -->
@@ -836,17 +846,29 @@
     <!-- # Priority 1 -->
     <!-- # Number: 100, 101, 102 -->
     <!-- # Mandatory -->
+    {if isset($grandstream_dtmf_method_1) }
+    <P850>{$grandstream_dtmf_method_1}</P850>
+    {else}
     <P850>101</P850>
+    {/if}
 
     <!-- # Priority 2 -->
     <!-- # Number: 100, 101, 102 -->
     <!-- # Mandatory -->
+    {if isset($grandstream_dtmf_method_2) }
+    <P851>{$grandstream_dtmf_method_1}</P851>
+    {else}
     <P851>102</P851>
+    {/if}
 
     <!-- # Priority 3 -->
     <!-- # Number: 100, 101, 102 -->
     <!-- # Mandatory -->
+    {if isset($grandstream_dtmf_method_3) }
+    <P852>{$grandstream_dtmf_method_1}</P852>
+    {else}
     <P852>100</P852>
+    {/if}
 
     <!-- # Inband DTMF Duration. duration and inter-duration -->
     <!-- # Number: 40 - 200 milliseconds -->
@@ -882,11 +904,11 @@
     <!-- # Offhook Auto-Dial (User ID/extension to dial automatically when offhook) -->
     <!-- # String: 0-9, #, * -->
     <!-- # Mandatory -->
-    <P71></P71>
+    <P71>{$grandstream_auto_dial_number}</P71>
 
     <!-- # Offhook Auto-Dial Delay (0-60 seconds, default is 0) -->
     <!-- # Number: 0 to 60 -->
-    <P4045>0</P4045>
+    <P4045>{$grandstream_auto_dial_delay}</P4045>
 
     <!-- # Proxy-Require  -->
     <!-- # IP Address -->
@@ -2004,7 +2026,7 @@
     <!-- # Allow DHCP server to set Time Zone. 0 - No, 1 - Yes -->
     <!-- # Number: 0, 1 -->
     <!-- # Mandatory -->
-    <P143>1</P143>
+    {if isset($grandstream_dhcp_time_zone)}<P143>{$grandstream_dhcp_time_zone}</P143>{else}<P143>0</P143>{/if}
 
     <!-- # Language. 0 - English, 4 - Chinese, 6 - Russian, 10 - Spanish IVR -->
     <!-- # Number: 0, 4, 6, 10 -->

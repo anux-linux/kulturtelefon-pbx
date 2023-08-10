@@ -25,9 +25,8 @@
 	James Rose <james.o.rose@gmail.com>
 */
 
-//includes
-include "root.php";
-require_once "resources/require.php";
+//includes files
+	require_once dirname(__DIR__, 2) . "/resources/require.php";
 require_once "resources/functions/object_to_array.php";
 require_once "resources/functions/parse_message.php";
 require_once "resources/classes/text.php";
@@ -41,7 +40,7 @@ $result = $database->select($sql, null, 'all');
 unset($sql);
 
 function arr_to_map(&$arr){
-	if(is_array($arr)){
+	if (!empty($arr)){
 		$map = Array();
 		foreach($arr as &$val){
 			$map[$val] = true;
@@ -51,7 +50,7 @@ function arr_to_map(&$arr){
 	return false;
 }
 
-if (is_array($result) && @sizeof($result) != 0) {
+if (!empty($result) && @sizeof($result) != 0) {
 
 	//load default settings
 	$default_settings = load_default_settings();
@@ -65,10 +64,6 @@ if (is_array($result) && @sizeof($result) != 0) {
 	$event_socket['password'] = $row['event_socket_password'];
 	unset($sql, $row);
 
-	$fax_send_mode_default = $_SESSION['fax']['send_mode']['text'];
-	if(strlen($fax_send_mode_default) == 0){
-		$fax_send_mode_default = 'direct';
-	}
 	$fax_cover_font_default = $_SESSION['fax']['cover_font']['text'];
 
 	$fax_allowed_extension_default = arr_to_map($_SESSION['fax']['allowed_extension']);
@@ -105,18 +100,13 @@ if (is_array($result) && @sizeof($result) != 0) {
 		$_SESSION = $default_settings;
 		load_domain_settings($domain_uuid);
 
-		$fax_send_mode = $_SESSION['fax']['send_mode']['text'];
-		if(strlen($fax_send_mode) == 0){
-			$fax_send_mode = $fax_send_mode_default;
-		}
-
 		$fax_cover_font = $_SESSION['fax']['cover_font']['text'];
-		if(strlen($fax_cover_font) == 0){
+		if(empty($fax_cover_font)){
 			$fax_cover_font = $fax_cover_font_default;
 		}
 
 		$fax_allowed_extension = arr_to_map($_SESSION['fax']['allowed_extension']);
-		if($fax_allowed_extension == false){
+		if($fax_allowed_extension == false) {
 			$fax_allowed_extension = $fax_allowed_extension_default;
 		}
 
@@ -275,9 +265,11 @@ if (is_array($result) && @sizeof($result) != 0) {
 					print('***********************' . "\n");
 					print('fax message:' . "\n");
 					print(' - length: ' . strlen($fax_message) . "\n");
-					print('fax files [' . sizeof($emailed_files['name']) . ']:' . "\n");
-					for($i = 0; $i < sizeof($emailed_files['name']);++$i){
-						print(' - ' . $emailed_files['name'][$i] . ' - ' . $emailed_files['size'][$i] . "\n");
+					if (isset($emailed_files['name'])) {
+						print('fax files [' . sizeof($emailed_files['name']) . ']:' . "\n");
+						for($i = 0; $i < sizeof($emailed_files['name']);++$i){
+							print(' - ' . $emailed_files['name'][$i] . ' - ' . $emailed_files['size'][$i] . "\n");
+						}
 					}
 					print('***********************' . "\n");
 
@@ -313,12 +305,12 @@ function load_default_settings() {
 	$database = new database;
 	$result = $database->select($sql, null, 'all');
 	//load the settings into an array
-	if (is_array($result) && @sizeof($result) != 0) {
+	if (!empty($result) && @sizeof($result) != 0) {
 		foreach ($result as $row) {
 			$name = $row['default_setting_name'];
 			$category = $row['default_setting_category'];
 			$subcategory = $row['default_setting_subcategory'];
-			if (strlen($subcategory) == 0) {
+			if (empty($subcategory)) {
 				if ($name == "array") {
 					$settings[$category][] = $row['default_setting_value'];
 				}
@@ -350,7 +342,7 @@ function load_domain_settings($domain_uuid) {
 		$parameters['domain_uuid'] = $domain_uuid;
 		$database = new database;
 		$result = $database->select($sql, $parameters, 'all');
-		if (is_array($result) && @sizeof($result) != 0) {
+		if (!empty($result) && @sizeof($result) != 0) {
 			//unset the arrays that domains are overriding
 				foreach ($result as $row) {
 					$name = $row['domain_setting_name'];
@@ -365,7 +357,7 @@ function load_domain_settings($domain_uuid) {
 					$name = $row['domain_setting_name'];
 					$category = $row['domain_setting_category'];
 					$subcategory = $row['domain_setting_subcategory'];
-					if (strlen($subcategory) == 0) {
+					if (empty($subcategory)) {
 						//$$category[$name] = $row['domain_setting_value'];
 						if ($name == "array") {
 							$_SESSION[$category][] = $row['domain_setting_value'];

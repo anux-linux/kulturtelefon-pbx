@@ -2,18 +2,11 @@
 
 //includes
 	if (defined('STDIN')) {
-		$document_root = str_replace("\\", "/", $_SERVER["PHP_SELF"]);
-		preg_match("/^(.*)\/app\/.*$/", $document_root, $matches);
-		$document_root = $matches[1];
-		set_include_path($document_root);
-		$_SERVER["DOCUMENT_ROOT"] = $document_root;
-		require_once "resources/require.php";
+		//includes files
+		require_once  dirname(__DIR__, 4) . "/resources/require.php";
 	}
 	else {
 		exit;
-		include "root.php";
-		require_once "resources/require.php";
-		require_once "resources/pdo.php";
 	}
 
 //increase limits
@@ -63,13 +56,7 @@
 		return $exists;
 	}
 
-//get the default settings settings
-	$fax_queue_interval = $_SESSION['fax_queue']['interval']['numeric'];
-
-//set the defaults
-	if (!is_numeric($interval)) { $interval = 30; }
-
-//set the email queue limit
+//set the fax queue limit
 	if (isset($_SESSION['fax_queue']['limit']['numeric'])) {
 		$fax_queue_limit = $_SESSION['fax_queue']['limit']['numeric'];
 	}
@@ -78,6 +65,14 @@
 	}
 	if (isset($_SESSION['fax_queue']['debug']['boolean'])) {
 		$debug = $_SESSION['fax_queue']['debug']['boolean'];
+	}
+
+//set the fax queue retry interval
+	if (isset($_SESSION['fax_queue']['retry_interval']['numeric'])) {
+		$fax_retry_interval = $_SESSION['fax_queue']['retry_interval']['numeric'];
+	}
+	else {
+		$fax_retry_interval = '180';
 	}
 
 //check to see if the process exists
@@ -114,12 +109,17 @@
 
 //get the fax messages that are waiting to send
 	$sql = "select * from v_fax_queue ";
-	$sql .= "where (fax_status = 'waiting' or fax_status = 'trying') ";
-	$sql .= "and hostname = :hostname ";
-	$sql .= "and ( ";
-	$sql .= "	fax_retry_date is null ";
-	$sql .= "	or floor(extract(epoch from now()) - extract(epoch from fax_retry_date)) > :interval ";
+	$sql .= "where ";
+	$sql .= "( ";
+	$sql .= "	(fax_status = 'waiting' or fax_status = 'trying') ";
+	$sql .= "	and (fax_retry_date is null or floor(extract(epoch from now()) - extract(epoch from fax_retry_date)) > :retry_interval) ";
 	$sql .= ")  ";
+	$sql .= "or ( ";
+	$sql .= "	fax_status = 'sent' ";
+	$sql .= "	and fax_email_address is not null ";
+	$sql .= "	and fax_notify_date is null ";
+	$sql .= ") ";
+	$sql .= "and hostname = :hostname ";
 	$sql .= "order by domain_uuid asc ";
 	$sql .= "limit :limit ";
 	if (isset($hostname)) {
@@ -129,16 +129,19 @@
 		$parameters['hostname'] = gethostname();
 	}
 	$parameters['limit'] = $fax_queue_limit;
-	$parameters['interval'] = $fax_queue_interval;
+	$parameters['retry_interval'] = $fax_retry_interval;
 	$database = new database;
 	$fax_queue = $database->select($sql, $parameters, 'all');
 	unset($parameters);
 
+//change the working directory
+	chdir($_SERVER['DOCUMENT_ROOT']);
+
 //process the messages
 	if (is_array($fax_queue) && @sizeof($fax_queue) != 0) {
 		foreach($fax_queue as $row) {
-			$command = "/usr/bin/php /var/www/fusionpbx/app/fax_queue/resources/job/fax_send.php ";
-			$command .= "'action=send&fax_queue_uuid=".$row["fax_queue_uuid"]."&hostname=".$hostname."'";
+			$command = exec('which php')." ".$_SERVER['DOCUMENT_ROOT']."/app/fax_queue/resources/job/fax_send.php ";
+			$command .= "'action=send&fax_queue_uuid=".$row["fax_queue_uuid"]."&hostname=".$hostname."&debug=true'";
 			if (isset($debug)) {
 				//run process inline to see debug info
 				echo $command."\n";
@@ -147,6 +150,7 @@
 			}
 			else {
 				//starts process rapidly doesn't wait for previous process to finish (used for production)
+				echo $command."\n";
 				$handle = popen($command." > /dev/null &", 'r'); 
 				echo "'$handle'; " . gettype($handle) . "\n";
 				$read = fread($handle, 2096);
@@ -157,7 +161,7 @@
 	}
 
 //remove the old pid file
-	if (file_exists($file)) {
+	if (file_exists($pid_file)) {
 		unlink($pid_file);
 	}
 

@@ -151,7 +151,12 @@
 <P4505></P4505>
 
 <!-- Periodic Inform Enable 0 - No, 1 - Yes (default is No) -->
+{if isset ($grandstream_tr069_periodic_inform_enable)}
+<P4506>{$grandstream_tr069_periodic_inform_enable}</P4506>
+{else}
 <P4506>0</P4506>
+{/if}
+
 
 <!-- Periodic Inform Interval (default is 300) -->
 <P4507>300</P4507>
@@ -1016,7 +1021,7 @@
 <P246>MTZ+6MDT+5,M3.2.0,M11.1.0</P246>
 
 <!-- Allow DHCP server to set Time Zone. 0 - No, 1 - Yes -->
-<P143>0</P143>
+{if isset($grandstream_dhcp_time_zone)}<P143>{$grandstream_dhcp_time_zone}</P143>{else}<P143>0</P143>{/if}
 
 <!-- Language. 0 - English, 10 - Spanish IVR -->
 <P342>0</P342>
