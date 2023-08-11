@@ -1,6 +1,6 @@
 --	streamtimestamp.lua
 --	Part of Gottesdienst Telefon
---	Copyright (C) 2023 Antonio Mar <antonio.mark@gottesdienst-telefon.de>
+--	Copyright (C) 2023 Antonio Mark <antonio.mark@gottesdienst-telefon.de>
 --	All rights reserved.
 --
 --	Redistribution and use in source and binary forms, with or without
@@ -106,9 +106,9 @@
         freeswitch.consoleLog("notice", 'current date "'..date..'\n')
 
 --stream file if exists, If being called by luarun output filename to stream
-        local fiel_name = dir_name.."/"..date..".mp3"
+        local file_name = dir_name.."/"..date..".mp3"
         
-        freeswitch.consoleLog("notice", "[streamtimestamp] playback value "..fiel_name.."\n");
+        freeswitch.consoleLog("notice", "[streamtimestamp] playback value "..file_name.."\n");
         if (session:ready() and stream == nil) then
 		session:answer();
 		local slept = session:getVariable("slept");
