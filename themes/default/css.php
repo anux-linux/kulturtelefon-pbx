@@ -625,20 +625,36 @@ else { //default: white
 		<?php unset($br); ?>
 		}
 
+	/* sub menu container (multiple columns) */
+	@media(min-width: 576px) {
+		ul.navbar-nav > li.nav-item > ul.dropdown-menu.multi-column {
+			width: 330px;
+			}
+		}
+
 	/* sub menu item */
-	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link {
-		font-family: <?php echo ($_SESSION['theme']['menu_sub_text_font']['text'] != '') ? $_SESSION['theme']['menu_sub_text_font']['text'] : 'arial'; ?>;
-		color: <?php echo ($_SESSION['theme']['menu_sub_text_color']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color']['text'] : '#000'; ?>;
-		font-size: <?php echo ($_SESSION['theme']['menu_sub_text_size']['text'] != '') ? $_SESSION['theme']['menu_sub_text_size']['text'] : '10pt'; ?>;
+	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link,
+	ul.navbar-nav > li.nav-item > ul.dropdown-menu.multi-column > div.row > div > ul.multi-column-dropdown > li.nav-item > a.nav-link {
+		font-family: <?=$menu_sub_text_font?>;
+		color: <?=$menu_sub_text_color?>;
+		font-size: <?=$menu_sub_text_size?>;
 		margin: 0;
 		padding: 3px 14px !important;
 		}
 
+	ul.navbar-nav > li.nav-item > ul.dropdown-menu.multi-column > div.row > div > ul.multi-column-dropdown {
+		list-style-type: none;
+		padding-left: 0;
+		}
+
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:hover,
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:focus,
-	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:active {
-		color: <?php echo ($_SESSION['theme']['menu_sub_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color_hover']['text'] : '#024b40'; ?>;
-		background: <?php echo ($_SESSION['theme']['menu_sub_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color_hover']['text'] : 'rgba(178,214,202,1.0)'; ?>;
+	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:active,
+	ul.navbar-nav > li.nav-item > ul.dropdown-menu.multi-column > div.row > div > ul.multi-column-dropdown > li.nav-item > a.nav-link:hover,
+	ul.navbar-nav > li.nav-item > ul.dropdown-menu.multi-column > div.row > div > ul.multi-column-dropdown > li.nav-item > a.nav-link:focus,
+	ul.navbar-nav > li.nav-item > ul.dropdown-menu.multi-column > div.row > div > ul.multi-column-dropdown > li.nav-item > a.nav-link:active {
+		color: <?=$menu_sub_text_color_hover?>;
+		background: <?=$menu_sub_background_color_hover?>;
 		outline: none;
 		}
 
