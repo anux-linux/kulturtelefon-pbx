@@ -3375,6 +3375,13 @@ else { //default: white
 		text-align: left;
 		}
 
+/* ACE EDITOR *******************************************************************/
+
+	div#editor {
+		resize: vertical;
+		overflow: auto;
+		}
+
 <?php
 
 //output custom css
