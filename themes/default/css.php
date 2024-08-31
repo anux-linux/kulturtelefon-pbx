@@ -670,9 +670,6 @@ else { //default: white
 		font-family: <?php echo ($_SESSION['theme']['menu_sub_text_font']['text'] != '') ? $_SESSION['theme']['menu_sub_text_font']['text'] : 'arial'; ?>;
 		color: <?php echo ($_SESSION['theme']['menu_sub_text_color']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color']['text'] : '#000'; ?>;
 		font-size: <?php echo ($_SESSION['theme']['menu_sub_text_size']['text'] != '') ? $_SESSION['theme']['menu_sub_text_size']['text'] : '10pt'; ?>;
-		font-family: <?php echo ($_SESSION['theme']['menu_sub_text_font']['text'] != '') ? $_SESSION['theme']['menu_sub_text_font']['text'] : 'arial'; ?>;
-		color: <?php echo ($_SESSION['theme']['menu_sub_text_color']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color']['text'] : '#000'; ?>;
-		font-size: <?php echo ($_SESSION['theme']['menu_sub_text_size']['text'] != '') ? $_SESSION['theme']['menu_sub_text_size']['text'] : '10pt'; ?>;
 		margin: 0;
 		padding: 3px 14px !important;
 		}
@@ -685,8 +682,6 @@ else { //default: white
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:hover,
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:focus,
 	ul.navbar-nav > li.nav-item > ul.dropdown-menu > li.nav-item > a.nav-link:active {
-		color: <?php echo ($_SESSION['theme']['menu_sub_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color_hover']['text'] : '#024b40'; ?>;
-		background: <?php echo ($_SESSION['theme']['menu_sub_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color_hover']['text'] : 'rgba(178,214,202,1.0)'; ?>;
 		color: <?php echo ($_SESSION['theme']['menu_sub_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_text_color_hover']['text'] : '#024b40'; ?>;
 		background: <?php echo ($_SESSION['theme']['menu_sub_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_sub_background_color_hover']['text'] : 'rgba(178,214,202,1.0)'; ?>;
 		outline: none;
@@ -836,10 +831,6 @@ else { //default: white
 		border-radius: <?php echo ($_SESSION['theme']['menu_main_border_radius']['text'] != '') ? $_SESSION['theme']['menu_main_border_radius']['text'] : '0'; ?>;
 		}
 
-	a.menu_brand_image:hover {
-		text-decoration: none;
-		}
-
 	img#menu_brand_image_contracted {
 		border: none;
 		width: auto;
@@ -970,11 +961,6 @@ else { //default: white
 	div#menu_side_container > div > a.menu_side_item_main:hover,
 	div#menu_side_container > div > a.menu_side_item_main:focus,
 	div#menu_side_container > div > a.menu_side_item_main:active,
-	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:hover,
-	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:focus,
-	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:active {
-		color: <?php echo ($_SESSION['theme']['menu_main_text_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_text_color_hover']['text'] : '#024b40'; ?>;
-		background: <?php echo ($_SESSION['theme']['menu_main_background_color_hover']['text'] != '') ? $_SESSION['theme']['menu_main_background_color_hover']['text'] : '#b2d6ca'; ?>;
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:hover,
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:focus,
 	div#menu_side_container > div#menu_side_brand_container > div > a.menu_side_item_main:active {
