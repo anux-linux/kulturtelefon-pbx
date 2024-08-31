@@ -36,6 +36,7 @@
 	$file_count = 0;
 	$row_count = 0;
 	$device_template = '';
+	$database = database::new(); //use an existing connection if possible
 
 //define PHP variables from the HTTP values
 	if (isset($_REQUEST['address'])) {
@@ -73,12 +74,23 @@
 
 //send http error
 	function http_error($error) {
-		if ($error === "404") {
-			header("HTTP/1.0 404 Not Found");
+		//$error_int_val = intval($error);
+		$http_errors = [
+			400 => "Bad Request",
+			401 => "Unauthorized",
+			402 => "Payment Required",
+			403 => "Forbidden",
+			404 => "Not Found",
+			405 => "Method Not Allowed",
+			406 => "Not Acceptable",
+		];
+		$error_message = $http_errors[$error] ?? '';
+		if (!empty($error_message)) {
+			header("HTTP/1.1 $error $error_message");
 			echo "<html>\n";
-			echo "<head><title>404 Not Found</title></head>\n";
+			echo "<head><title>$error $error_message</title></head>\n";
 			echo "<body bgcolor=\"white\">\n";
-			echo "<center><h1>404 Not Found</h1></center>\n";
+			echo "<center><h1>$error $error_message</h1></center>\n";
 			echo "<hr><center>nginx/1.12.1</center>\n";
 			echo "</body>\n";
 			echo "</html>\n";
@@ -89,48 +101,69 @@
 //check alternate device address source
 	if (empty($device_address)) {
 		//set the http user agent
-			//$_SERVER['HTTP_USER_AGENT'] = "Yealink SIP-T38G  38.70.0.125 00:15:65:00:00:00";
-			//$_SERVER['HTTP_USER_AGENT'] = "Yealink SIP-T56A  58.80.0.25 001565f429a4"; 
-		//Yealink: 17 digit mac appended to the user agent, so check for a space exactly 17 digits before the end.
-			if (strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,7)) == "yealink" || strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,5)) == "vp530") {
-				if (strstr(substr($_SERVER['HTTP_USER_AGENT'],-4), ':')) { //remove colons if they exist
-					$device_address = substr($_SERVER['HTTP_USER_AGENT'],-17);
-					$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
-				} else { //take mac as is - fixes T5X series
-					$device_address = substr($_SERVER['HTTP_USER_AGENT'],-12);
-				}
-			}
-		//HTek: $_SERVER['HTTP_USER_AGENT'] = "Htek UC926 2.0.4.2 00:1f:c1:00:00:00"
-			if (substr($_SERVER['HTTP_USER_AGENT'],0,4) == "Htek") {
-				$device_address = substr($_SERVER['HTTP_USER_AGENT'],-17);
-				$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
-			}
-		//Panasonic: $_SERVER['HTTP_USER_AGENT'] = "Panasonic_KX-UT670/01.022 (0080f000000)"
-			if (substr($_SERVER['HTTP_USER_AGENT'],0,9) == "Panasonic") {
-				$device_address = substr($_SERVER['HTTP_USER_AGENT'],-14);
-				$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
-			}
-		//Grandstream: $_SERVER['HTTP_USER_AGENT'] = "Grandstream Model HW GXP2135 SW 1.0.7.97 DevId 000b828aa872"
-			if (substr($_SERVER['HTTP_USER_AGENT'],0,11) == "Grandstream") {
-				$device_address = substr($_SERVER['HTTP_USER_AGENT'],-12);
-				$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
-			}
-		//Audiocodes: $_SERVER['HTTP_USER_AGENT'] = "AUDC-IPPhone/2.2.8.61 (440HDG-Rev0; 00908F602AAC)"
-			if (substr($_SERVER['HTTP_USER_AGENT'],0,12) == "AUDC-IPPhone") {
-				$device_address = substr($_SERVER['HTTP_USER_AGENT'],-13);
-				$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
-			}
+		//$_SERVER['HTTP_USER_AGENT'] = "Yealink SIP-T38G  38.70.0.125 00:15:65:00:00:00";
+		//$_SERVER['HTTP_USER_AGENT'] = "Yealink SIP-T56A  58.80.0.25 001565f429a4";
+
 		//Aastra: $_SERVER['HTTP_USER_AGENT'] = "Aastra6731i MAC:00-08-5D-29-4C-6B V:3.3.1.4365-SIP"
-			if (substr($_SERVER['HTTP_USER_AGENT'],0,6) == "Aastra") {
-				preg_match("/MAC:([A-F0-9-]{17})/", $_SERVER['HTTP_USER_AGENT'], $matches);
-				$device_address = $matches[1];
-				$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
-			}
+		if (substr($_SERVER['HTTP_USER_AGENT'],0,6) == "Aastra") {
+			preg_match("/MAC:([A-F0-9-]{17})/", $_SERVER['HTTP_USER_AGENT'], $matches);
+			$device_address = $matches[1];
+			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+		}
+
+		//Audiocodes: $_SERVER['HTTP_USER_AGENT'] = "AUDC-IPPhone/2.2.8.61 (440HDG-Rev0; 00908F602AAC)"
+		if (substr($_SERVER['HTTP_USER_AGENT'],0,12) == "AUDC-IPPhone") {
+			$device_address = substr($_SERVER['HTTP_USER_AGENT'],-13);
+			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+		}
+
+		//Fanvil: $_SERVER['HTTP_USER_AGENT'] = "Fanvil X5U-V2 2.12.1 0c3800000000)"
+		if (substr($_SERVER['HTTP_USER_AGENT'],0,6) == "Fanvil") {
+			$device_address = substr($_SERVER['HTTP_USER_AGENT'],-13);
+			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+			//syslog(LOG_WARNING, 'Fanvil Device Address is: '.$device_address);
+		}
+
 		//Flyingvoice: $_SERVER['HTTP_USER_AGENT'] = "Flyingvoice FIP13G V0.6.24 00:21:F2:22:AE:F1"
-			if (strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,11)) == "flyingvoice") {
+		if (strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,11)) == "flyingvoice") {
+			$device_address = substr($_SERVER['HTTP_USER_AGENT'],-17);
+			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+		}
+
+		//Grandstream: $_SERVER['HTTP_USER_AGENT'] = "Grandstream Model HW GXP2135 SW 1.0.7.97 DevId 000b828aa872"
+		if (substr($_SERVER['HTTP_USER_AGENT'],0,11) == "Grandstream") {
+			$device_address = substr($_SERVER['HTTP_USER_AGENT'],-12);
+			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+		}
+
+		//HTek: $_SERVER['HTTP_USER_AGENT'] = "Htek UC926 2.0.4.2 00:1f:c1:00:00:00"
+		if (substr($_SERVER['HTTP_USER_AGENT'],0,4) == "Htek") {
+			$device_address = substr($_SERVER['HTTP_USER_AGENT'],-17);
+			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+		}
+
+		//Panasonic: $_SERVER['HTTP_USER_AGENT'] = "Panasonic_KX-UT670/01.022 (0080f000000)"
+		if (substr($_SERVER['HTTP_USER_AGENT'],0,9) == "Panasonic") {
+			$device_address = substr($_SERVER['HTTP_USER_AGENT'],-14);
+			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+		}
+    
+		//Snom: $userAgent = "Mozilla/4.0 (compatible; snomD785-SIP 10.1.169.16 2010.12-00001-gd311851f1 (Feb 25 2019 - 14:19:43) 00041396D9B4 SXM:0 UXM:0 UXMC:0)"
+		if (substr($_SERVER['HTTP_USER_AGENT'],25,4) == "snom") {
+			$snom_ua = explode(" ", $_SERVER['HTTP_USER_AGENT']);
+		        $device_address = $snom_ua[10];
+		        $device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+		}
+
+		//Yealink: 17 digit mac appended to the user agent, so check for a space exactly 17 digits before the end.
+		if (strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,7)) == "yealink" || strtolower(substr($_SERVER['HTTP_USER_AGENT'],0,5)) == "vp530") {
+			if (strstr(substr($_SERVER['HTTP_USER_AGENT'],-4), ':')) { //remove colons if they exist
 				$device_address = substr($_SERVER['HTTP_USER_AGENT'],-17);
 				$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+			} else { //take mac as is - fixes T5X series
+				$device_address = substr($_SERVER['HTTP_USER_AGENT'],-12);
 			}
+		}
 	}
 
 //prepare the device address
@@ -145,25 +178,32 @@
 			//}
 	}
 
+//get http_domain_filter from global settings only (can't be used per domain)
+	$domain_filter = (new settings(['database' => $database]))->get('provision', 'http_domain_filter', 'true') == 'true' ? true : false;
+
 //get the domain_uuid, domain_name, device_name and device_vendor
 	$sql = "select d.device_uuid, d.domain_uuid, d.device_vendor, n.domain_name ";
 	$sql .= "from v_devices as d, v_domains as n ";
 	$sql .= "where device_address = :device_address ";
-	$sql .= "and d.domain_uuid = n.domain_uuid; ";
+	$sql .= "and d.domain_uuid = n.domain_uuid ";
 	$parameters['device_address'] = $device_address;
-	$database = new database;
+	if ($domain_filter) {
+		$sql .= "and n.domain_name = :domain_name";
+		$parameters['domain_name'] = $_SERVER['HTTP_HOST'];
+	}
 	$row = $database->select($sql, $parameters, 'row');
 	if (is_array($row)) {
 		$device_uuid = $row['device_uuid'];
 		$domain_uuid = $row['domain_uuid'];
 		$domain_name = $row['domain_name'];
 		$device_vendor = $row['device_vendor'];
-		$_SESSION['domain_uuid'] = $domain_uuid;
+	} else {
+		$result = 'false';
 	}
 	unset($sql, $parameters);
 
 //get the domain_name and domain_uuid
-	if ($_SESSION['provision']['http_domain_filter']['boolean'] == "true") {
+	if (empty($domain_uuid)) {
 		//get the domain_name
 			$domain_array = explode(":", $_SERVER["HTTP_HOST"]);
 			$domain_name = $domain_array[0];
@@ -172,108 +212,8 @@
 			$sql = "select domain_uuid from v_domains ";
 			$sql .= "where domain_name = :domain_name ";
 			$parameters['domain_name'] = $domain_name;
-			$database = new database;
 			$domain_uuid = $database->select($sql, $parameters, 'column');
 			unset($sql, $parameters);
-	}
-
-//get the default settings
-	$sql = "select * from v_default_settings ";
-	$sql .= "where default_setting_enabled = 'true' ";
-	$sql .= "order by default_setting_order asc ";
-	$database = new database;
-	$result = $database->select($sql, null, 'all');
-	//unset the previous settings
-	if (is_array($result) && @sizeof($result) != 0) {
-		foreach ($result as $row) {
-			unset($_SESSION[$row['default_setting_category']]);
-		}
-		//set the settings as a session
-		foreach ($result as $row) {
-			$name = $row['default_setting_name'];
-			$category = $row['default_setting_category'];
-			$subcategory = $row['default_setting_subcategory'];
-			if (empty($subcategory)) {
-				if ($name == "array") {
-					$_SESSION[$category][] = $row['default_setting_value'];
-				}
-				else {
-					$_SESSION[$category][$name] = $row['default_setting_value'];
-				}
-			}
-			else {
-				if ($name == "array") {
-					$_SESSION[$category][$subcategory][] = $row['default_setting_value'];
-				}
-				else {
-					$_SESSION[$category][$subcategory]['uuid'] = $row['default_setting_uuid'];
-					$_SESSION[$category][$subcategory][$name] = $row['default_setting_value'];
-				}
-			}
-		}
-	}
-	unset($sql, $result, $row);
-
-//get the domains settings
-	if (is_uuid($domain_uuid)) {
-		$sql = "select * from v_domain_settings ";
-		$sql .= "where domain_uuid = :domain_uuid ";
-		$sql .= "and domain_setting_enabled = 'true' ";
-		$sql .= "order by domain_setting_order asc ";
-		$parameters['domain_uuid'] = $domain_uuid;
-		$database = new database;
-		$result = $database->select($sql, $parameters, 'all');
-		//unset the arrays that domains are overriding
-		if (is_array($result) && @sizeof($result) != 0) {
-			foreach ($result as $row) {
-				$name = $row['domain_setting_name'];
-				$category = $row['domain_setting_category'];
-				$subcategory = $row['domain_setting_subcategory'];
-				if ($name == "array") {
-					unset($_SESSION[$category][$subcategory]);
-				}
-			}
-			//set the settings as a session
-			foreach ($result as $row) {
-				$name = $row['domain_setting_name'];
-				$category = $row['domain_setting_category'];
-				$subcategory = $row['domain_setting_subcategory'];
-				if (empty($subcategory)) {
-					//$$category[$name] = $row['domain_setting_value'];
-					if ($name == "array") {
-						$_SESSION[$category][] = $row['domain_setting_value'];
-					}
-					else {
-						$_SESSION[$category][$name] = $row['domain_setting_value'];
-					}
-				}
-				else {
-					//$$category[$subcategory][$name] = $row['domain_setting_value'];
-					if ($name == "array") {
-						$_SESSION[$category][$subcategory][] = $row['domain_setting_value'];
-					}
-					else {
-						$_SESSION[$category][$subcategory][$name] = $row['domain_setting_value'];
-					}
-				}
-			}
-		}
-	}
-
-//build the provision array
-	foreach($_SESSION['provision'] as $key=>$val) {
-		if (!empty($val['var'])) { $value = $val['var']; }
-		if (!empty($val['text'])) { $value = $val['text']; }
-		if (!empty($val['boolean'])) { $value = $val['boolean']; }
-		if (!empty($val['numeric'])) { $value = $val['numeric']; }
-		if (!empty($value)) { $provision[$key] = $value; }
-		unset($value);
-	}
-
-//check if provisioning has been enabled
-	if ($provision["enabled"] != "true") {
-		syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt but provisioning is not enabled for ".escape($_REQUEST['mac']));
-		http_error('404');
 	}
 
 //send a request to a remote server to validate the MAC address and secret
@@ -283,6 +223,11 @@
 			syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt but the remote auth server said no for ".escape($_REQUEST['mac']));
 			http_error('404');
 		}
+	} else {
+		//check for a valid match
+			if (empty($device_uuid)) {
+				http_error(403);
+			}
 	}
 
 //use the device address to get the vendor
@@ -290,15 +235,22 @@
 		$device_vendor = device::get_vendor($device_address);
 	}
 
-//keep backwards compatibility
-	if (!empty($_SESSION['provision']["cidr"]["text"])) {
-		$_SESSION['provision']["cidr"][] = $_SESSION['provision']["cidr"]["text"];
+//use settings object instead of session
+	$settings = new settings(['database' => $database, 'domain_uuid' => $domain_uuid]);
+
+//check if provisioning has been enabled
+	if ($settings->get('provision', 'enabled', 'false') !== "true") {
+		syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt but provisioning is not enabled for ".escape($_REQUEST['mac']));
+		http_error('404');
 	}
 
+//get all provision settings
+	$provision = $settings->get('provision', null, []);
+
 //check the cidr range
-	if (!empty($_SESSION['provision']["cidr"]) && is_array($_SESSION['provision']["cidr"])) {
+	if (!empty($provision['cidr'])) {
 		$found = false;
-		foreach($_SESSION['provision']["cidr"] as $cidr) {
+		foreach($provision['cidr'] as $cidr) {
 			if (check_cidr($cidr, $_SERVER['REMOTE_ADDR'])) {
 				$found = true;
 				break;
@@ -339,7 +291,7 @@
 			}
 
 		//set the realm
-			$realm = $_SESSION['domain_name'];
+			$realm = $domain_name;
 
 		//request authentication
 			if (empty($_SERVER['PHP_AUTH_DIGEST'])) {
@@ -347,7 +299,7 @@
 			}
 
 		//check for valid digest authentication details
-			if (isset($provision["http_auth_username"]) > 0 && strlen($provision["http_auth_username"])) {
+			if (isset($provision["http_auth_username"]) && strlen($provision["http_auth_username"]) > 0) {
 				if (!($data = http_digest_parse($_SERVER['PHP_AUTH_DIGEST'])) || ($data['username'] != $provision["http_auth_username"])) {
 					header('HTTP/1.1 401 Unauthorized');
 					header("Content-Type: text/html");
@@ -360,8 +312,9 @@
 
 		//generate the valid response
 			$authorized = false;
-			if (!$authorized && is_array($_SESSION['provision']["http_auth_password"])) {
-				foreach ($_SESSION['provision']["http_auth_password"] as $password) {
+			$auth_passwords = $settings->get('provision', 'http_auth_password', []);
+			if (!$authorized && is_array($auth_passwords)) {
+				foreach ($auth_passwords as $password) {
 					$A1 = md5($provision["http_auth_username"].':'.$realm.':'.$password);
 					$A2 = md5($_SERVER['REQUEST_METHOD'].':'.$data['uri']);
 					$valid_response = md5($A1.':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':'.$A2);
@@ -385,7 +338,7 @@
 //http authentication - basic
 	if (!empty($provision["http_auth_username"]) && $provision["http_auth_type"] === "basic" && $provision["http_auth_enabled"] === "true") {
 		if (!isset($_SERVER['PHP_AUTH_USER'])) {
-			header('WWW-Authenticate: Basic realm="'.$_SESSION['domain_name'].'"');
+			header('WWW-Authenticate: Basic realm="'.$domain_name.'"');
 			header('HTTP/1.0 401 Authorization Required');
 			header("Content-Type: text/html");
 			$content = 'Authorization Required';
@@ -395,20 +348,20 @@
 		}
 		else {
 			$authorized = false;
-			if (is_array($_SESSION['provision']["http_auth_password"])) {
-				foreach ($_SESSION['provision']["http_auth_password"] as $password) {
-					if ($_SERVER['PHP_AUTH_PW'] == $password) {
-						$authorized = true;
-						break;
-					}
+			$auth_passwords = $settings->get('provision', 'http_auth_password', []);
+			foreach ($auth_passwords as $password) {
+				if ($_SERVER['PHP_AUTH_PW'] == $password) {
+					$authorized = true;
+					break;
 				}
-				unset($password);
 			}
+			unset($password, $auth_passwords);
+
 			if (!$authorized) {
 				//access denied
 				syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt but failed http basic authentication for ".check_str($_REQUEST['mac']));
 				header('HTTP/1.0 401 Unauthorized');
-				header('WWW-Authenticate: Basic realm="'.$_SESSION['domain_name'].'"');
+				header('WWW-Authenticate: Basic realm="'.$domain_name.'"');
 				unset($_SERVER['PHP_AUTH_USER'],$_SERVER['PHP_AUTH_PW']);
 				$content = 'Unauthorized';
 				header("Content-Length: ".strval(strlen($content)));
@@ -418,7 +371,7 @@
 		}
 	}
 
-//if password was defined in the system -> variables page then require the password.
+//if the password was defined in the settings then require the password.
 	if (!empty($provision['password'])) {
 		//deny access if the password doesn't match
 		if ($provision['password'] != check_str($_REQUEST['password'])) {
@@ -431,12 +384,18 @@
 		}
 	}
 
+//start the buffer
+	ob_start();
+
 //output template to string for header processing
-	$prov = new provision;
+	$prov = new provision(['settings'=>$settings]);
 	$prov->domain_uuid = $domain_uuid;
 	$prov->device_address = $device_address;
 	$prov->file = $file;
 	$file_contents = $prov->render();
+
+//clean the output buffer
+	ob_clean();
 
 //deliver the customized config over HTTP/HTTPS
 	//need to make sure content-type is correct
@@ -462,29 +421,53 @@
 		$cfg_ext = ".cfg";
 		if ($device_vendor === "aastra" && strrpos($file, $cfg_ext, 0) === strlen($file) - strlen($cfg_ext)) {
 			header("Content-Type: text/plain");
-			header("Content-Length: ".strlen($file_contents));
 		}
 		else if ($device_vendor === "yealink" || $device_vendor === "flyingvoice") {
 			header("Content-Type: text/plain");
-			header("Content-Length: ".strval(strlen($file_contents)));
 		}
 		else if ($device_vendor === "snom" && $device_template === "snom/m3") {
 			$file_contents = utf8_decode($file_contents);
 			header("Content-Type: text/plain; charset=iso-8859-1");
-			header("Content-Length: ".strlen($file_contents));
+		}
+		elseif (!empty($file_contents) && is_xml($file_contents)) {
+			header("Content-Type: text/xml; charset=utf-8");
 		}
 		else {
-			if (!empty($file_contents) && is_xml($file_contents)) {
-				header("Content-Type: text/xml; charset=utf-8");
-				header("Content-Length: ".strlen($file_contents));
-			}
-			else {
-				header("Content-Type: text/plain");
-				header("Content-Length: ".strval(strlen($file_contents)));
-			}
+			header("Content-Type: text/plain");
 		}
 	}
-	echo $file_contents;
+
+//send the content
+	$file_size = strlen($file_contents);
+	if (isset($_SERVER['HTTP_RANGE'])) {
+		$ranges = $_SERVER['HTTP_RANGE'];
+		list($unit, $range) = explode('=', $ranges, 2);
+		list($start, $end) = explode('-', $range, 2);
+
+		$start = empty($start) ? 0 : (int)$start;
+		$end = empty($end) ? $file_size - 1 : min((int)$end, $file_size - 1);
+
+		$length = $end - $start + 1;
+
+		//add additional headers
+		header('HTTP/1.1 206 Partial Content');
+		header("Content-Length: $length");
+		header("Content-Range: bytes $start-$end/$file_size");
+
+		//output the requested range from the content variable
+		echo substr($file_contents, $start, $length);
+	}
+	else {
+		//add additional headers
+		header('HTTP/1.1 200 OK');
+		header("Content-Length: $file_size");
+		header('Accept-Ranges: bytes');
+
+		//send the entire content
+		echo $file_contents;
+	}
+
+//close the
 	closelog();
 
 //device logs

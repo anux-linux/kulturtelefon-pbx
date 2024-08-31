@@ -38,6 +38,9 @@
 		exit;
 	}
 
+//connect to the database
+	$database = new database;
+
 //add multi-lingual support
 	$language = new text;
 	$text = $language->get();
@@ -98,9 +101,9 @@
 					$default_voice = 'callie';
 					$switch_cmd = "conference ".$meeting_uuid."@".$_SESSION['domain_name']." play ".$_SESSION['switch']['sounds']['dir']."/".$default_language."/".$default_dialect."/".$default_voice."/ivr/ivr-recording_started.wav";
 				//connect to event socket
-					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-					if ($fp) {
-						$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+					$esl = event_socket::create();
+					if ($esl) {
+						$switch_result = event_socket::api($switch_cmd);
 					}
 			}
 
@@ -126,7 +129,6 @@
 			}
 
 		//save to the data
-			$database = new database;
 			$database->app_name = 'conference_rooms';
 			$database->app_uuid = '8d083f5a-f726-42a8-9ffa-8d28f848f10e';
 			$database->save($array);
@@ -137,12 +139,12 @@
 
 //get conference array
 	$switch_cmd = "conference xml_list";
-	$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-	if (!$fp) {
-		//connection to even socket failed
+	$esl = event_socket::create();
+	if (!$esl->is_connected()) {
+		trigger_error('Unable to connect to FreeSWITCH', E_USER_WARNING);
 	}
 	else {
-		$xml_str = trim(event_socket_request($fp, 'api '.$switch_cmd));
+		$xml_str = trim(event_socket::api($switch_cmd));
 		try {
 			$xml = new SimpleXMLElement($xml_str, true);
 		}

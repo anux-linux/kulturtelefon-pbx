@@ -38,6 +38,9 @@
 		exit;
 	}
 
+//connect to the database
+	$database = new database;
+
 //get the http post data
 	if (!empty($_POST['action'])) {
 		$action = $_POST['action'] ?? '';
@@ -85,7 +88,6 @@
 		//update setting
 			$array['user_settings'][0]['user_setting_uuid'] = $user_setting_uuids[0];
 			$array['user_settings'][0]['user_setting_enabled'] = $enabled;
-			$database = new database;
 			$database->app_name = 'user_settings';
 			$database->app_uuid = '3a3337f7-78d1-23e3-0cfd-f14499b8ed97';
 			$database->save($array);
@@ -122,7 +124,6 @@
 	$sql .= "or (user_setting_category = 'domain' and user_setting_subcategory = 'time_zone') ";
 	$sql .= ") ";
 	$parameters['user_uuid'] = $user_uuid;
-	$database = new database;
 	$num_rows = $database->select($sql, $parameters, 'column');
 	unset($sql);
 
@@ -156,7 +157,6 @@
 	}
 	$sql .= limit_offset($rows_per_page, $offset);
 	$parameters['user_uuid'] = $user_uuid;
-	$database = new database;
 	$user_settings = $database->select($sql, $parameters, 'all');
 	unset($sql, $sql_where, $parameters);
 
@@ -268,10 +268,9 @@
 				$sql = "select * from v_menus ";
 				$sql .= "where menu_uuid = :menu_uuid ";
 				$parameters['menu_uuid'] = $row['user_setting_value'];
-				$database = new database;
 				$sub_result = $database->select($sql, $parameters, 'all');
 				if (!empty($sub_result)) {
-					foreach ($sub_result as &$sub_row) {
+					foreach ($sub_result as $sub_row) {
 						echo escape($sub_row["menu_language"])." - ".escape($sub_row["menu_name"])."\n";
 					}
 				}
@@ -297,7 +296,7 @@
 				) {
 				echo "		".$text['label-'.escape($row['user_setting_value'])];
 			}
-			else if ($subcategory == 'password' || substr_count($subcategory, '_password') > 0 || $category == "login" && $subcategory == "password_reset_key" && $name == "text") {
+			else if ($subcategory == 'password' || substr_count($subcategory, '_password') > 0 || substr_count($subcategory, '_key') || substr_count($subcategory, '_secret') > 0) {
 				echo "		".str_repeat('*', strlen(escape($row['user_setting_value'])));
 			}
 			else if ($category == 'theme' && $subcategory == 'button_icons' && $name == 'text') {
@@ -335,7 +334,19 @@
 				echo "		".$text['label-'.$row['user_setting_value']]."\n";
 			}
 			else {
-				echo "		".escape($row['user_setting_value'])."\n";
+				if (!empty($row['user_setting_value']) && substr_count($row['user_setting_value'], "\n") > 0) {
+					$lines = explode("\n", $row['user_setting_value']);
+					if (!empty($lines) && is_array($lines) && @sizeof($lines) != 0) {
+						foreach ($lines as $i => $line) {
+							$lines[$i] = escape($line);
+						}
+						echo implode("<i class='fas fa-level-down-alt fa-rotate-90 fa-xs ml-2 mr-5' style='opacity: 0.3;'></i>", $lines);
+					}
+					unset($lines, $line);
+				}
+				else {
+					echo escape($row['user_setting_value'])."\n";
+				}
 			}
 			echo "	</td>\n";
 			if (permission_exists('user_setting_edit')) {

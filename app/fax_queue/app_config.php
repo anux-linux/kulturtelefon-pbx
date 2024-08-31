@@ -68,6 +68,14 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "30";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "How often to process the queue. Default 30 seconds.";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "6be1aa5b-62af-4de7-94d0-7e17dffb576e";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax_queue";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "database_retention_days";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "30";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Number of days to retain the fax queue logs in the database for the maintenance app.";
 		//$y++;
 		//$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "afd729d9-cf69-4793-a140-21093814d314";
 		//$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax_queue";
@@ -197,7 +205,12 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fax_command';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '1';
-		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Enter the fax command.';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Command used to send the fax.';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fax_response';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '1';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Response recieved from sending the fax.';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "insert_date";
 		$apps[$x]['db'][$y]['fields'][$z]['type']['pgsql'] = 'timestamptz';

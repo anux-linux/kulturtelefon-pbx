@@ -132,7 +132,7 @@
 			}
 
 		//check for duplicate profile name
-			$sql = "select sip_profile_name from v_sip_profiles".($action == 'update' ? "where sip_profile_name <> :sip_profile_name" : null);
+			$sql = "select sip_profile_name from v_sip_profiles ".($action == 'update' ? "where sip_profile_name <> :sip_profile_name" : null);
 			if ($action == 'update') {
 				$parameters['sip_profile_name'] = $sip_profile_name;
 			}
@@ -247,9 +247,9 @@
 
 		//get the hostname
 			if ($sip_profile_hostname == '') {
-				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-				if ($fp) {
-					$sip_profile_hostname = event_socket_request($fp, 'api switchname');
+				$esl = event_socket::create();
+				if ($esl->is_connected()) {
+					$sip_profile_hostname = event_socket::api('switchname');
 				}
 			}
 

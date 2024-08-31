@@ -13,13 +13,14 @@
 	$apps[$x]['menu'][$y]['title']['fr-fr'] = "Queues";
 	$apps[$x]['menu'][$y]['title']['he-il'] = "פרָאק";
 	$apps[$x]['menu'][$y]['title']['it-it'] = "Code";
+	$apps[$x]['menu'][$y]['title']['ka-ge'] = "რიგები";
 	$apps[$x]['menu'][$y]['title']['nl-nl'] = "Wachtrijen";
 	$apps[$x]['menu'][$y]['title']['pl-pl'] = "Kolejki";
 	$apps[$x]['menu'][$y]['title']['pt-br'] = "Caudas";
 	$apps[$x]['menu'][$y]['title']['pt-pt'] = "Caudas";
 	$apps[$x]['menu'][$y]['title']['ro-ro'] = "Cozi";
 	$apps[$x]['menu'][$y]['title']['ru-ru'] = "Очереди";
-	$apps[$x]['menu'][$y]['title']['sv-se'] = "Svansar";
+	$apps[$x]['menu'][$y]['title']['sv-se'] = "Köer";
 	$apps[$x]['menu'][$y]['title']['uk-ua'] = "Клей";
 	$apps[$x]['menu'][$y]['title']['zh-cn'] = "尾巴";
 	$apps[$x]['menu'][$y]['title']['ja-jp'] = "キュー";
@@ -28,10 +29,11 @@
 	$apps[$x]['menu'][$y]['parent_uuid'] = "fd29e39c-c936-f5fc-8e2b-611681b266b5";
 	$apps[$x]['menu'][$y]['category'] = "internal";
 	$apps[$x]['menu'][$y]['icon'] = "";
-	$apps[$x]['menu'][$y]['path'] = "/app/dialplans/dialplans.php?app_uuid=16589224-c876-aeb3-f59f-523a1c0801f7";
+	$apps[$x]['menu'][$y]['path'] = "/app/fifo/fifo.php";
 	$apps[$x]['menu'][$y]['order'] = "";
 	$apps[$x]['menu'][$y]['groups'][] = "admin";
 	$apps[$x]['menu'][$y]['groups'][] = "superadmin";
 	$y++;
 
 ?>
+

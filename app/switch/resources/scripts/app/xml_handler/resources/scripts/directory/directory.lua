@@ -284,13 +284,12 @@
 
 				--get the extension from the database
 					if (continue) then
-						local sql = "SELECT e.* FROM v_extensions as e, v_domains as d "
+						local sql = "SELECT e.*, random() FROM v_extensions as e, v_domains as d "
 							.. "WHERE e.domain_uuid = :domain_uuid "
 							.. "AND d.domain_uuid = :domain_uuid "
 							.. "AND d.domain_enabled = 'true' "
 							.. "AND (e.extension = :user or e.number_alias = :user) "
-							.. "AND e.enabled = 'true' "
-							.. "AND (e.extension_type = 'default' or extension_type is null) ";
+							.. "AND e.enabled = 'true' ";
 						local params = {domain_uuid=domain_uuid, user=user};
 						if (debug["sql"]) then
 							freeswitch.consoleLog("notice", "[xml_handler] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
@@ -369,6 +368,14 @@
 								forward_user_not_registered_enabled = row.forward_user_not_registered_enabled;
 								forward_user_not_registered_destination = row.forward_user_not_registered_destination;
 								do_not_disturb = row.do_not_disturb;
+								extension_language = row.extension_language;
+								extension_dialect = row.extension_dialect;
+								extension_voice = row.extension_voice;
+
+							--if the extension is virtual set register to false
+								if (row.extension_type == 'virtual') then
+									auth_acl = 'virtual.' .. row.random;
+								end
 
 							-- get the follow me information
 								if (row.follow_me_uuid ~= nil and string.len(row.follow_me_uuid) > 0) then
@@ -531,7 +538,7 @@
 								xml:append([[							<param name="MWI-Account" value="]] ..  xml.sanitize(mwi_account) .. [["/>]]);
 							end
 							if (string.len(auth_acl) > 0) then
-								xml:append([[							<param name="auth-acl" value="]] ..  xml.sanitize(auth_acl) .. [["/>]]);
+								xml:append([[								<param name="auth-acl" value="]] ..  xml.sanitize(auth_acl) .. [["/>]]);
 							end
 							xml:append([[								<param name="dial-string" value="]] .. dial_string .. [["/>]]);
 							xml:append([[								<param name="verto-context" value="]] ..  xml.sanitize(user_context) .. [["/>]]);
@@ -539,6 +546,7 @@
 							xml:append([[								<param name="jsonrpc-allowed-methods" value="verto"/>]]);
 							xml:append([[								<param name="jsonrpc-allowed-event-channels" value="demo,conference,presence"/>]]);
 							xml:append([[								<param name="max-registrations-per-extension" value="]] ..  xml.sanitize(max_registrations) .. [["/>]]);
+
 							for key,row in pairs(extension_settings) do
 								if (row.extension_setting_type == 'param') then
 									xml:append([[								<param name="]].. xml.sanitize(row.extension_setting_name)..[[" value="]].. xml.sanitize(row.extension_setting_value)..[["/>]]);
@@ -675,6 +683,15 @@
 							--end
 							if (do_not_disturb ~= nil) and (string.len(do_not_disturb) > 0) then
 								xml:append([[								<variable name="do_not_disturb" value="]] .. xml.sanitize(do_not_disturb) .. [["/>]]);
+							end
+							if (extension_language ~= nil) and (string.len(extension_language) > 0) then
+								xml:append([[								<variable name="default_language" value="]] ..  xml.sanitize(extension_language) .. [["/>]]);
+							end
+							if (extension_dialect ~= nil) and (string.len(extension_dialect) > 0) then
+								xml:append([[								<variable name="default_dialect" value="]] ..  xml.sanitize(extension_dialect) .. [["/>]]);
+							end
+							if (extension_voice ~= nil) and (string.len(extension_voice) > 0) then
+								xml:append([[								<variable name="default_voice" value="]] ..  xml.sanitize(extension_voice) .. [["/>]]);
 							end
 							xml:append([[								<variable name="record_stereo" value="true"/>]]);
 							xml:append([[								<variable name="transfer_fallback_extension" value="operator"/>]]);

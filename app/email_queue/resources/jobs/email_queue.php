@@ -70,8 +70,11 @@
 		exit;
 	}
 
+//get the email queue settings
+	$setting = new settings(["category" => "email_queue"]);
+
 //email queue enabled
-	if ($_SESSION['email_queue']['enabled']['boolean'] != 'true') {
+	if ($setting->get('email_queue', 'enabled') != 'true') {
 		echo "Email Queue is disabled in Default Settings\n";
 		exit;
 	}
@@ -100,20 +103,20 @@
 	}
 
 //get the call center settings
-	$interval = $_SESSION['email_queue']['interval']['numeric'];
+	$interval = $setting->get('email_queue', 'interval');
 
 //set the defaults
 	if (!is_numeric($interval)) { $interval = 30; }
 
 //set the email queue limit
-	if (isset($_SESSION['email_queue']['limit']['numeric'])) {
-		$email_queue_limit = $_SESSION['email_queue']['limit']['numeric'];
+	if (!empty($setting->get('email_queue', 'limit'))) {
+		$email_queue_limit = $setting->get('email_queue', 'limit');
 	}
 	else {
 		$email_queue_limit = '30';
 	}
-	if (isset($_SESSION['email_queue']['debug']['boolean'])) {
-		$debug = $_SESSION['email_queue']['debug']['boolean'];
+	if (!empty($setting->get('email_queue', 'debug'))) {
+		$debug = $setting->get('email_queue', 'debug');
 	}
 
 //get the messages waiting in the email queue
@@ -135,8 +138,9 @@
 
     //process the messages
     if (is_array($email_queue) && @sizeof($email_queue) != 0) {
+	$which_php = exec('which php');
         foreach($email_queue as $row) {
-            $command = exec('which php')." ".$_SERVER['DOCUMENT_ROOT']."/app/email_queue/resources/jobs/email_send.php ";
+            $command = $which_php." ".$_SERVER['DOCUMENT_ROOT']."/app/email_queue/resources/jobs/email_send.php ";
             $command .= "'action=send&email_queue_uuid=".$row["email_queue_uuid"]."&hostname=".$hostname."'";
             if (isset($debug)) {
                 //run process inline to see debug info

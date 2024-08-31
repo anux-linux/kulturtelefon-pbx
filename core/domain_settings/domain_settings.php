@@ -37,6 +37,9 @@
 		exit;
 	}
 
+//connect to the database
+	$database = new database;
+
 //add multi-lingual support
 	$language = new text;
 	$text = $language->get();
@@ -101,14 +104,12 @@
 	$sql = "select domain_name from v_domains ";
 	$sql .= "where domain_uuid = :domain_uuid ";
 	$parameters['domain_uuid'] = $domain_uuid;
-	$database = new database;
 	$domain_name = $database->select($sql, $parameters, 'column');
 
 //prepare to page the results
 	$sql = "select count(domain_setting_uuid) from v_domain_settings ";
 	$sql .= "where domain_uuid = :domain_uuid ";
 	$parameters['domain_uuid'] = $domain_uuid;
-	$database = new database;
 	$num_rows = $database->select($sql, $parameters, 'column');
 
 //get the list
@@ -123,7 +124,6 @@
 		$sql .= order_by($order_by, $order);
 	}
 	$parameters['domain_uuid'] = $domain_uuid;
-	$database = new database;
 	$domain_settings = $database->select($sql, $parameters ?? null, 'all');
 	unset($sql, $parameters);
 
@@ -291,10 +291,9 @@
 				$sql = "select * from v_menus ";
 				$sql .= "where menu_uuid = :menu_uuid ";
 				$parameters['menu_uuid'] = $row['domain_setting_value'];
-				$database = new database;
 				$sub_result = $database->select($sql, $parameters, 'all');
 				if (!empty($sub_result)) {
-					foreach ($sub_result as &$sub_row) {
+					foreach ($sub_result as $sub_row) {
 						echo escape($sub_row["menu_language"])." - ".escape($sub_row["menu_name"])."\n";
 					}
 				}
@@ -320,7 +319,7 @@
 				) {
 				echo "		".$text['label-'.escape($row['domain_setting_value'])];
 			}
-			else if ($subcategory == 'password' || substr_count($subcategory, '_password') > 0 || $category == "login" && $subcategory == "password_reset_key" && $name == "text") {
+			else if ($subcategory == 'password' || substr_count($subcategory, '_password') > 0 || substr_count($subcategory, '_key') || substr_count($subcategory, '_secret') > 0) {
 				echo "		".str_repeat('*', strlen(escape($row['domain_setting_value'])));
 			}
 			else if ($category == 'theme' && $subcategory == 'button_icons' && $name == 'text') {
@@ -364,7 +363,19 @@
 				echo "		".$text['label-'.$row['domain_setting_value']]."\n";
 			}
 			else {
-				echo "		".escape($row['domain_setting_value'])."\n";
+				if (!empty($row['domain_setting_value']) && substr_count($row['domain_setting_value'], "\n") > 0) {
+					$lines = explode("\n", $row['domain_setting_value']);
+					if (!empty($lines) && is_array($lines) && @sizeof($lines) != 0) {
+						foreach ($lines as $i => $line) {
+							$lines[$i] = escape($line);
+						}
+						echo implode("<i class='fas fa-level-down-alt fa-rotate-90 fa-xs ml-2 mr-5' style='opacity: 0.3;'></i>", $lines);
+					}
+					unset($lines, $line);
+				}
+				else {
+					echo escape($row['domain_setting_value'])."\n";
+				}
 			}
 			echo "	</td>\n";
 			if (permission_exists('domain_setting_edit')) {
