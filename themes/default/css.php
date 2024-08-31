@@ -554,7 +554,7 @@ else { //default: white
 			background-repeat: repeat-x;
 		<?php } else {?>
 			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : 'rgba(178,214,202)'; ?>;
-		<?php } 
+		<?php } ?>
 		-webkit-box-shadow: <?=$menu_main_shadow_color?>;
 		-moz-box-shadow: <?=$menu_main_shadow_color?>;
 		box-shadow: <?=$menu_main_shadow_color?>;
