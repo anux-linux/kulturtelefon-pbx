@@ -788,9 +788,7 @@ else { //default: white
 			background-image: url("<?=$menu_main_background_image?>");
 			background-position: 0px 0px;
 			background-repeat: repeat-y;
-		<?php } else {?>
-			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : '#b2d6ca'; ?>;
-		<?php } else {?>
+		<?php } else { ?>
 			background: <?php echo ($_SESSION['theme']['menu_main_background_color']['text'] != '') ? $_SESSION['theme']['menu_main_background_color']['text'] : '#b2d6ca'; ?>;
 		<?php } ?>
 		-webkit-box-shadow: <?=$menu_main_shadow_color?>;
@@ -802,7 +800,8 @@ else { //default: white
 		-webkit-border-radius: <?=$menu_main_border_radius?>;
 		-khtml-border-radius: <?=$menu_main_border_radius?>;
 		border-radius: <?=$menu_main_border_radius?>;
-		}
+	}
+
 
 	/* menu side brand container */
 	div#menu_side_brand_container {
