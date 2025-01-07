@@ -32,23 +32,22 @@ if ($domains_processed == 1) {
 	$sql .= "from v_voicemails as v, v_domains as d \n";
 	$sql .= "where voicemail_enabled = 'true' \n";
 	$sql .= "and v.domain_uuid = d.domain_uuid \n";
-	$database = new database;
 	$voicemails = $database->select($sql, null, 'all');
 	unset($sql, $parameters);
 	if (!empty($voicemails) && is_array($voicemails)) {
 		foreach($voicemails as $row) {
-			if (!empty($_SESSION['switch']['voicemail']['dir']) && !empty($row['voicemail_id']) && is_numeric($row['voicemail_id'])) {
-				if (!file_exists($_SESSION['switch']['voicemail']['dir']."/default/".$row['domain_name']."/".$row['voicemail_id'])) {
-					mkdir($_SESSION['switch']['voicemail']['dir']."/default/".$row['domain_name']."/".$row['voicemail_id'], 0770, true);
+			if (!empty($setting->get('switch','voicemail')) && !empty($row['voicemail_id']) && is_numeric($row['voicemail_id'])) {
+				if (!file_exists($setting->get('switch','voicemail')."/default/".$row['domain_name']."/".$row['voicemail_id'])) {
+					mkdir($setting->get('switch','voicemail')."/default/".$row['domain_name']."/".$row['voicemail_id'], 0770, true);
 				}
 			}
 		}
 	}
 
 	//define initial, get current, define correct languages folder paths
-	$switch_configuration_dir = !empty($_SESSION['switch']['conf']['dir']) ? $_SESSION['switch']['conf']['dir'] : '/etc/freeswitch';
+	$switch_configuration_dir = !empty($setting->get('switch','conf')) ? $setting->get('switch','conf') : '/etc/freeswitch';
 	$switch_languages_dir_initial = $switch_configuration_dir.'/lang';
-	$switch_languages_dir_current = $_SESSION['switch']['languages']['dir'] ?? '';
+	$switch_languages_dir_current = $setting->get('switch','languages') ?? '';
 	$switch_languages_dir_correct = $switch_configuration_dir.'/languages';
 
 	//ensure switch using languages (not lang) folder
@@ -60,9 +59,6 @@ if ($domains_processed == 1) {
 
 		//update default setting value
 		if (file_exists($switch_languages_dir_correct)) {
-			//get the languages directory
-			$_SESSION['switch']['languages']['dir'] = $switch_languages_dir_correct;
-
 			//update languages with the correct path
 			$sql = "update v_default_settings ";
 			$sql .= "set default_setting_value = '".$switch_languages_dir_correct."', ";
@@ -70,7 +66,6 @@ if ($domains_processed == 1) {
 			$sql .= "where default_setting_category = 'switch' ";
 			$sql .= "and default_setting_subcategory = 'languages' ";
 			$sql .= "and default_setting_name = 'dir' ";
-			$database = new database;
 			$database->execute($sql);
 			unset($sql);
 		}
@@ -114,19 +109,16 @@ if ($domains_processed == 1) {
 	$sql .= "where default_setting_category = 'switch' ";
 	$sql .= "and default_setting_subcategory = 'phrases' ";
 	$sql .= "and default_setting_name = 'dir' ";
-	$database = new database;
 	$database->execute($sql);
 	unset($sql);
 
 	//set default value of voicemail_recording_instructions to true
 	$sql = "update v_voicemails set voicemail_recording_instructions = 'true' where voicemail_recording_instructions is null";
-	$database = new database;
 	$database->execute($sql);
 	unset($sql);
 
 	//set default value of voicemail_recording_options to true
 	$sql = "update v_voicemails set voicemail_recording_options = 'true' where voicemail_recording_options is null";
-	$database = new database;
 	$database->execute($sql);
 	unset($sql);
 

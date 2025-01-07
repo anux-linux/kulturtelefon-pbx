@@ -41,6 +41,7 @@
 		missed_call_data = session:getVariable("missed_call_data");
 		sip_to_user = session:getVariable("sip_to_user");
 		dialed_user = session:getVariable("dialed_user") or '';
+		verto_enabled = session:getVariable("verto_enabled") or '';
 	end
 
 --set caller id
@@ -409,6 +410,7 @@
 			end
 
 		--process according to user_exists, sip_uri, external number
+			dial_string = '';
 			if (user_exists == "true") then
 				--get the extension_uuid
 				cmd = "user_data ".. destination_number .."@"..domain_name.." var extension_uuid";
@@ -429,8 +431,19 @@
 				end
 
 				--send to user
-				local dial_string_to_user = "[sip_invite_domain="..domain_name..",call_direction="..call_direction..","..group_confirm..","..timeout_name.."="..destination_timeout..","..delay_name.."="..destination_delay..",dialed_extension=" .. row.destination_number .. ",extension_uuid="..extension_uuid..record_session.."]user/" .. row.destination_number .. "@" .. domain_name;
-				dial_string = dial_string_to_user;
+				local dial_string_user = "[sip_invite_domain="..domain_name..",call_direction="..call_direction..",";
+				dial_string_user = dial_string_user .. group_confirm..","..timeout_name.."="..destination_timeout..",";
+				dial_string_user = dial_string_user .. delay_name.."="..destination_delay..",";
+				dial_string_user = dial_string_user .. "dialed_extension=" .. row.destination_number .. ",";
+				dial_string_user = dial_string_user .. "presence_id=" .. row.destination_number .. "@"..domain_name..",";
+				dial_string_user = dial_string_user .. "extension_uuid="..extension_uuid..record_session.."]";
+				user_contact = api:executeString("sofia_contact */".. row.destination_number .."@" ..domain_name);
+				if (user_contact ~= "error/user_not_registered") then
+					dial_string = dial_string_user .. user_contact;
+				end
+				if (verto_enabled == 'true') then
+					dial_string = dial_string .. ","..api:executeString("verto_contact ".. row.destination_number .."@" ..domain_name);
+				end
 			elseif (tonumber(destination_number) == nil) then
 				--sip uri
 				dial_string = "[sip_invite_domain="..domain_name..",call_direction="..call_direction..","..group_confirm..","..timeout_name.."="..destination_timeout..","..delay_name.."="..destination_delay.."]" .. row.destination_number;
@@ -472,10 +485,15 @@
 						caller_id = caller_id .. ",origination_caller_id_number="..caller_id_number;
 					end
 
+				--ensure accountcode exists
+					if (accountcode == nil) then
+						accountcode = '';
+					end
+
 				--set the destination dial string
 					-- have to double destination_delay here due a FS bug requiring a 50% delay value for internal extensions, but not external calls. 
 					--destination_delay = destination_delay * 2;
-					dial_string = "[toll_allow=".. toll_allow ..",accountcode="..accountcode..",".. caller_id ..",sip_invite_domain="..domain_name..",domain_uuid="..domain_uuid..",call_direction="..call_direction..","..group_confirm..","..timeout_name.."="..destination_timeout..","..delay_name.."="..destination_delay.."]"..route_bridge
+					dial_string = "[toll_allow=".. toll_allow ..",accountcode="..accountcode..",".. caller_id ..",sip_invite_domain="..domain_name..",domain_name="..domain_name..",domain_uuid="..domain_uuid..",call_direction="..call_direction..","..group_confirm..","..timeout_name.."="..destination_timeout..","..delay_name.."="..destination_delay.."]"..route_bridge
 			end
 
 		--add a delimiter between destinations

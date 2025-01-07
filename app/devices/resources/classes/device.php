@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2010 - 2019
+	Copyright (C) 2010 - 2024
 	All Rights Reserved.
 
 	Contributor(s):
@@ -45,11 +45,32 @@
 		private $toggle_field;
 		private $toggle_values;
 
-		public function __construct() {
+		/**
+		 * Set in the constructor. Must be a database object and cannot be null.
+		 * @var database Database Object
+		 */
+		private $database;
+
+		/**
+		 * Create a settings object using key/value pairs in the $setting_array.
+		 *
+		 * Valid values are: database.
+		 * @param array setting_array
+		 * @depends database::new()
+		 * @access public
+		 */
+		public function __construct($setting_array = []) {
+
+			//open a database connection
+			if (empty($setting_array['database'])) {
+				$this->database = database::new();
+			} else {
+				$this->database = $setting_array['database'];
+			}
 
 			//assign private variables
-				$this->app_name = 'devices';
-				$this->app_uuid = '4efa1a1a-32e7-bf83-534b-6c8299958a8e';
+			$this->app_name = 'devices';
+			$this->app_uuid = '4efa1a1a-32e7-bf83-534b-6c8299958a8e';
 
 		}
 
@@ -69,6 +90,162 @@
 				switch (substr($mac, 0, 6)) {
 				case "00085d":
 					$device_vendor = "aastra";
+					break;
+				case "00040d":
+					$device_vendor = "avaya";
+					break;
+				case "001b4f":
+					$device_vendor = "avaya";
+					break;
+				case "00549f":
+					$device_vendor = "avaya";
+					break;
+				case "048a15":
+					$device_vendor = "avaya";
+					break;
+				case "10cdae":
+					$device_vendor = "avaya";
+					break;
+				case "14612f":
+					$device_vendor = "avaya";
+					break;
+				case "24b209":
+					$device_vendor = "avaya";
+					break;
+				case "24d921":
+					$device_vendor = "avaya";
+					break;
+				case "2cf4c5":
+					$device_vendor = "avaya";
+					break;
+				case "3475c7":
+					$device_vendor = "avaya";
+					break;
+				case "38bb3c":
+					$device_vendor = "avaya";
+					break;
+				case "3c3a73":
+					$device_vendor = "avaya";
+					break;
+				case "3cb15b":
+					$device_vendor = "avaya";
+					break;
+				case "44322a":
+					$device_vendor = "avaya";
+					break;
+				case "506184":
+					$device_vendor = "avaya";
+					break;
+				case "50cd22":
+					$device_vendor = "avaya";
+					break;
+				case "581626":
+					$device_vendor = "avaya";
+					break;
+				case "6049c1":
+					$device_vendor = "avaya";
+					break;
+				case "646a52":
+					$device_vendor = "avaya";
+					break;
+				case "64a7dd":
+					$device_vendor = "avaya";
+					break;
+				case "64c354":
+					$device_vendor = "avaya";
+					break;
+				case "6ca849":
+					$device_vendor = "avaya";
+					break;
+				case "6cfa58":
+					$device_vendor = "avaya";
+					break;
+				case "703018":
+					$device_vendor = "avaya";
+					break;
+				case "7038ee":
+					$device_vendor = "avaya";
+					break;
+				case "7052c5":
+					$device_vendor = "avaya";
+					break;
+				case "707c69":
+					$device_vendor = "avaya";
+					break;
+				case "801daa":
+					$device_vendor = "avaya";
+					break;
+				case "848371":
+					$device_vendor = "avaya";
+					break;
+				case "90fb5b":
+					$device_vendor = "avaya";
+					break;
+				case "a009ed":
+					$device_vendor = "avaya";
+					break;
+				case "a01290":
+					$device_vendor = "avaya";
+					break;
+				case "a051c6":
+					$device_vendor = "avaya";
+					break;
+				case "a4251b":
+					$device_vendor = "avaya";
+					break;
+				case "a47886":
+					$device_vendor = "avaya";
+					break;
+				case "b0adaa":
+					$device_vendor = "avaya";
+					break;
+				case "b4475e":
+					$device_vendor = "avaya";
+					break;
+				case "b4a95a":
+					$device_vendor = "avaya";
+					break;
+				case "b4b017":
+					$device_vendor = "avaya";
+					break;
+				case "bcadab":
+					$device_vendor = "avaya";
+					break;
+				case "c057bc":
+					$device_vendor = "avaya";
+					break;
+				case "c4bed4":
+					$device_vendor = "avaya";
+					break;
+				case "c81fea":
+					$device_vendor = "avaya";
+					break;
+				case "c8f406":
+					$device_vendor = "avaya";
+					break;
+				case "ccf954":
+					$device_vendor = "avaya";
+					break;
+				case "d47856":
+					$device_vendor = "avaya";
+					break;
+				case "d4ea0e":
+					$device_vendor = "avaya";
+					break;
+				case "e45d52":
+					$device_vendor = "avaya";
+					break;
+				case "f81547":
+					$device_vendor = "avaya";
+					break;
+				case "f873a2":
+					$device_vendor = "avaya";
+					break;
+				case "fc8399":
+					$device_vendor = "avaya";
+					break;
+				case "fca841":
+					$device_vendor = "avaya";
 					break;
 				case "001873":
 					$device_vendor = "cisco";
@@ -159,7 +336,10 @@
 					break;
 				case "0021f2":
 					$device_vendor = "flyingvoice";
-					break;					
+					break;
+				case "f00786":
+					$device_vendor = "bittel";
+					break;
 				default:
 					$device_vendor = "";
 				}
@@ -221,6 +401,12 @@
 					}
 					if (preg_replace('/^.*?(flyingvoice).*$/i', '$1', $agent) == "flyingvoice") {
 						return "flyingvoice";
+					}
+					if (preg_replace('/^.*?(avaya).*$/i', '$1', $agent) == "avaya") {
+						return "avaya";
+					}
+					if (preg_replace('/^.*?(BITTEL).*$/i', '$1', $agent) == "bittel") {
+						return "bittel";
 					}
 					// unknown vendor
 					return "";
@@ -318,8 +504,7 @@
 								if (!empty($record['checked']) && $record['checked'] == 'true' && is_uuid($record['uuid'])) {
 									$sql = "update v_devices set device_uuid_alternate = null where device_uuid_alternate = :device_uuid_alternate; ";
 									$parameters['device_uuid_alternate'] = $record['uuid'];
-									$database = new database;
-									$database->execute($sql, $parameters);
+									$this->database->execute($sql, $parameters);
 									unset($sql, $parameters);
 
 									$array[$this->table][$x][$this->uuid_prefix.'uuid'] = $record['uuid'];
@@ -333,16 +518,15 @@
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('device_setting_delete', 'temp');
 									$p->add('device_line_delete', 'temp');
 									$p->add('device_key_delete', 'temp');
 
 								//execute delete
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->delete($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->delete($array);
 									unset($array);
 
 								//revoke temporary permissions
@@ -402,10 +586,9 @@
 						//delete the checked rows
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 								//execute delete
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->delete($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->delete($array);
 									unset($array);
 							}
 							unset($records);
@@ -449,10 +632,9 @@
 						//delete the checked rows
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 								//execute delete
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->delete($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->delete($array);
 									unset($array);
 							}
 							unset($records);
@@ -496,10 +678,9 @@
 						//delete the checked rows
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 								//execute delete
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->delete($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->delete($array);
 									unset($array);
 							}
 							unset($records);
@@ -547,15 +728,14 @@
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('device_vendor_function_delete', 'temp');
 									$p->add('device_vendor_function_group_delete', 'temp');
 
 								//execute delete
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->delete($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->delete($array);
 									unset($array);
 
 								//revoke temporary permissions
@@ -610,14 +790,13 @@
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('device_vendor_function_group_delete', 'temp');
 
 								//execute delete
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->delete($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->delete($array);
 									unset($array);
 
 								//revoke temporary permissions
@@ -672,15 +851,14 @@
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('device_profile_key_delete', 'temp');
 									$p->add('device_profile_setting_delete', 'temp');
 
 								//execute delete
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->delete($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->delete($array);
 									unset($array);
 
 								//revoke temporary permissions
@@ -730,10 +908,9 @@
 
 						//execute delete
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
-								$database = new database;
-								$database->app_name = $this->app_name;
-								$database->app_uuid = $this->app_uuid;
-								$database->delete($array);
+								$this->database->app_name = $this->app_name;
+								$this->database->app_uuid = $this->app_uuid;
+								$this->database->delete($array);
 								unset($array);
 							}
 							unset($records);
@@ -776,10 +953,9 @@
 
 						//execute delete
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
-								$database = new database;
-								$database->app_name = $this->app_name;
-								$database->app_uuid = $this->app_uuid;
-								$database->delete($array);
+								$this->database->app_name = $this->app_name;
+								$this->database->app_uuid = $this->app_uuid;
+								$this->database->delete($array);
 								unset($array);
 							}
 							unset($records);
@@ -829,8 +1005,7 @@
 								$sql .= "where (domain_uuid = :domain_uuid or domain_uuid is null) ";
 								$sql .= "and ".$this->uuid_prefix."uuid in (".implode(', ', $uuids).") ";
 								$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
-								$database = new database;
-								$rows = $database->select($sql, $parameters, 'all');
+								$rows = $this->database->select($sql, $parameters, 'all');
 								if (is_array($rows) && @sizeof($rows) != 0) {
 									foreach ($rows as $row) {
 										$states[$row['uuid']] = $row['toggle'];
@@ -851,10 +1026,9 @@
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//save the array
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->save($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->save($array);
 									unset($array);
 
 								//write the provision files
@@ -909,8 +1083,7 @@
 							if (is_array($uuids) && @sizeof($uuids) != 0) {
 								$sql = "select ".$this->uuid_prefix."uuid as uuid, ".$this->toggle_field." as toggle from v_".$this->table." ";
 								$sql .= "where ".$this->uuid_prefix."uuid in (".implode(', ', $uuids).") ";
-								$database = new database;
-								$rows = $database->select($sql, $parameters ?? null, 'all');
+								$rows = $this->database->select($sql, $parameters ?? null, 'all');
 								if (is_array($rows) && @sizeof($rows) != 0) {
 									foreach ($rows as $row) {
 										$states[$row['uuid']] = $row['toggle'];
@@ -931,10 +1104,9 @@
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//save the array
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->save($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->save($array);
 									unset($array);
 
 								//set message
@@ -982,8 +1154,7 @@
 							if (is_array($uuids) && @sizeof($uuids) != 0) {
 								$sql = "select ".$this->uuid_prefix."uuid as uuid, ".$this->toggle_field." as toggle from v_".$this->table." ";
 								$sql .= "where ".$this->uuid_prefix."uuid in (".implode(', ', $uuids).") ";
-								$database = new database;
-								$rows = $database->select($sql, $parameters ?? null, 'all');
+								$rows = $this->database->select($sql, $parameters ?? null, 'all');
 								if (is_array($rows) && @sizeof($rows) != 0) {
 									foreach ($rows as $row) {
 										$states[$row['uuid']] = $row['toggle'];
@@ -1004,10 +1175,9 @@
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//save the array
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->save($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->save($array);
 									unset($array);
 
 								//set message
@@ -1055,8 +1225,7 @@
 							if (!empty($uuids) && is_array($uuids) && @sizeof($uuids) != 0) {
 								$sql = "select ".$this->uuid_prefix."uuid as uuid, ".$this->toggle_field." as toggle from v_".$this->table." ";
 								$sql .= "where ".$this->uuid_prefix."uuid in (".implode(', ', $uuids).") ";
-								$database = new database;
-								$rows = $database->select($sql, $parameters ?? null, 'all');
+								$rows = $this->database->select($sql, $parameters ?? null, 'all');
 								if (is_array($rows) && @sizeof($rows) != 0) {
 									foreach ($rows as $row) {
 										$states[$row['uuid']] = $row['toggle'];
@@ -1079,10 +1248,9 @@
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//save the array
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->save($array);
+									$this->database->app_name = $this->app_name;
+									$this->database->app_uuid = $this->app_uuid;
+									$this->database->save($array);
 									unset($array);
 
 								//set message
@@ -1135,8 +1303,7 @@
 								$sql .= "where (domain_uuid = :domain_uuid or domain_uuid is null) ";
 								$sql .= "and ".$this->uuid_prefix."uuid in (".implode(', ', $uuids).") ";
 								$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
-								$database = new database;
-								$rows = $database->select($sql, $parameters, 'all');
+								$rows = $this->database->select($sql, $parameters, 'all');
 								if (is_array($rows) && @sizeof($rows) != 0) {
 									$y = $z = 0;
 									foreach ($rows as $x => $row) {
@@ -1161,8 +1328,7 @@
 											$sql_2 .= "else 100 end, ";
 											$sql_2 .= "profile_key_id asc ";
 											$parameters_2['device_profile_uuid'] = $row['device_profile_uuid'];
-											$database = new database;
-											$rows_2 = $database->select($sql_2, $parameters_2, 'all');
+											$rows_2 = $this->database->select($sql_2, $parameters_2, 'all');
 											if (is_array($rows_2) && @sizeof($rows_2) != 0) {
 												foreach ($rows_2 as $row_2) {
 
@@ -1183,8 +1349,7 @@
 										//settings sub table
 											$sql_3 = "select * from v_device_profile_settings where device_profile_uuid = :device_profile_uuid";
 											$parameters_3['device_profile_uuid'] = $row['device_profile_uuid'];
-											$database = new database;
-											$rows_3 = $database->select($sql_3, $parameters_3, 'all');
+											$rows_3 = $this->database->select($sql_3, $parameters_3, 'all');
 											if (is_array($rows_3) && @sizeof($rows_3) != 0) {
 												foreach ($rows_3 as $row_3) {
 
@@ -1211,15 +1376,14 @@
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('device_profile_key_add', 'temp');
 									$p->add('device_profile_setting_add', 'temp');
 
 								//save the array
-									$database = new database;
-									$database->app_name = $this->app_name;
-									$database->app_uuid = $this->app_uuid;
-									$database->save($array);
+									$this->database->app_name = $this->app_name;
+									$this->databasee->app_uuid = $this->app_uuid;
+									$this->database->save($array);
 									unset($array);
 
 								//revoke temporary permissions

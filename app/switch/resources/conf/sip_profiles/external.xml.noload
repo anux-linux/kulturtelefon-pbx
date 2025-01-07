@@ -35,7 +35,7 @@
 		<param name="rtp-timer-name" value="soft"/>
 		<param name="enable-100rel" value="true" enabled="false"/>
 		<param name="disable-srv503" value="true" enabled="false"/>
-		<param name="manage-presence" value="false"/>
+		<param name="manage-presence" value="true"/>
 		<!-- This could be set to "passive" -->
 		<param name="local-network-acl" value="localnet.auto"/>
 		<param name="apply-nat-acl" value="nat.auto"/>
@@ -54,13 +54,12 @@
 		<param name="force-register-db-domain" value="$${domain}" enabled="false"/>
 		<!-- ************************************************* -->
 
-		<!--<param name="aggressive-nat-detection" value="true"/>-->
+		<param name="aggressive-nat-detection" value="false" enabled="false"/>
 		<param name="inbound-codec-negotiation" value="generous"/>
 		<param name="nonce-ttl" value="60"/>
 		<param name="auth-calls" value="true"/>
 		<param name="auth-subscriptions" value="true"/>
-		<param name="inbound-late-negotiation" value="true"/>
-		<param name="inbound-zrtp-passthru" value="true"/> <!-- (also enables late negotiation) -->
+		<param name="inbound-late-negotiation" value="true" enabled="false"/>
 		<!--
 		DO NOT USE HOSTNAMES, ONLY IP ADDRESSES IN THESE SETTINGS!
 		-->

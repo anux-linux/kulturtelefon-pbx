@@ -110,7 +110,7 @@ if (!class_exists('call_recordings')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//add temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('xml_cdr_edit', 'temp');
 
 								//remove record_path, record_name and record_length
@@ -134,73 +134,240 @@ if (!class_exists('call_recordings')) {
 		}
 
 		/**
+		 * transcribe call recordings
+		 */
+		public function transcribe($records) {
+			if (permission_exists($this->name.'_view')) {
+				//add multi-lingual support
+					$language = new text;
+					$text = $language->get();
+
+				//validate the token
+					$token = new token;
+					if (!$token->validate($_SERVER['PHP_SELF'])) {
+						message::add($text['message-invalid_token'],'negative');
+						header('Location: '.$this->location);
+						exit;
+					}
+
+				//add the settings object
+					$settings = new settings(["domain_uuid" => $_SESSION['domain_uuid'], "user_uuid" => $_SESSION['user_uuid']]);
+					$transcribe_enabled = $settings->get('transcribe', 'enabled', false);
+					$transcribe_engine = $settings->get('transcribe', 'engine', '');
+
+				//transcribe multiple recordings
+					if ($transcribe_enabled && !empty($transcribe_engine) && is_array($records) && @sizeof($records) != 0) {
+						//add the transcribe object
+							$transcribe = new transcribe($settings);
+
+						//build the array
+							$x = 0;
+							foreach ($records as $record) {
+								//add to the array
+									if (!empty($record['checked']) && $record['checked'] == 'true' && is_uuid($record['uuid'])) {
+
+										//get the call recording file name and path
+											$sql = "select call_recording_name, call_recording_path ";
+											$sql .= "from view_call_recordings ";
+											$sql .= "where call_recording_uuid = :call_recording_uuid ";
+											$sql .= "and call_recording_transcription is null ";
+											$parameters['call_recording_uuid'] = $record['uuid'];
+											$database = new database;
+											$field = $database->select($sql, $parameters, 'row');
+											if (
+												is_array($field) &&
+												@sizeof($field) != 0 &&
+												file_exists($field['call_recording_path'].'/'.$field['call_recording_name'])
+												) {
+												//audio to text - get the transcription from the audio file
+													$transcribe->audio_path = $field['call_recording_path'];
+													$transcribe->audio_filename = $field['call_recording_name'];
+													$record_transcription = $transcribe->transcribe();
+												//build call recording data array
+													if (!empty($record_transcription)) {
+														$array['xml_cdr'][$x]['xml_cdr_uuid'] = $record['uuid'];
+														$array['xml_cdr'][$x]['record_transcription'] = $record_transcription;
+													}
+												//increment the id
+													$x++;
+											}
+											unset($sql, $parameters, $field);
+
+									}
+							}
+
+						//update the checked rows
+							if (is_array($array) && @sizeof($array) != 0) {
+
+								//add temporary permissions
+									$p = permissions::new();
+									$p->add('xml_cdr_edit', 'temp');
+
+								//remove record_path, record_name and record_length
+									$database = new database;
+									$database->app_name = 'xml_cdr';
+									$database->app_uuid = '4a085c51-7635-ff03-f67b-86e834422848';
+									$database->save($array, false);
+									$message = $database->message;
+									unset($array);
+
+								//remove the temporary permissions
+									$p->delete('xml_cdr_edit', 'temp');
+
+								//set message
+									message::add($text['message-audio_transcribed']);
+
+							}
+							unset($records);
+					}
+			}
+		}
+
+		/**
 		 * download the recordings
 		 */
-		public function download() {
+		public function download($records = null) {
 			if (permission_exists('call_recording_play') || permission_exists('call_recording_download')) {
 
-				//get call recording from database
-					if (is_uuid($this->recording_uuid)) {
-						$sql = "select call_recording_name, call_recording_path ";
-						if (!empty($_SESSION['call_recordings']['storage_type']['text']) && $_SESSION['call_recordings']['storage_type']['text'] == 'base64' && $row['call_recording_base64'] != '') {
-							$sql = ", call_recording_base64 ";
+				//single recording
+				if (empty($records) || !is_array($records) || @sizeof($records) == 0) {
+
+					//get call recording from database
+						if (is_uuid($this->recording_uuid)) {
+							$sql = "select call_recording_name, call_recording_path ";
+							if (!empty($_SESSION['call_recordings']['storage_type']['text']) && $_SESSION['call_recordings']['storage_type']['text'] == 'base64' && !empty($row['call_recording_base64'])) {
+								$sql = ", call_recording_base64 ";
+							}
+							$sql .= "from view_call_recordings ";
+							$sql .= "where call_recording_uuid = :call_recording_uuid ";
+							$parameters['call_recording_uuid'] = $this->recording_uuid;
+							$database = new database;
+							$row = $database->select($sql, $parameters, 'row');
+							if (is_array($row) && @sizeof($row) != 0) {
+								$call_recording_name = $row['call_recording_name'];
+								$call_recording_path = $row['call_recording_path'];
+								if (!empty($_SESSION['call_recordings']['storage_type']['text']) && $_SESSION['call_recordings']['storage_type']['text'] == 'base64' && !empty($row['call_recording_base64'])) {
+									file_put_contents($call_recording_path.'/'.$call_recording_name, base64_decode($row['call_recording_base64']));
+								}
+							}
+							unset($sql, $parameters, $row);
 						}
-						$sql .= "from view_call_recordings ";
-						$sql .= "where call_recording_uuid = :call_recording_uuid ";
-						$parameters['call_recording_uuid'] = $this->recording_uuid;
-						$database = new database;
-						$row = $database->select($sql, $parameters, 'row');
-						if (is_array($row) && @sizeof($row) != 0) {
-							$call_recording_name = $row['call_recording_name'];
-							$call_recording_path = $row['call_recording_path'];
+
+					//build full path
+						$full_recording_path = $call_recording_path.'/'.$call_recording_name;
+
+					//download the file
+						if ($full_recording_path != '/' && file_exists($full_recording_path)) {
+							ob_clean();
+							$fd = fopen($full_recording_path, "rb");
+							if ($this->binary) {
+								header("Content-Type: application/force-download");
+								header("Content-Type: application/octet-stream");
+								header("Content-Type: application/download");
+								header("Content-Description: File Transfer");
+							}
+							else {
+								$file_ext = pathinfo($call_recording_name, PATHINFO_EXTENSION);
+								switch ($file_ext) {
+									case "wav" : header("Content-Type: audio/x-wav"); break;
+									case "mp3" : header("Content-Type: audio/mpeg"); break;
+									case "ogg" : header("Content-Type: audio/ogg"); break;
+								}
+							}
+							$call_recording_name = preg_replace('#[^a-zA-Z0-9_\-\.]#', '', $call_recording_name);
+							header('Content-Disposition: attachment; filename="'.$call_recording_name.'"');
+							header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+							header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+							if ($this->binary) {
+								header("Content-Length: ".filesize($full_recording_path));
+							}
+							ob_clean();
+
+							//content-range
+							if (isset($_SERVER['HTTP_RANGE']) && !$this->binary)  {
+								$this->range_download($full_recording_path);
+							}
+
+							fpassthru($fd);
+						}
+
+					//if base64, remove temp recording file
+						if (!empty($_SESSION['call_recordings']['storage_type']['text']) && $_SESSION['call_recordings']['storage_type']['text'] == 'base64' && !empty($row['call_recording_base64'])) {
+							@unlink($full_recording_path);
+						}
+
+				}
+
+				//multiple recordings
+				else {
+
+					//add multi-lingual support
+						$language = new text;
+						$text = $language->get();
+
+					//validate the token
+						$token = new token;
+						if (!$token->validate($_SERVER['PHP_SELF'])) {
+							message::add($text['message-invalid_token'],'negative');
+							header('Location: '.$this->location);
+							exit;
+						}
+
+					//drop unchecked records
+						foreach ($records as $i => $record) {
+							if (!empty($record['checked']) && $record['checked'] == 'true' && is_uuid($record['uuid'])) {
+								$uuids[] = $record['uuid'];
+							}
+						}
+						unset($records, $record);
+
+					//get data for recordings
+						if (!empty($uuids) && is_array($uuids) && @sizeof($uuids) != 0) {
+							$sql = "select call_recording_name, call_recording_path ";
 							if (!empty($_SESSION['call_recordings']['storage_type']['text']) && $_SESSION['call_recordings']['storage_type']['text'] == 'base64' && $row['call_recording_base64'] != '') {
-								file_put_contents($path.'/'.$call_recording_name, base64_decode($row['call_recording_base64']));
+								$sql = ", call_recording_base64 ";
 							}
+							$sql .= "from view_call_recordings ";
+							$sql .= "where call_recording_uuid in ('".implode("','", $uuids)."') ";
+							$database = new database;
+							$rows = $database->select($sql, null, 'all');
+							if (!empty($rows) && is_array($rows) && @sizeof($rows) != 0) {
+								foreach ($rows as $row) {
+									$call_recording_name = $row['call_recording_name'];
+									$call_recording_path = $row['call_recording_path'];
+									if (!empty($_SESSION['call_recordings']['storage_type']['text']) && $_SESSION['call_recordings']['storage_type']['text'] == 'base64' && !empty($row['call_recording_base64'])) {
+										file_put_contents($call_recording_path.'/'.$call_recording_name, base64_decode($row['call_recording_base64']));
+									}
+									if (file_exists($call_recording_path.'/'.$call_recording_name)) {
+										$full_recording_paths[] = $call_recording_path.'/'.$call_recording_name;
+									}
+								}
+							}
+							unset($sql, $rows, $row);
 						}
-						unset($sql, $parameters, $row);
-					}
 
-				//build full path
-					$full_recording_path = $call_recording_path.'/'.$call_recording_name;
-
-				//download the file
-					if ($full_recording_path != '/' && file_exists($full_recording_path)) {
- 						ob_clean();
-						$fd = fopen($full_recording_path, "rb");
-						if ($this->binary) {
-							header("Content-Type: application/force-download");
-							header("Content-Type: application/octet-stream");
-							header("Content-Type: application/download");
+					//compress the recordings
+						if (!empty($full_recording_paths) && is_array($full_recording_paths) && @sizeof($full_recording_paths) != 0) {
+							header("Content-Type: application/x-zip");
 							header("Content-Description: File Transfer");
+							header('Content-Disposition: attachment; filename="call_recordings.zip"');
+							header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+							header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+							passthru("zip -qj - ".implode(' ', $full_recording_paths));
 						}
-						else {
-							$file_ext = pathinfo($call_recording_name, PATHINFO_EXTENSION);
-							switch ($file_ext) {
-								case "wav" : header("Content-Type: audio/x-wav"); break;
-								case "mp3" : header("Content-Type: audio/mpeg"); break;
-								case "ogg" : header("Content-Type: audio/ogg"); break;
+
+
+					//if base64, remove temp recording file
+						if (!empty($_SESSION['call_recordings']['storage_type']['text']) && $_SESSION['call_recordings']['storage_type']['text'] == 'base64' && !empty($row['call_recording_base64'])) {
+							foreach ($full_recording_paths as $full_recording_path) {
+								@unlink($full_recording_path);
 							}
 						}
-						header('Content-Disposition: attachment; filename="'.$call_recording_name.'"');
-						header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-						header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-						if ($this->binary) {
-							header("Content-Length: ".filesize($full_recording_path));
-						}
- 						ob_clean();
 
-						//content-range
-						if (isset($_SERVER['HTTP_RANGE']) && !$this->binary)  {
-							$this->range_download($full_recording_path);
-						}
+						exit;
 
- 						fpassthru($fd);
-					}
+				}
 
-				//if base64, remove temp recording file
-					if (!empty($_SESSION['call_recordings']['storage_type']['text']) && $_SESSION['call_recordings']['storage_type']['text'] == 'base64' && $row['call_recording_base64'] != '') {
-						@unlink($full_recording_path);
-					}
 			}
 
 		} //method
@@ -249,7 +416,7 @@ if (!class_exists('call_recordings')) {
 				}
 				// If the range starts with an '-' we start from the beginning
 				// If not, we forward the file pointer
-				// And make sure to get the end byte if spesified
+				// And make sure to get the end byte if specified
 				if ($range[0] == '-') {
 					// The n-number of the last bytes is requested
 					$c_start = $size - substr($range, 1);
@@ -296,6 +463,65 @@ if (!class_exists('call_recordings')) {
 			}
 
 			fclose($fp);
+		}
+
+		/**
+		 * Called by the maintenance service to clean out old call recordings
+		 * @param settings $settings
+		 * @return void
+		 */
+		public static function filesystem_maintenance(settings $settings): void {
+			//get the database connection object
+			$database = $settings->database();
+
+			//get an associative array of domain_uuid => domain_names
+			$domains = maintenance::get_domains($database);
+
+			//loop over each domain
+			foreach ($domains as $domain_uuid => $domain_name) {
+				//get the settings for this domain
+				$domain_settings = new settings(['database' => $database, 'domain_uuid' => $domain_uuid]);
+
+				//get the recording location for this domain
+				$call_recording_location = $domain_settings->get('switch', 'recordings', '/var/lib/freeswitch/storage/recordings') . '/default';
+
+				//get the retention days for this domain
+				$retention_days = $domain_settings->get('call_recordings', 'filesystem_retention_days', '');
+
+				//ensure retention days are not empty
+				if (!empty($retention_days) && is_numeric($retention_days)) {
+					$retention_days = intval($retention_days);
+
+					//get list of mp3 and wav files
+					$mp3_files = glob("$call_recording_location/$domain_name/*/archive/*.mp3");
+					$wav_files = glob("$call_recording_location/$domain_name/*/archive/*.wav");
+
+					//combine to single array
+					$domain_call_recording_files = array_merge($mp3_files, $wav_files);
+
+					//loop over each call recording mp3 or wav file
+					foreach ($domain_call_recording_files as $file) {
+
+						//use the maintenance service class helper function to get the modified date and see if it is older
+						if (maintenance_service::days_since_modified($file) > $retention_days) {
+							//remove the file when it is older
+							if (unlink($file)) {
+								//log success
+								maintenance_service::log_write(self::class, "Removed $file from call_recordings", $domain_uuid);
+							} else {
+								//log failure
+								maintenance_service::log_write(self::class, "Unable to remove $file", $domain_uuid, maintenance_service::LOG_ERROR);
+							}
+						} else {
+							//file is not older - do nothing
+						}
+					}
+				}
+				else {
+					//report the retention days is not set correctly
+					maintenance_service::log_write(self::class, "Retention days not set or not a valid number", $domain_uuid, maintenance_service::LOG_ERROR);
+				}
+			}
 		}
 
 	} //class

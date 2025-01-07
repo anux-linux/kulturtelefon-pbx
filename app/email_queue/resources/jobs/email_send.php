@@ -11,7 +11,6 @@
 
 //include files
 	include "resources/classes/permissions.php";
-	require $_SERVER['DOCUMENT_ROOT']."/app/email_queue/resources/functions/transcribe.php";
 
 //increase limits
 	set_time_limit(0);
@@ -50,12 +49,20 @@
 		//check to see if the process is running
 		if (file_exists($file)) {
 			$pid = file_get_contents($file);
-			if (posix_getsid($pid) === false) {
-				//process is not running
-				$exists = false;
+			if (function_exists('posix_getsid')) {
+				//check if the process is running
+				$pid = posix_getsid($pid);
+				if ($pid === null || $pid === 0) {
+					//process is not running
+					$exists = false;
+				}
+				else {
+					//process is running
+					$exists = true;
+				}
 			}
 			else {
-				//process is running
+				//file exists assume the pid is running
 				$exists = true;
 			}
 		}
@@ -126,7 +133,7 @@
 	$sql = "select * from v_email_queue ";
 	$sql .= "where email_queue_uuid = :email_queue_uuid ";
 	$parameters['email_queue_uuid'] = $email_queue_uuid;
-	$database = new database;
+	$database = new database();
 	$row = $database->select($sql, $parameters, 'row');
 	if (is_array($row)) {
 		$domain_uuid = $row["domain_uuid"];
@@ -135,6 +142,7 @@
 		$email_to = $row["email_to"];
 		$email_subject = $row["email_subject"];
 		$email_body = $row["email_body"];
+		$email_transcription = $row["email_transcription"];
 		$email_status = $row["email_status"];
 		$email_retry_count = $row["email_retry_count"];
 		$email_uuid = $row["email_uuid"];
@@ -143,9 +151,13 @@
 	}
 	unset($parameters);
 
-//get the call center settings
-	$retry_limit = $_SESSION['email_queue']['retry_limit']['numeric'];
-	//$retry_interval = $_SESSION['email_queue']['retry_interval']['numeric'];
+//get the email queue settings
+	$settings = new settings(["database" => $database,"domain_uuid" => $domain_uuid]);
+
+//get the email settings
+	$retry_limit = $settings->get('email_queue', 'retry_limit');
+	$transcribe_enabled = $settings->get('transcribe', 'enabled', false);
+	$save_response = $settings->get('email_queue', 'save_response');
 
 //set defaults
 	if (empty($email_retry_count)) {
@@ -159,7 +171,6 @@
 	$sql .= "	where voicemail_message_uuid = :voicemail_message_uuid ";
 	$sql .= ") ";
 	$parameters['voicemail_message_uuid'] = $email_uuid;
-	$database = new database;
 	$row = $database->select($sql, $parameters, 'row');
 	if (is_array($row)) {
 		//$domain_uuid = $row["domain_uuid"];
@@ -178,7 +189,9 @@
 		//$voicemail_description = $row["voicemail_description"];
 		//$voicemail_name_base64 = $row["voicemail_name_base64"];
 		//$voicemail_tutorial = $row["voicemail_tutorial"];
-		echo "transcribe enabled: ".$voicemail_transcription_enabled."\n";
+		if (gettype($voicemail_transcription_enabled) === 'string') {
+			$voicemail_transcription_enabled = ($voicemail_transcription_enabled === 'true') ? true : false;
+		}
 	}
 	unset($parameters);
 
@@ -186,7 +199,6 @@
 	$sql = "select * from v_email_queue_attachments ";
 	$sql .= "where email_queue_uuid = :email_queue_uuid ";
 	$parameters['email_queue_uuid'] = $email_queue_uuid;
-	$database = new database;
 	$email_queue_attachments = $database->select($sql, $parameters, 'all');
 	if (is_array($email_queue_attachments) && @sizeof($email_queue_attachments) != 0) {
 		foreach($email_queue_attachments as $i => $field) {
@@ -198,7 +210,7 @@
 			$email_attachment_name = $field['email_attachment_name'];
 			$email_attachment_mime_type = $field['email_attachment_mime_type'];
 
-			if (!$email_attachment_mime_type) {
+			if (empty($email_attachment_mime_type)) {
 				switch ($email_attachment_type) {
 					case "wav":
 						$email_attachment_mime_type = "audio/x-wav";
@@ -219,22 +231,38 @@
 				}
 			}
 
-			if (isset($voicemail_transcription_enabled) && $voicemail_transcription_enabled == 'true') {
-				//transcribe the attachment
-				if ($email_attachment_type == 'wav' || $email_attachment_type == 'mp3') {
-					$field = transcribe($email_attachment_path, $email_attachment_name, $email_attachment_type);
-					echo "transcribe path: ".$email_attachment_path."\n";
-					echo "transcribe name: ".$email_attachment_name."\n";
-					echo "transcribe type: ".$email_attachment_type."\n";
-					echo "transcribe command: ".$field['command']."\n";
-					echo "transcribe message: ".$field['message']."\n";
-					$transcribe_message = $field['message'];
+			if ($transcribe_enabled && isset($voicemail_transcription_enabled) && $voicemail_transcription_enabled) {
+				//debug message
+				echo "transcribe enabled: true\n";
+
+				//if email transcription has a value no need to transcribe again so run the transcription when the value is empty
+				if (empty($email_transcription)) {
+					//add the settings object
+					$transcribe_engine = $settings->get('transcribe', 'engine', '');
+
+					//add the transcribe object and get the languages arrays
+					if (!empty($transcribe_engine) && class_exists('transcribe_' . $transcribe_engine)) {
+						$transcribe = new transcribe($settings);
+
+						//transcribe the voicemail recording
+						$transcribe->audio_path = $email_attachment_path;
+						$transcribe->audio_filename = $email_attachment_name;
+						$transcribe->audio_mime_type = $email_attachment_mime_type;
+						$transcribe->audio_string = (!empty($field['email_attachment_base64'])) ? base64_decode($field['email_attachment_base64']) : '';
+						$transcribe_message = $transcribe->transcribe();
+					}
+				}
+				else {
+					$transcribe_message = $email_transcription;
 				}
 
-				//echo "email_body before: ".$email_body."\n";
+				echo "transcribe message: ".$transcribe_message."\n";
+
+				//prepare the email body
 				$email_body = str_replace('${message_text}', $transcribe_message, $email_body);
 			}
 			else {
+				//prepare the email body
 				$email_body = str_replace('${message_text}', '', $email_body);
 			}
 
@@ -278,18 +306,22 @@
 		$parameters['message_transcription'] = $transcribe_message;
 		//echo $sql."\n";
 		//print_r($parameters);
-		$database = new database;
 		$database->execute($sql, $parameters);
 		unset($parameters);
 	}
 
 //add email settings
 	$email_settings = '';
-	ksort($_SESSION['email']);
-	foreach ($_SESSION['email'] as $name => $setting) {
-		foreach ($setting as $type => $value) {
-			if ($type == 'uuid') { $uuid = $value; continue; }
-			if ($name == 'smtp_password') { $value = '[REDACTED]'; }
+	$email_setting_array = $settings->get('email');
+	ksort($email_setting_array);
+	foreach ($email_setting_array as $name => $value) {
+		if ($name == 'smtp_password') { $value = '[REDACTED]'; }
+		if (is_array($value)) {
+			foreach($value as $sub_value) {
+				$email_settings .= $name.': '.$sub_value."\n";
+			}
+		}
+		else {
 			$email_settings .= $name.': '.$value."\n";
 		}
 	}
@@ -331,21 +363,19 @@
 		//set the email status to sent
 		$sql = "update v_email_queue ";
 		$sql .= "set email_status = 'sent', ";
-		//$sql .= "set email_status = 'waiting' "; //debug
 		if (isset($transcribe_message)) {
+			$sql .= "email_body = :email_body, ";
 			$sql .= "email_transcription = :email_transcription, ";
+			$parameters['email_body'] = $email_body;
+			$parameters['email_transcription'] = $transcribe_message;
 		}
-		$sql .= "email_response = :email_response, ";
+		if (isset($save_response) && $save_response == 'true') {
+			$sql .= "email_response = :email_response, ";
+			$parameters['email_response'] = $email_settings."\n".$email_response;
+		}
 		$sql .= "update_date = now() ";
 		$sql .= "where email_queue_uuid = :email_queue_uuid; ";
 		$parameters['email_queue_uuid'] = $email_queue_uuid;
-		$parameters['email_response'] = $email_settings."\n".$email_response;
-		if (isset($transcribe_message)) {
-			$parameters['email_transcription'] = $transcribe_message;
-		}
-		//echo $sql."\n";
-		//print_r($parameters);
-		$database = new database;
 		$database->execute($sql, $parameters);
 		unset($parameters);
 
@@ -356,12 +386,14 @@
 
 			//remove the email file after it has been sent
 			if (is_array($email_queue_attachments) && @sizeof($email_queue_attachments) != 0) {
-				foreach($email_queue_attachments as $field) {
+				foreach ($email_queue_attachments as $field) {
 					$email_attachment_path = $field['email_attachment_path'];
 					$email_attachment_name = $field['email_attachment_name'];
-					if (file_exists($email_attachment_path.'/'.$email_attachment_name)) {
-						unlink($email_attachment_path.'/'.$email_attachment_name);
-					}
+					$email_attachment_name_no_prefix = str_replace(['msg_','intro_'], '', pathinfo($email_attachment_name, PATHINFO_BASENAME));
+					@unlink($email_attachment_path.'/'.$email_attachment_name);
+					@unlink($email_attachment_path.'/intro_'.$email_attachment_name_no_prefix);
+					@unlink($email_attachment_path.'/msg_'.$email_attachment_name_no_prefix);
+					@unlink($email_attachment_path.'/intro_msg_'.$email_attachment_name_no_prefix);
 				}
 			}
 
@@ -371,7 +403,6 @@
 			$parameters['voicemail_message_uuid'] = $email_uuid;
 			//echo $sql."\n";
 			//print_r($parameters);
-			$database = new database;
 			$database->execute($sql, $parameters);
 			unset($parameters);
 
@@ -379,21 +410,39 @@
 			$sql = "select domain_name from v_domains ";
 			$sql .= "where domain_uuid = :domain_uuid ";
 			$parameters['domain_uuid'] = $domain_uuid;
-			$database = new database;
 			$domain_name = $database->select($sql, $parameters, 'column');
 
 			//send the message waiting status
-			$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-			if ($fp) {
+			$esl = event_socket::create();
+			if ($esl->is_connected()) {
 				//$switch_cmd .= "luarun app.lua voicemail mwi ".$voicemail_id."@".$domain_name;
-				$switch_cmd .= "luarun app/voicemail/resources/scripts/mwi_notify.lua ".$voicemail_id." ".$domain_name." 0 0";
-				$switch_result = event_socket_request($fp, 'api '.$switch_cmd);
+				$switch_cmd .= "luarun app/voicemail/resources/scripts/mwi_notify.lua $voicemail_id $domain_name 0 0";
+				$switch_result = event_socket::api($switch_cmd);
 				echo $switch_cmd."\n";
 			}
 			else {
 				echo "event socket connection failed\n";
 			}
 		}
+
+		if ($settings->get('voicemail', 'storage_type') == 'base64') {
+			//delay the delete by a few seconds
+			sleep(3);
+
+			//remove message files after email sent
+			if (is_array($email_queue_attachments) && @sizeof($email_queue_attachments) != 0) {
+				foreach ($email_queue_attachments as $field) {
+					$email_attachment_path = $field['email_attachment_path'];
+					$email_attachment_name = $field['email_attachment_name'];
+					$email_attachment_name_no_prefix = str_replace(['msg_','intro_'], '', pathinfo($email_attachment_name, PATHINFO_BASENAME));
+					@unlink($email_attachment_path.'/'.$email_attachment_name);
+					@unlink($email_attachment_path.'/intro_'.$email_attachment_name_no_prefix);
+					@unlink($email_attachment_path.'/msg_'.$email_attachment_name_no_prefix);
+					@unlink($email_attachment_path.'/intro_msg_'.$email_attachment_name_no_prefix);
+				}
+			}
+		}
+
 
 		/*
 		//build insert array
@@ -402,11 +451,10 @@
 			$array['email_queue'][0]['email_status'] = 'sent';
 
 		//grant temporary permissions
-			$p = new permissions;
+			$p = permissions::new();
 			$p->add('email_queue_add', 'temp');
 			$p->add('email_queue_update', 'temp');
 		//execute insert
-			$database = new database;
 			$database->app_name = 'email_queue';
 			$database->app_uuid = '5befdf60-a242-445f-91b3-2e9ee3e0ddf7';
 			print_r($array);
@@ -434,11 +482,10 @@
 		$array['email_queue'][0]['email_status'] = 'failed';
 
 		//grant temporary permissions
-		$p = new permissions;
+		$p = permissions::new();
 		$p->add('email_queue_add', 'temp');
 
 		//execute insert
-		$database = new database;
 		$database->app_name = 'email_queue';
 		$database->app_uuid = 'ba41954e-9d21-4b10-bbc2-fa5ceabeb184';
 		$database->save($array);
@@ -466,7 +513,6 @@
 		$parameters['email_queue_uuid'] = $email_queue_uuid;
 		$parameters['email_response'] = $email_settings."\n".$email_response;
 		$parameters['email_retry_count'] = $email_retry_count;
-		$database = new database;
 		$database->execute($sql, $parameters);
 		unset($parameters);
 
@@ -490,10 +536,9 @@
 					$array['email_logs'][0]['status'] = 'failed';
 					$array['email_logs'][0]['email'] = str_replace("'", "''", $msg);
 				//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('email_log_add', 'temp');
 				//execute insert
-					$database = new database;
 					$database->app_name = 'v_mailto';
 					$database->app_uuid = 'ba41954e-9d21-4b10-bbc2-fa5ceabeb184';
 					$database->save($array);
@@ -517,7 +562,7 @@
 	unset($mail);
 
 //save output to
-	//$fp = fopen(sys_get_temp_dir()."/mailer-app.log", "a");
+	//$esl = fopen(sys_get_temp_dir()."/mailer-app.log", "a");
 
 //prepare the output buffers
 	//ob_end_clean();
@@ -532,7 +577,5 @@
 
 	//ob_end_clean(); //clean the buffer
 
-	//fwrite($fp, $content);
-	//fclose($fp);
-
-?>
+	//fwrite($esl, $content);
+	//fclose($esl);

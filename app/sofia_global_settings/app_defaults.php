@@ -4,7 +4,6 @@ if ($domains_processed == 1) {
 
 	//get all of the sofia global default settings
 		$sql = "select * from v_sofia_global_settings \n";
-		$database = new database;
 		$sofia_global_settings = $database->select($sql, null, 'all');
 
 	//build array
@@ -70,11 +69,10 @@ if ($domains_processed == 1) {
 	//add settings that are not in the database
 		if (!empty($array)) {
 			//grant temporary permissions
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add('sofia_global_setting_add', 'temp');
 
 			//execute insert
-				$database = new database;
 				$database->app_name = 'sofia_global_settings';
 				$database->app_uuid = '240c25a3-a2cf-44ea-a300-0626eca5b945';
 				$database->save($array, false);

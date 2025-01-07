@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2010-2023
+	Portions created by the Initial Developer are Copyright (C) 2010-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -78,8 +78,9 @@
 	}
 
 //get order and order by
-	$order_by = $_GET["order_by"] ?? '';
-	$order = $_GET["order"] ?? '';
+	$order_by = $_GET["order_by"] ?? 'ring_group_name';
+	$order = $_GET["order"] ?? 'asc';
+	$sort = $order_by == 'ring_group_extension' ? 'natural' : null;
 
 //add the search term
 	if (isset($_GET["search"])) {
@@ -92,28 +93,38 @@
 	$parameters['domain_uuid'] = $domain_uuid;
 	$database = new database;
 	$total_ring_groups = $database->select($sql, $parameters, 'column');
-	$num_rows = $total_ring_groups;
 
 //get filtered ring group count
-	if (!empty($search)) {
-		$sql = "select count(*) from v_ring_groups where true ";
-		if (empty($_GET['show']) || $_GET['show'] != "all" || !permission_exists('ring_group_all')) {
-			$sql .= "and domain_uuid = :domain_uuid ";
-			$parameters['domain_uuid'] = $domain_uuid;
-		}
-		if (isset($search)) {
-			$sql .= "and (";
-			$sql .= "lower(ring_group_name) like :search ";
-			$sql .= "or lower(ring_group_extension) like :search ";
-			$sql .= "or lower(ring_group_description) like :search ";
-			$sql .= "or lower(ring_group_enabled) like :search ";
-			$sql .= "or lower(ring_group_strategy) like :search ";
-			$sql .= ") ";
-			$parameters['search'] = '%'.$search.'%';
-		}
-		$database = new database;
-		$num_rows = $database->select($sql, $parameters, 'column');
+	if ($show == "all" && permission_exists('ring_group_all')) {
+		$sql = "select count(*) from v_ring_groups ";
+		$sql .= "where true ";
 	}
+	elseif (permission_exists('ring_group_domain') || permission_exists('ring_group_all')) {
+		$sql = "select count(*)  from v_ring_groups ";
+		$sql .= "where domain_uuid = :domain_uuid ";
+		$parameters['domain_uuid'] = $domain_uuid;
+	}
+	else {
+		$sql = "select count(*) ";
+		$sql .= "from v_ring_groups as r, v_ring_group_users as u ";
+		$sql .= "where r.domain_uuid = :domain_uuid ";
+		$sql .= "and r.ring_group_uuid = u.ring_group_uuid ";
+		$sql .= "and u.user_uuid = :user_uuid ";
+		$parameters['domain_uuid'] = $domain_uuid;
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
+	}
+	if (!empty($search)) {
+		$sql .= "and (";
+		$sql .= "lower(ring_group_name) like :search ";
+		$sql .= "or lower(ring_group_extension) like :search ";
+		$sql .= "or lower(ring_group_description) like :search ";
+		$sql .= "or lower(ring_group_enabled) like :search ";
+		$sql .= "or lower(ring_group_strategy) like :search ";
+		$sql .= ") ";
+		$parameters['search'] = '%'.$search.'%';
+	}
+	$database = new database;
+	$num_rows = $database->select($sql, $parameters, 'column');
 	unset($sql, $parameters);
 
 //prepare to page the results
@@ -126,12 +137,26 @@
 	$offset = $rows_per_page * $page;
 
 //get the list
-	$sql = "select * from v_ring_groups where true ";
-	if ($show != "all" || !permission_exists('ring_group_all')) {
-		$sql .= "and domain_uuid = :domain_uuid ";
+	if ($show == "all" && permission_exists('ring_group_all')) {
+		$sql = "select * from v_ring_groups ";
+		$sql .= "where true ";
+	}
+	elseif (permission_exists('ring_group_domain') || permission_exists('ring_group_all')) {
+		$sql = "select * from v_ring_groups ";
+		$sql .= "where domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $domain_uuid;
 	}
-	if (isset($search)) {
+	else {
+		$sql = "select r.ring_group_uuid, r.ring_group_name, r.ring_group_extension, r.ring_group_strategy, ";
+		$sql .= "r.ring_group_forward_destination, r.ring_group_forward_enabled, r.ring_group_description ";
+		$sql .= "from v_ring_groups as r, v_ring_group_users as u ";
+		$sql .= "where r.domain_uuid = :domain_uuid ";
+		$sql .= "and r.ring_group_uuid = u.ring_group_uuid ";
+		$sql .= "and u.user_uuid = :user_uuid ";
+		$parameters['domain_uuid'] = $domain_uuid;
+		$parameters['user_uuid'] = $_SESSION['user_uuid'];
+	}
+	if (!empty($search)) {
 		$sql .= "and (";
 		$sql .= "lower(ring_group_name) like :search ";
 		$sql .= "or lower(ring_group_extension) like :search ";
@@ -141,7 +166,7 @@
 		$sql .= ") ";
 		$parameters['search'] = '%'.$search.'%';
 	}
-	$sql .= ($order_by) ? order_by($order_by, $order) : "order by ring_group_name asc, ring_group_extension asc ";
+	$sql .= order_by($order_by, $order, null, null, $sort);
 	$sql .= limit_offset($rows_per_page, $offset);
 	$ring_groups = $database->select($sql, $parameters, 'all');
 	unset($sql, $parameters);
@@ -156,7 +181,7 @@
 
 //show the content
 	echo "<div class='action_bar' id='action_bar'>\n";
-	echo "	<div class='heading'><b>".$text['title-ring_groups']." (".$num_rows.")</b></div>\n";
+	echo "	<div class='heading'><b>".$text['title-ring_groups']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 	echo "	<div class='actions'>\n";
 	if (permission_exists('ring_group_add') && (!isset($_SESSION['limit']['ring_groups']['numeric']) || ($total_ring_groups < $_SESSION['limit']['ring_groups']['numeric']))) {
 		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_add','link'=>'ring_group_edit.php']);
@@ -207,6 +232,7 @@
 	echo "<input type='hidden' id='action' name='action' value=''>\n";
 	echo "<input type='hidden' name='search' value=\"".escape($search)."\">\n";
 
+	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
 	if (permission_exists('ring_group_add') || permission_exists('ring_group_edit') || permission_exists('ring_group_delete')) {
@@ -277,6 +303,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br />\n";
 	echo "<div align='center'>".$paging_controls."</div>\n";
 

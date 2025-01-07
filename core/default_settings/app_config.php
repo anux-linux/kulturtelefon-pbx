@@ -21,6 +21,7 @@
 		$apps[$x]['description']['fr-fr'] = "Configurations par défaut applicable à tous les domaines";
 		$apps[$x]['description']['he-il'] = "הגדרות ברירת המחדל החלות על כל הדומיינים.";
 		$apps[$x]['description']['it-it'] = "Impostazioni predefinite che si applicano a tutti i domini.";
+		$apps[$x]['description']['ka-ge'] = "ნაგულისხმევი პარამეტრები, რომლებიც ყველა დომენზე გამოიყენება.";
 		$apps[$x]['description']['nl-nl'] = "Standaardinstellingen die van toepassing zijn op alle domeinen.";
 		$apps[$x]['description']['pl-pl'] = "Domyślne ustawienia dotyczące wszystkich domen.";
 		$apps[$x]['description']['pt-br'] = "Configurações Padrão aplicáveis à todos os domínios";
@@ -303,6 +304,15 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "/core/dashboard/";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Destination after login";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "47b951c9-b339-4733-9104-a979f6e2f551";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "domain";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "setting_value_input_type";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "input";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
+		$y++;
 
 	//schema details
 		$y=0;

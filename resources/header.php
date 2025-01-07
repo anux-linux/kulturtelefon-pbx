@@ -25,7 +25,18 @@
 */
 
 //includes files
-    require_once __DIR__ . "/require.php";
+	require_once __DIR__ . "/require.php";
+
+//start the session
+	ini_set("session.cookie_httponly", true);
+	if (!isset($_SESSION)) { session_start(); }
+
+//set the domains session
+	if (!isset($_SESSION['domains'])) {
+		$domain = new domains();
+		$domain->session();
+		$domain->set();
+	}
 
 //if reloadxml then run the command
 	if (permission_exists('dialplan_edit') && isset($_SESSION["reload_xml"])) {
@@ -34,15 +45,14 @@
 				//show the apply settings prompt
 			}
 			else {
-				//create the event socket connection
-					$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
 				//reload the access control list this also runs reloadxml
-					$response = event_socket_request($fp, 'api reloadxml');
-					$_SESSION["reload_xml"] = '';
-					unset($_SESSION["reload_xml"]);
-					usleep(500);
+				$response = event_socket::api('reloadxml');
+				$_SESSION["reload_xml"] = '';
+				unset($_SESSION["reload_xml"]);
+				usleep(500);
+
 				//clear the apply settings reminder
-					$_SESSION["reload_xml"] = false;
+				$_SESSION["reload_xml"] = false;
 			}
 		}
 	}
@@ -61,12 +71,17 @@
 //start the output buffer
 	ob_start();
 
-// get the content
+//get the content
 	if (isset($_GET["c"])) {
 		$content = $_GET["c"]; //link
 	}
 	else {
 		$content = '';
+	}
+
+//connect to the database if not initialized
+	if (!($database instanceof database)) {
+		$database = new database();
 	}
 
 //get the parent id
@@ -75,7 +90,6 @@
 	$sql .= "and menu_item_link = :menu_item_link ";
 	$parameters['menu_uuid'] = $_SESSION['domain']['menu']['uuid'];
 	$parameters['menu_item_link'] = $_SERVER["SCRIPT_NAME"];
-	$database = new database;
 	$_SESSION["menu_item_parent_uuid"] = $database->select($sql, $parameters, 'column');
 	unset($sql, $parameters);
 
@@ -92,7 +106,6 @@
 		$sql .= "order by rss_order asc ";
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 		$parameters['content'] = empty($content) ? $_SERVER["PHP_SELF"] : $content;
-		$database = new database;
 		$content_result = $database->select($sql, $parameters, 'all');
 		if (is_array($content_result) && @sizeof($content_result) != 0) {
 			foreach($content_result as $content_row) {
@@ -141,7 +154,7 @@
 	ob_start();
 
 //for translate tool (if available)
-	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/translate")) {
+	if (file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/translate/translate_header.php")) {
 		require_once("app/translate/translate_header.php");
 	}
 

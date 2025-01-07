@@ -230,7 +230,7 @@ if (!class_exists('conference_centers')) {
 						$database = new database;
 						$conference_sessions = $database->select($sql, $parameters, 'all');
 						if (is_array($conference_sessions)) {
-							foreach ($conference_sessions as &$row) {
+							foreach ($conference_sessions as $row) {
 								$recording = $row['recording'];
 								break;
 							}
@@ -349,7 +349,7 @@ if (!class_exists('conference_centers')) {
 							if (!empty($array)) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('dialplan_detail_delete', 'temp');
 									$p->add('dialplan_delete', 'temp');
 
@@ -425,7 +425,7 @@ if (!class_exists('conference_centers')) {
 							if (!empty($array)) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('conference_room_user_delete', 'temp');
 									$p->add('conference_room_delete', 'temp');
 
@@ -489,7 +489,7 @@ if (!class_exists('conference_centers')) {
 							if (!empty($array)) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('conference_session_detail_delete', 'temp');
 									$p->add('conference_user_delete', 'temp');
 
@@ -578,7 +578,7 @@ if (!class_exists('conference_centers')) {
 							if (!empty($array)) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add("dialplan_edit", "temp");
 
 								//save the array
@@ -687,10 +687,10 @@ if (!class_exists('conference_centers')) {
 											$switch_cmd_notice = "conference ".$meeting_uuid[$uuid]."@".$_SESSION['domain_name']." play ".$_SESSION['switch']['sounds']['dir']."/".$default_language."/".$default_dialect."/".$default_voice."/ivr/ivr-recording_started.wav";
 										//execute api commands
 // 											if (!file_exists($recording_dir.'/'.$meeting_uuid[$uuid].'.wav')) {
-												$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-												if ($fp) {
-//													$switch_result = event_socket_request($fp, 'api '.$switch_cmd_record);
-													$switch_result = event_socket_request($fp, 'api '.$switch_cmd_notice);
+												$esl = event_socket::create();
+												if ($esl->is_connected()) {
+//													$switch_result = event_socket::api($switch_cmd_record);
+													$switch_result = event_socket::api($switch_cmd_notice);
 												}
 // 											}
 									}

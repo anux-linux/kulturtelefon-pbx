@@ -18,7 +18,7 @@
 
 	  The Initial Developer of the Original Code is
 	  Mark J Crane <markjcrane@fusionpbx.com>
-	  Portions created by the Initial Developer are Copyright (C) 2008-2021
+	  Portions created by the Initial Developer are Copyright (C) 2008-2024
 	  the Initial Developer. All Rights Reserved.
 
 	  Contributor(s):
@@ -36,7 +36,8 @@
 //check permissions
 	if (permission_exists('follow_me') || permission_exists('call_forward') || permission_exists('do_not_disturb')) {
 		//access granted
-	} else {
+	}
+	else {
 		echo "access denied";
 		exit;
 	}
@@ -78,8 +79,9 @@
 	}
 
 //get order and order by
-	$order_by = $_GET["order_by"] ?? '';
-	$order = $_GET["order"] ?? '';
+	$order_by = $_GET["order_by"] ?? 'extension';
+	$order = $_GET["order"] ?? 'asc';
+	$sort = $order_by == 'extension' ? 'natural' : null;
 
 //get the search
 	$search = strtolower($_GET["search"] ?? '');
@@ -91,7 +93,8 @@
 	$sql = "select count(*) from v_extensions ";
 	if ($show === "all" && permission_exists('call_forward_all')) {
 		$sql .= "where true ";
-	} else {
+	}
+	else {
 		$sql .= "where domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 	}
@@ -154,7 +157,8 @@
 	$sql = "select * from v_extensions ";
 	if ($show == "all" && permission_exists('call_forward_all')) {
 		$sql .= "where true ";
-	} else {
+	}
+	else {
 		$sql .= "where domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 	}
@@ -178,19 +182,20 @@
 				$x++;
 			}
 			$sql .= ")";
-		} else {
+		}
+		else {
 			//used to hide any results when a user has not been assigned an extension
 			$sql .= "and extension = 'disabled' ";
 		}
 	}
-	$sql .= order_by($order_by, $order, 'extension', 'asc');
+	$sql .= order_by($order_by, $order, 'extension', 'asc', $sort);
 	$sql .= limit_offset($rows_per_page, $offset);
 	$database = new database;
 	$extensions = $database->select($sql, $parameters ?? null, 'all');
 	unset($parameters);
 
 	//if there are no extensions then set to empty array
-	if($extensions === false) {
+	if ($extensions === false) {
 		$extensions = [];
 	}
 
@@ -200,9 +205,12 @@
 
 //include header
 	if (!$is_included) {
-	$document['title'] = $text['title-call_forward'];
+		$document['title'] = $text['title-call_forward'];
 	}
 	require_once "resources/header.php";
+
+//set the back button
+	$_SESSION['call_forward_back'] = $_SERVER['PHP_SELF'];
 
 //show the content
 	if ($is_included) {
@@ -210,14 +218,15 @@
 		echo "	<div class='heading'><b>" . $text['header-call_forward'] . "</b></div>\n";
 		echo "	<div class='actions'>\n";
 		if ($num_rows > 10) {
-			echo button::create(['type' => 'button', 'label' => $text['button-view_all'], 'icon' => 'project-diagram', 'collapse' => false, 'link' => PROJECT_PATH . '/app/call_forward/call_forward.php']);
+			echo button::create(['type' => 'button', 'label' => $text['button-view_all'], 'icon' => 'diagram-project', 'collapse' => false, 'link' => PROJECT_PATH . '/app/call_forward/call_forward.php']);
 		}
 		echo "	</div>\n";
 		echo "	<div style='clear: both;'></div>\n";
 		echo "</div>\n";
-	} else {
+	}
+	else {
 		echo "<div class='action_bar' id='action_bar'>\n";
-		echo "	<div class='heading'><b>" . $text['header-call_forward'] . " (" . $num_rows . ")</b></div>\n";
+		echo "	<div class='heading'><b>" . $text['header-call_forward'] . "</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 		echo "	<div class='actions'>\n";
 
 		if (count($extensions) > 0) {
@@ -264,6 +273,7 @@
 		echo "<input type='hidden' name='search' value=\"" . escape($search) . "\">\n";
 	}
 
+	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
 	if (!$is_included) {
@@ -274,7 +284,8 @@
 			echo "<th>" . $text['label-domain'] . "</th>\n";
 		}
 	}
-	echo "	<th>" . $text['label-extension'] . "</th>\n";
+	echo th_order_by('extension', $text['label-extension'], $order_by, $order);
+// 	echo "	<th>" . $text['label-extension'] . "</th>\n";
 	if (permission_exists('call_forward')) {
 		echo "	<th>" . $text['label-call_forward'] . "</th>\n";
 	}
@@ -400,6 +411,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 
 	if (!$is_included) {
 		echo "<br />\n";

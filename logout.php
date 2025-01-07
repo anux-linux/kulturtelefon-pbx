@@ -26,6 +26,14 @@
 
 //includes files
 	require_once __DIR__ . "/resources/require.php";
+	
+//use custom logout destination if set otherwise redirect to the index page
+	if (isset($_SESSION["login"]["logout_destination"]["text"])){
+		$logout_destination = $_SESSION["login"]["logout_destination"]["text"];
+	}
+	else {
+		$logout_destination = PROJECT_PATH."/";
+	}
 
 //destroy session
 	session_unset();
@@ -81,7 +89,7 @@
 							$array['user_settings'][0]['user_setting_value'] = $referrer;
 							$array['user_settings'][0]['user_setting_enabled'] = 'true';
 						//grant temporary permissions
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('user_setting_add', 'temp');
 						//execute insert
 							$database = new database;
@@ -96,8 +104,8 @@
 		}
 	}
 
-//redirect the user to the index page
-	header("Location: ".PROJECT_PATH."/");
+//redirect the user to the logout page
+	header("Location: ".$logout_destination);
 	exit;
 
 ?>

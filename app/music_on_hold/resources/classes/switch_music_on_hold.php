@@ -147,15 +147,15 @@ if (!class_exists('switch_music_on_hold')) {
 
 		public function reload() {
 			//if the handle does not exist create it
-				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+				$esl = event_socket::create();
 			//if the handle still does not exist show an error message
-				if (!$fp) {
+				if (!$esl->is_connected()) {
 					$msg = "<div align='center'>".$text['message-event-socket']."<br /></div>";
 				}
 			//send the api command to check if the module exists
-				if ($fp) {
+				if ($esl->is_connected()) {
 					$cmd = "reload mod_local_stream";
-					$switch_result = event_socket_request($fp, 'api '.$cmd);
+					$switch_result = event_socket::api($cmd);
 					unset($cmd);
 				}
 		}
@@ -301,7 +301,7 @@ if (!class_exists('switch_music_on_hold')) {
 				//view_array($array, false);
 
 			//save the data
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add('music_on_hold_add', 'temp');
 
 				$database = new database;

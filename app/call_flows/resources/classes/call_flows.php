@@ -121,7 +121,7 @@ if (!class_exists('call_flows')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('dialplan_delete', 'temp');
 									$p->add('dialplan_detail_delete', 'temp');
 
@@ -223,7 +223,7 @@ if (!class_exists('call_flows')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('dialplan_edit', 'temp');
 
 								//save the array
@@ -281,8 +281,7 @@ if (!class_exists('call_flows')) {
 									}
 
 									//send the event
-									$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-									$switch_result = event_socket_request($fp, $cmd);
+									$switch_result = event_socket::command($cmd);
 								}
 							}
 							unset($call_flows);
@@ -375,7 +374,7 @@ if (!class_exists('call_flows')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('dialplan_add', 'temp');
 
 								//save the array

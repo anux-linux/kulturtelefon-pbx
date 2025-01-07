@@ -78,7 +78,7 @@
 							$array['dialplan_details'][0]['domain_uuid'] = $this->domain_uuid;
 
 						//grant temporary permissions
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('dialplan_delete', 'temp');
 							$p->add('dialplan_detail_delete', 'temp');
 
@@ -216,7 +216,7 @@
 					$array["dialplans"][0] = $dialplan;
 
 				//add temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add("dialplan_add", 'temp');
 					$p->add("dialplan_detail_add", 'temp');
 					$p->add("dialplan_edit", 'temp');
@@ -242,7 +242,7 @@
 					$array['call_center_queues'][0]['dialplan_uuid'] = $this->dialplan_uuid;
 
 				//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('call_center_queue_edit', 'temp');
 
 				//execute update
@@ -338,18 +338,18 @@
 								if (is_array($array) && @sizeof($array) != 0) {
 
 									//setup the event socket connection
-										$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+										$esl = event_socket::create();
 
 									//delete the queue in the switch
-										if ($fp) {
+										if ($esl->is_connected()) {
 											foreach ($uuids as $uuid) {
-												$cmd = "api callcenter_config queue unload ".$call_center_queues[$uuid]['queue_extension']."@".$_SESSION["domain_name"];
-												$response = event_socket_request($fp, $cmd);
+												$cmd = "callcenter_config queue unload ".$call_center_queues[$uuid]['queue_extension']."@".$_SESSION['domain_name'];
+												$response = event_socket::api($cmd);
 											}
 										}
 
 									//grant temporary permissions
-										$p = new permissions;
+										$p = permissions::new();
 										$p->add('call_center_tier_delete', 'temp');
 										$p->add('dialplan_delete', 'temp');
 										$p->add('dialplan_detail_delete', 'temp');
@@ -436,18 +436,17 @@
 								if (is_array($array) && @sizeof($array) != 0) {
 
 									//setup the event socket connection
-										$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+										$esl = event_socket::create();
 
 									//delete the agent in the switch
-										if ($fp) {
+										if ($esl->is_connected()) {
 											foreach ($uuids as $uuid) {
-												$cmd = "api callcenter_config agent del ".$uuid;
-												$response = event_socket_request($fp, $cmd);
+												event_socket::async("callcenter_config agent del $uuid");
 											}
 										}
 
 									//grant temporary permissions
-										$p = new permissions;
+										$p = permissions::new();
 										$p->add('call_center_tier_delete', 'temp');
 
 									//execute delete
@@ -579,7 +578,7 @@
 								if (is_array($array) && @sizeof($array) != 0) {
 
 									//grant temporary permissions
-										$p = new permissions;
+										$p = permissions::new();
 										$p->add('call_center_tier_add', 'temp');
 										$p->add('dialplan_add', 'temp');
 

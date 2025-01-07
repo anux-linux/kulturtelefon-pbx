@@ -29,12 +29,11 @@
 
 		//add the access control list to the database
 		$sql = "select count(*) from v_access_controls ";
-		$database = new database;
 		$num_rows = $database->select($sql, null, 'column');
 		if ($num_rows == 0) {
 
 			//set the directory
-				$xml_dir = $_SESSION["switch"]["conf"]["dir"].'/autoload_configs';
+				$xml_dir = $setting->get('switch','conf').'/autoload_configs';
 				$xml_file = $xml_dir."/acl.conf.xml";
 				$xml_file_alt = $_SERVER["DOCUMENT_ROOT"].'/'.PROJECT_PATH.'/app/switch/resources/conf/autoload_configs/acl.conf';
 
@@ -54,7 +53,6 @@
 					$xml_string .= "			<node type=\"allow\" cidr=\"192.168.0.0/16\"/>\n";
 					$xml_string .= "		</list>\n";
 					$xml_string .= "		<list name=\"providers\" default=\"deny\">\n";
-					//$xml_string .= "			<node type=\"allow\" domain=\"".$_SESSION['domain_name']."\"/>\n";
 					$xml_string .= "		</list>\n";
 					$xml_string .= "	</network-lists>\n";
 					$xml_string .= "</configuration>\n";
@@ -76,10 +74,9 @@
 						$array['access_controls'][0]['access_control_name'] = $access_control_name;
 						$array['access_controls'][0]['access_control_default'] = $access_control_default;
 
-						$p = new permissions;
+						$p = permissions::new();
 						$p->add('access_control_add', 'temp');
 
-						$database = new database;
 						$database->app_name = 'access_controls';
 						$database->app_uuid = '1416a250-f6e1-4edc-91a6-5c9b883638fd';
 						$database->save($array, false);
@@ -109,10 +106,9 @@
 								$array['access_control_nodes'][0]['node_cidr'] = $node_cidr;
 								$array['access_control_nodes'][0]['node_description'] = $node_description;
 
-								$p = new permissions;
+								$p = permissions::new();
 								$p->add('access_control_node_add', 'temp');
 
-								$database = new database;
 								$database->app_name = 'access_controls';
 								$database->app_uuid = '1416a250-f6e1-4edc-91a6-5c9b883638fd';
 								$database->save($array, false);
@@ -134,13 +130,11 @@
 		//rename domains access control to providers
 		$sql = "select count(*) from v_access_controls ";
 		$sql .= "where access_control_name = 'domains' ";
-		$database = new database;
 		$num_rows = $database->select($sql, null, 'column');
 		if ($num_rows > 0) {
 			//update the access control name
 			$sql = "update v_access_controls set access_control_name = 'providers' ";
 			$sql .= "where access_control_name = 'domains' ";
-			$database = new database;
 			$database->execute($sql, null);
 			unset($sql);
 
@@ -148,7 +142,6 @@
 			$sql = "update v_sip_profile_settings set sip_profile_setting_value = 'providers' ";
 			$sql .= "where (sip_profile_setting_name = 'apply-inbound-acl' or sip_profile_setting_name = 'apply-register-acl') ";
 			$sql .= "and sip_profile_setting_value = 'domains'; ";
-			$database = new database;
 			$database->execute($sql, null);
 			unset($sql);
 
@@ -158,24 +151,21 @@
 			$cache->delete("configuration:sofia.conf:".gethostname());
 
 			//create the event socket connection
-			if (!$fp) {
-				$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
-			}
+			$esl = event_socket::create();
 
 			//reload the acl
-			event_socket_request($fp, "api reloadacl");
+			event_socket::async("reloadacl");
 
 			//rescan each sip profile
 			$sql = "select sip_profile_name from v_sip_profiles ";
 			$sql .= "where sip_profile_enabled = 'true'; ";
-			$database = new database;
 			$sip_profiles = $database->select($sql, null, 'all');
 			if (is_array($sip_profiles)) {
 				foreach ($sip_profiles as $row) {
-					if ($fp) {
+					if ($esl->is_connected()) {
 						$command = "sofia profile '".$row['sip_profile_name']."' rescan";
 						//echo $command."\n";
-						$result = event_socket_request($fp, "api ".$command);
+						$result = event_socket::api($command);
 						//echo $result."\n";
 					}
 				}
@@ -187,7 +177,6 @@
 		$sql .= "where access_control_uuid not in ( ";
 		$sql .= "	select access_control_uuid from v_access_controls ";
 		$sql .= ")";
-		$database = new database;
 		$database->execute($sql, null);
 		unset($sql);
 

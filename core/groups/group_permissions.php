@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2018-2023
+	Portions created by the Initial Developer are Copyright (C) 2018-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -42,12 +42,14 @@
 		$group_uuid = $_GET['group_uuid'];
 	}
 
+//connect to the database
+	$database = new database;
+
 //get the group_name
 	if (isset($group_uuid) && is_uuid($group_uuid)) {
 		$sql = "select group_name from v_groups ";
 		$sql .= "where group_uuid = :group_uuid ";
 		$parameters['group_uuid'] = $group_uuid;
-		$database = new database;
 		$group_name = $database->select($sql, $parameters, 'column');
 		unset($sql, $parameters);
 	}
@@ -85,7 +87,6 @@
 					$sql .= "and (".implode(' or ', $sql_where_or).") ";
 				}
 				$parameters['domain_uuid'] = $_SESSION["domain_uuid"];
-				$database = new database;
 				$result = $database->select($sql, $parameters, 'all');
 				if (is_array($result) && @sizeof($result) != 0) {
 					foreach ($result as $row) {
@@ -103,17 +104,17 @@
 	}
 
 //get the list
-	$sql = "select "; 
+	$sql = "select ";
 	$sql .= "	distinct p.permission_name, \n";
 	$sql .= "	p.application_name, \n";
-	$sql .= "	g.permission_protected, \n"; 
-	$sql .= "	g.group_permission_uuid, \n"; 
+	$sql .= "	g.permission_protected, \n";
+	$sql .= "	g.group_permission_uuid, \n";
 	$sql .= "	g.permission_assigned \n";
-	$sql .= "from v_permissions as p \n"; 
-	$sql .= "left join \n"; 
-	$sql .= "	v_group_permissions as g \n"; 
-	$sql .= "	on p.permission_name = g.permission_name \n"; 
-	$sql .= "	and group_name = :group_name \n"; 
+	$sql .= "from v_permissions as p \n";
+	$sql .= "left join \n";
+	$sql .= "	v_group_permissions as g \n";
+	$sql .= "	on p.permission_name = g.permission_name \n";
+	$sql .= "	and group_name = :group_name \n";
 	$sql .= " 	and g.group_uuid = :group_uuid \n";
 	$sql .= "where true \n";
 	if (!empty($search)) {
@@ -122,10 +123,9 @@
 		$sql .= ") ";
 		$parameters['search'] = '%'.$search.'%';
 	}
-	$sql .= "	order by p.application_name, p.permission_name asc "; 
+	$sql .= "	order by p.application_name, p.permission_name asc ";
 	$parameters['group_name'] = $group_name;
 	$parameters['group_uuid'] = $group_uuid;
-	$database = new database;
 	$group_permissions = $database->select($sql, $parameters, 'all');
 
 //process the user data and save it to the database
@@ -241,7 +241,6 @@
 
 		//save the save array
 			if (!empty($array['save']) && is_array($array['save']) && @sizeof($array['save']) != 0) {
-				$database = new database;
 				$database->app_name = 'groups';
 				$database->app_uuid = '2caf27b0-540a-43d5-bb9b-c9871a1e4f84';
 				$database->save($array['save']);
@@ -251,7 +250,6 @@
 		//delete the delete array
 			if (!empty($array['delete']) && is_array($array['delete']) && @sizeof($array['delete']) != 0) {
 				if (permission_exists('group_permission_delete')) {
-					$database = new database;
 					$database->app_name = 'groups';
 					$database->app_uuid = '2caf27b0-540a-43d5-bb9b-c9871a1e4f84';
 					$database->delete($array['delete']);
@@ -276,12 +274,12 @@
 
 //show the content
 	echo "<div class='action_bar' id='action_bar'>\n";
-	echo "	<div class='heading'><b>".$text['title-group_permissions']." (".escape($group_name).")</b></div>\n";
+	echo "	<div class='heading'><b>".$text['title-group_permissions']."</b><div class='count'>".escape($group_name)."</div></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','collapse'=>'hide-sm-dn','link'=>'groups.php']);
-	echo button::create(['type'=>'button','label'=>$text['button-reload'],'icon'=>$_SESSION['theme']['button_icon_reload'],'link'=>'?group_uuid='.urlencode($group_uuid).'&action=reload'.($view ? '&view='.urlencode($view) : null).($search ? '&search='.urlencode($search) : null)]);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','collapse'=>'hide-md-dn','link'=>'groups.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-reload'],'icon'=>$_SESSION['theme']['button_icon_reload'],'collapse'=>'hide-md-dn','link'=>'?group_uuid='.urlencode($group_uuid).'&action=reload'.($view ? '&view='.urlencode($view) : null).($search ? '&search='.urlencode($search) : null)]);
 	if (permission_exists('group_member_view')) {
-		echo button::create(['type'=>'button','label'=>$text['button-members'],'icon'=>'users','link'=>'group_members.php?group_uuid='.urlencode($group_uuid)]);
+		echo button::create(['type'=>'button','label'=>$text['button-members'],'icon'=>'users','collapse'=>'hide-md-dn','link'=>'group_members.php?group_uuid='.urlencode($group_uuid)]);
 	}
 	echo 		"<form id='form_search' class='inline' method='get'>\n";
 	echo 		"<input type='hidden' name='group_uuid' value='".escape($group_uuid)."'>\n";
@@ -292,10 +290,10 @@
 	echo 		"	<option value='protected' ".($view == 'protected' ? "selected='selected'" : null).">".$text['label-group_protected']."</option>\n";
 	echo 		"</select>\n";
 	echo 		"<input type='text' class='txt list-search' style='margin-left: 0;' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown='list_search_reset();'>";
-	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search','collapse'=>'hide-sm-dn','style'=>($search != '' ? 'display: none;' : null)]);
-	echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','collapse'=>'hide-sm-dn','link'=>'group_permissions.php?group_uuid='.urlencode($group_uuid),'style'=>($search == '' ? 'display: none;' : null)]);
+	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search','collapse'=>'hide-md-dn','style'=>($search != '' ? 'display: none;' : null)]);
+	echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','collapse'=>'hide-md-dn','link'=>'group_permissions.php?group_uuid='.urlencode($group_uuid),'style'=>($search == '' ? 'display: none;' : null)]);
 	if (permission_exists('group_permission_edit')) {
-		echo button::create(['type'=>'button','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','collapse'=>'hide-sm-dn','style'=>'margin-left: 15px;','onclick'=>"document.getElementById('form_list').submit();"]);
+		echo button::create(['type'=>'button','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','collapse'=>'hide-md-dn','style'=>'margin-left: 15px;','onclick'=>"document.getElementById('form_list').submit();"]);
 	}
 	echo "		</form>\n";
 	echo "	</div>\n";
@@ -310,7 +308,9 @@
 	echo "<input type='hidden' name='group_uuid' value='".escape($group_uuid)."'>\n";
 	echo "<input type='hidden' name='view' value=\"".escape($view)."\">\n";
 	echo "<input type='hidden' name='search' value=\"".escape($search)."\">\n";
-	echo "<table class='list' style='margin-bottom: 25px;'>\n";
+
+	echo "<div class='card'>\n";
+	echo "<table class='list'>\n";
 	if (is_array($group_permissions) && @sizeof($group_permissions) != 0) {
 		$x = 0;
 		foreach ($group_permissions as $row) {
@@ -322,11 +322,13 @@
 
 			//application heading
 			if ($previous_application_name !== $row['application_name']) {
+				if ($previous_application_name != '') {
+					echo "		<tr class='heading_".$application_name."'>";
+					echo "			<td align='left' colspan='999' style='cursor: default !important;'>&nbsp;</td>\n";
+					echo "		</tr>";
+				}
 				echo "		<tr class='heading_".$application_name."'>";
-				echo "			<td align='left' colspan='999'>&nbsp;</td>\n";
-				echo "		</tr>";
-				echo "		<tr class='heading_".$application_name."'>";
-				echo "			<td align='left' colspan='999' nowrap='nowrap'><b>".escape($application_name_label)."</b></td>\n";
+				echo "			<td align='left' colspan='999' style='cursor: default !important;' nowrap='nowrap'><b>".escape($application_name_label)."</b></td>\n";
 				echo "		</tr>";
 				echo "		<tr class='list-header heading_".$application_name."'>\n";
 				if (permission_exists('group_permission_add') || permission_exists('group_permission_edit') || permission_exists('group_permission_delete')) {
@@ -336,9 +338,9 @@
 				}
 				echo "			<th>".$text['label-group_name']."</th>\n";
 				if (permission_exists('group_permission_add') || permission_exists('group_permission_edit') || permission_exists('group_permission_delete')) {
-					echo "		<th>".$text['label-group_protected']."</th>\n";
-					echo "		<th class='checkbox'>\n";
-					echo "			<input type='checkbox' id='checkbox_all_".$application_name."_protected' name='checkbox_protected_all' onclick=\"list_all_toggle('".$application_name."_protected');\">\n";
+					echo "		<th class='checkbox' onmouseover=\"document.getElementById('checkbox_all_label_".$application_name."').style.display='none'; document.getElementById('checkbox_all_".$application_name."_protected').style.display='';\" onmouseout=\"document.getElementById('checkbox_all_label_".$application_name."').style.display=''; document.getElementById('checkbox_all_".$application_name."_protected').style.display='none';\">\n";
+					echo "			<span id='checkbox_all_label_".$application_name."'>".$text['label-group_protected']."</span>\n";
+					echo "			<input type='checkbox' id='checkbox_all_".$application_name."_protected' name='checkbox_protected_all' style='display: none;' onclick=\"list_all_toggle('".$application_name."_protected');\">\n";
 					echo "		</th>\n";
 				}
 				echo "		</tr>\n";
@@ -359,7 +361,6 @@
 				echo "		".escape($row['permission_name']);
 				echo "	</td>\n";
 				if (permission_exists('group_permission_add') || permission_exists('group_permission_edit') || permission_exists('group_permission_delete')) {
-					echo "	<td>&nbsp;</td>\n";
 					echo "	<td class='checkbox'>\n";
 					echo "		<input type='checkbox' name='group_permissions[$x][permission_protected]' id='checkbox_protected_".$x."' class='checkbox_".$application_name."_protected' value='true' ".$protected." onclick=\"if (!this.checked) { document.getElementById('checkbox_all_".$application_name."_protected').checked = false; }\">\n";
 					echo "	</td>\n";
@@ -389,6 +390,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "</form>\n";
 
 //include the footer

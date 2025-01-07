@@ -57,7 +57,7 @@ if (count($_GET) > 0) {
 		$direction = trim($_GET["direction"] ?? '');
 
 	//setup the event socket connection
-		$fp = event_socket_create($_SESSION['event_socket_ip_address'], $_SESSION['event_socket_port'], $_SESSION['event_socket_password']);
+		$esl = event_socket::create();
 
 	//allow specific commands
 		if (!empty($switch_cmd)) {
@@ -99,7 +99,7 @@ if (count($_GET) > 0) {
 			}
 
 			//run the command
-			$switch_result = event_socket_request($fp, 'api '.$api_cmd);
+			$switch_result = event_socket::api($api_cmd);
 
 			/*
 			//record stop
