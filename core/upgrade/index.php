@@ -312,13 +312,13 @@
 		$git_current_branch = $git_current_branch[0];
 		exec("git log --pretty=format:'%H' -n 1 2>&1", $git_current_commit, $commit_return_value);
 		$git_current_commit = $git_current_commit[0];
-
-		if (!is_numeric($git_current_branch)) {
-			echo "	<span style='font-weight: 600;'>".software::version()."</span>\n";
-		}
-		if ($branch_return_value == 0 && $commit_return_value == 0) {
-			echo "	<a href='https://github.com/fusionpbx/fusionpbx/compare/".$git_current_commit."...".$git_current_branch."' target='_blank' title='".$git_current_commit."' onclick=\"event.stopPropagation();\"><i>".$git_current_branch."</i></a>";
-			echo "&nbsp;&nbsp;<button type='button' class='btn btn-link btn-xs' onclick=\"event.stopPropagation(); source_preview('core','".(isset($_SESSION['theme']['title']['text']) ? $_SESSION['theme']['title']['text'] : 'FusionPBX')."');\">".$text['button-preview']."</button>\n";
+		if (($branch_return_value == 0) && ($commit_return_value == 0)) {
+			echo $text['label-git_branch'].' '.$git_current_branch." \n";
+			//echo $text['label-git_commit'].' '." ";
+			echo "<a href='https://github.com/anux-linux/fusionpbx/compare/";
+			echo $git_current_commit . "..." . "$git_current_branch' target='_blank'> \n";
+			echo $git_current_commit . "</a><br />\n";
+			echo "</a>";
 		}
 		echo "	</td>\n";
 		echo "</tr>\n";

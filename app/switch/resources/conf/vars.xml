@@ -39,7 +39,7 @@
    <!-- Codecs -->
    <!-- G7221@32000h,G7221@16000h,G722,PCMU,PCMA,iLBC,GSM,H263,H264 -->
    <X-PRE-PROCESS cmd="set" data="global_codec_prefs=G7221@32000h,G7221@16000h,G722,PCMU,PCMA" category="Codecs" enabled="true" uuid="38271682-cf61-40d3-a769-63617d933902"/>
-   <X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=PCMU,PCMA" category="Codecs" enabled="true"  uuid="522f710e-66ff-4e4d-8164-0ee1ef31c600"/>
+   <X-PRE-PROCESS cmd="set" data="outbound_codec_prefs=PCMU,PCMA" category="Codecs" enabled="true" uuid="522f710e-66ff-4e4d-8164-0ee1ef31c600"/>
    <X-PRE-PROCESS cmd="set" data="media_mix_inbound_outbound_codecs=true" category="Codecs" enabled="true" uuid="76646fce-3ff0-4582-a377-0986ed330782"/>
 
    <!-- Defaults -->
@@ -52,8 +52,8 @@
    <X-PRE-PROCESS cmd="set" data="default_dialect=us" category="Defaults" enabled="true" uuid="3d5e6bd6-a862-4862-91d1-6fa363345cad"/>
    <X-PRE-PROCESS cmd="set" data="default_voice=callie" category="Defaults" enabled="true" uuid="5fa8a217-697c-4525-99f3-1349e1e4e437"/>
    <X-PRE-PROCESS cmd="set" data="record_ext=wav" category="Defaults" enabled="true" uuid="439e60dd-9385-43db-9b65-85fcc5db369a"/>
-   <X-PRE-PROCESS cmd="set" data="default_country=US" category="Defaults" enabled="true" uuid="db10bba0-b637-434f-8065-40f34ae16a94"/>
-   <X-PRE-PROCESS cmd="set" data="default_countrycode=1" category="Defaults" enabled="true" uuid="2b0e7950-171b-4710-a69b-29941151bb11"/>
+   <X-PRE-PROCESS cmd="set" data="default_country=DE" category="Defaults" enabled="true" uuid="db10bba0-b637-434f-8065-40f34ae16a94"/>
+   <X-PRE-PROCESS cmd="set" data="default_countrycode=49" category="Defaults" enabled="true" uuid="2b0e7950-171b-4710-a69b-29941151bb11"/>
    <X-PRE-PROCESS cmd="set" data="default_exitcode=011" category="Defaults" enabled="true" uuid="6732040e-827b-48d4-a246-f74e1d3d383d"/>
 
    <!-- Dingaling -->
