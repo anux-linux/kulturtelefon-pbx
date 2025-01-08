@@ -20,7 +20,7 @@
 	<link rel='stylesheet' type='text/css' href='{$project_path}/resources/bootstrap/css/bootstrap-tempusdominus.min.css.php'>
 	<link rel='stylesheet' type='text/css' href='{$project_path}/resources/bootstrap/css/bootstrap-colorpicker.min.css.php'>
 	<link rel='stylesheet' type='text/css' href='{$project_path}/resources/fontawesome/css/all.min.css.php'>
-	<link rel='stylesheet' type='text/css' href='{$project_path}/themes/kulturtelefon/css.php'>
+	<link rel='stylesheet' type='text/css' href='{$project_path}/themes/goditel/css.php'>
 {*//link to custom css file *}
 	{if !empty($settings.theme.custom_css)}
 		<link rel='stylesheet' type='text/css' href='{$settings.theme.custom_css}'>
