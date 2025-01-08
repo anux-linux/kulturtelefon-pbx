@@ -430,7 +430,9 @@
 			echo "		<option value='32000'>32 kHz</option>\n";
 			echo "		<option value='48000'>48 kHz</option>\n";
 			echo 	"</select>";
-			echo button::create(['type'=>'button','title'=>!empty($text['label-new']),'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_new','onclick'=>"name_mode('new');"]);
+			if (permission_exists('music_on_hold_domain')) {
+				echo button::create(['type'=>'button','title'=>!empty($text['label-new']),'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_new','onclick'=>"name_mode('new');"]);
+			}
 			echo button::create(['type'=>'button','title'=>$text['label-select'],'icon'=>'list','id'=>'btn_select','style'=>'display: none;','onclick'=>"name_mode('select');"]);
 		//file
 			echo 	"<input type='text' class='txt' style='width: 100px; cursor: pointer; margin: 0;' id='filename' placeholder='Select...' onclick=\"document.getElementById('file').click(); this.blur();\" onfocus='this.blur();'>";
@@ -538,8 +540,13 @@
 					echo "		<tr class='list-header'>\n";
 					if (permission_exists('music_on_hold_delete')) {
 						echo "		<th class='checkbox'>\n";
-						echo "			<input type='checkbox' id='checkbox_all_".$row['music_on_hold_uuid']."' name='checkbox_all' onclick=\"list_all_toggle('".$row['music_on_hold_uuid']."'); document.getElementById('checkbox_all_".$row['music_on_hold_uuid']."_hidden').value = this.checked ? 'true' : ''; checkbox_on_change(this);\">\n";
-						echo "			<input type='hidden' id='checkbox_all_".$row['music_on_hold_uuid']."_hidden' name='moh[".$row['music_on_hold_uuid']."][checked]'>\n";
+						if(permission_exists('music_on_hold_domain')) {
+							echo "			<input type='checkbox' id='checkbox_all_".$row['music_on_hold_uuid']."' name='checkbox_all' onclick=\"list_all_toggle('".$row['music_on_hold_uuid']."'); document.getElementById('checkbox_all_".$row['music_on_hold_uuid']."_hidden').value = this.checked ? 'true' : ''; checkbox_on_change(this);\">\n";
+							echo "			<input type='hidden' id='checkbox_all_".$row['music_on_hold_uuid']."_hidden' name='moh[".$row['music_on_hold_uuid']."][checked]'>\n";
+						} else {
+							echo "			<input type='checkbox' id='checkbox_all_".$row['music_on_hold_uuid']."' name='checkbox_all' disabled onclick=\"list_all_toggle('".$row['music_on_hold_uuid']."'); document.getElementById('checkbox_all_".$row['music_on_hold_uuid']."_hidden').value = this.checked ? 'true' : ''; checkbox_on_change(this);\">\n";
+							echo "			<input type='hidden' id='checkbox_all_".$row['music_on_hold_uuid']."_hidden' name='moh[".$row['music_on_hold_uuid']."][checked]'>\n";
+						}
 						echo "		</th>\n";
 					}
 					if ($show == "all" && permission_exists('music_on_hold_all')) {
