@@ -34,7 +34,7 @@ $menu_brand_text_color = $_SESSION['theme']['menu_brand_text_color']['text'] ?? 
 $menu_brand_text_size = $_SESSION['theme']['menu_brand_text_size']['text'] ?? '13pt';
 $menu_brand_text_color_hover = $_SESSION['theme']['menu_brand_text_color_hover']['text'] ?? 'rgba(255,255,255,1.0)';
 $menu_brand_text_color_hover = $_SESSION['theme']['menu_brand_text_color_hover']['text'] ?? '/themes/goditel/images/logo.png';
-$menu_main_text_font = $_SESSION['theme']['menu_main_text_font']['text'] ?? 'Montserrat, Arial, sans-serif';
+$menu_main_text_font = $_SESSION['theme']['menu_main_text_font']['text'] ?? 'Arial, sans-serif';
 $menu_main_text_size = $_SESSION['theme']['menu_main_text_size']['text'] ?? '10.25pt';
 $menu_main_text_color = $_SESSION['theme']['menu_main_text_color']['text'] ?? '#000';
 $menu_main_text_color_hover = $_SESSION['theme']['menu_main_text_color_hover']['text'] ?? '#024b40';
@@ -44,7 +44,7 @@ $menu_sub_border_size = $_SESSION['theme']['menu_sub_border_size']['text'] ?? 0;
 $menu_sub_background_color = $_SESSION['theme']['menu_sub_background_color']['text'] ?? 'rgba(178,214,202, 0.9)';
 $menu_sub_shadow_color = isset($_SESSION['theme']['menu_sub_shadow_color']['text']) ? '0 0 5px '.$_SESSION['theme']['menu_sub_shadow_color']['text'] : 'none';
 $menu_sub_border_radius = $_SESSION['theme']['menu_sub_border_radius']['text'] ?? null;
-$menu_sub_text_font = $_SESSION['theme']['menu_sub_text_font']['text'] ?? 'Montserrat, Arial, sans-serif';
+$menu_sub_text_font = $_SESSION['theme']['menu_sub_text_font']['text'] ?? 'Arial, sans-serif';
 $menu_sub_text_color = $_SESSION['theme']['menu_sub_text_color']['text'] ?? '#000';
 $menu_sub_text_size = $_SESSION['theme']['menu_sub_text_size']['text'] ?? '10pt';
 $menu_sub_text_color_hover = $_SESSION['theme']['menu_sub_text_color_hover']['text'] ?? '#024b40';
@@ -74,7 +74,7 @@ $button_border_color = $_SESSION['theme']['button_border_color']['text'] ?? 'rgb
 $button_border_radius = $_SESSION['theme']['button_border_radius']['text'] ?? '4px';
 $button_background_color = $_SESSION['theme']['button_background_color']['text'] ?? 'rgb(254,88,88)';
 $button_background_color_bottom = $_SESSION['theme']['button_background_color_bottom']['text'] ?? 'rgb(254,88,88)';
-$button_text_font = $_SESSION['theme']['button_text_font']['text'] ?? 'Candara, Calibri, Segoe, "Segoe UI", Karla, sans-serif';
+$button_text_font = $_SESSION['theme']['button_text_font']['text'] ?? 'Candara, Calibri, Segoe, "Segoe UI", Arial, sans-serif';
 $button_text_color = $_SESSION['theme']['button_text_color']['text'] ?? 'rgb(255,255,255)';
 $button_text_weight = $_SESSION['theme']['button_text_weight']['text'] ?? 'bold';
 $button_text_size = $_SESSION['theme']['button_text_size']['text'] ?? '11px';
@@ -99,9 +99,9 @@ $domain_inactive_text_color_hover = $_SESSION['theme']['domain_inactive_text_col
 $domain_active_desc_text_color = $_SESSION['theme']['domain_active_desc_text_color']['text'] ?? '#999';
 $domain_inactive_desc_text_color = $_SESSION['theme']['domain_inactive_desc_text_color']['text'] ?? '#999';
 $heading_text_size = $_SESSION['theme']['heading_text_size']['text'] ?? '15px';
-$heading_text_font = $_SESSION['theme']['heading_text_font']['text'] ?? 'karla, arial, sans-serif';
+$heading_text_font = $_SESSION['theme']['heading_text_font']['text'] ?? 'Arial, sans-serif';
 $heading_count_padding = $_SESSION['theme']['heading_count_padding']['text'] ?? '2px 6px';
-$heading_count_text_font = $_SESSION['theme']['heading_count_text_font']['text'] ?? 'arial';
+$heading_count_text_font = $_SESSION['theme']['heading_count_text_font']['text'] ?? 'Arial';
 $heading_count_text_size = $_SESSION['theme']['heading_count_text_size']['text'] ?? '12px';
 $heading_count_text_color = $_SESSION['theme']['heading_count_text_color']['text'] ?? '#ffffff';
 $heading_count_text_weight = $_SESSION['theme']['heading_count_text_weight']['text'] ?? '700';
@@ -119,20 +119,20 @@ $login_body_border_style = $login_body_border_size || $login_body_border_color ?
 $login_body_shadow_color = isset($_SESSION['theme']['login_body_shadow_color']['text']) ? '0 1px 20px '.$_SESSION['theme']['login_body_shadow_color']['text'] : '0 1px 20px rgba(140,140,140,0.3)';
 $login_link_text_color = $_SESSION['theme']['login_link_text_color']['text'] ?? 'rgb(254,88,88)';
 $login_link_text_size = $_SESSION['theme']['login_link_text_size']['text'] ?? '11px';
-$login_link_text_font = $_SESSION['theme']['login_link_text_font']['text'] ?? 'Karla, Arial, sans-serif';
+$login_link_text_font = $_SESSION['theme']['login_link_text_font']['text'] ?? 'Arial, sans-serif';
 $login_link_text_color_hover = $_SESSION['theme']['login_link_text_color_hover']['text'] ?? 'rgb(93,53,62)';
 $body_color = $_SESSION['theme']['body_color']['text'] ?? '#ffffff';
 $body_border_radius = $_SESSION['theme']['body_border_radius']['text'] ?? null;
 $body_shadow_color = isset($_SESSION['theme']['body_shadow_color']['text']) ? '0 1px 4px '.$_SESSION['theme']['body_shadow_color']['text'] : 'none';
 $body_text_color = $_SESSION['theme']['body_text_color']['text'] ?? '#000000';
 $body_text_size = $_SESSION['theme']['body_text_size']['text'] ?? '12px';
-$body_text_font = $_SESSION['theme']['body_text_font']['text'] ?? 'Karla, Arial, sans-serif';
+$body_text_font = $_SESSION['theme']['body_text_font']['text'] ?? 'Arial, sans-serif';
 $body_width = $_SESSION['theme']['body_width']['text'] ?? '90%';
 $heading_text_color = $_SESSION['theme']['heading_text_color']['text'] ?? 'rgb(2,64,75)';
 $heading_text_size = $_SESSION['theme']['heading_text_size']['text'] ?? '15px';
-$heading_text_font = $_SESSION['theme']['heading_text_font']['text'] ?? 'Montserrat, Arial, sans-serif';
+$heading_text_font = $_SESSION['theme']['heading_text_font']['text'] ?? 'Arial';
 $input_text_placeholder_color = $_SESSION['theme']['input_text_placeholder_color']['text'] ?? '#999999; opacity: 1.0;';
-$input_text_font = $_SESSION['theme']['input_text_font']['text'] ?? 'Karl, Arial, sans-serif';
+$input_text_font = $_SESSION['theme']['input_text_font']['text'] ?? 'Arial, sans-serif';
 $input_text_size = $_SESSION['theme']['input_text_size']['text'] ?? '12px';
 $input_text_color = $_SESSION['theme']['input_text_color']['text'] ?? '#000';
 $input_border_size = $_SESSION['theme']['input_border_size']['text'] ?? '1px';
@@ -148,7 +148,7 @@ $input_border_color_hover = $_SESSION['theme']['input_border_color_hover']['text
 $input_border_color_focus = $_SESSION['theme']['input_border_color_focus']['text'] ?? 'rgb(254,88,88)';
 $login_text_color = $_SESSION['theme']['login_text_color']['text'] ?? 'rgb(2,64,75)';
 $login_text_size = $_SESSION['theme']['login_text_size']['text'] ?? '12px';
-$login_text_font = $_SESSION['theme']['login_text_font']['text'] ?? 'Karl, Arial, sans-serif';
+$login_text_font = $_SESSION['theme']['login_text_font']['text'] ?? 'Arial, sans-serif';
 $login_input_text_font = $_SESSION['theme']['login_input_text_font']['text'] ?? $input_text_font;
 $login_input_text_size = $_SESSION['theme']['login_input_text_size']['text'] ?? $input_text_size;
 $login_input_text_color = $_SESSION['theme']['login_input_text_color']['text'] ?? $input_text_color;
@@ -175,12 +175,12 @@ $input_toggle_switch_handle_symbol = $_SESSION['theme']['input_toggle_switch_han
 $input_toggle_switch_handle_color = $_SESSION['theme']['input_toggle_switch_handle_color']['boolean'] ?? '#ffffff';
 $table_heading_text_color = $_SESSION['theme']['table_heading_text_color']['text'] ?? '#3164ad';
 $table_heading_text_size = $_SESSION['theme']['table_heading_text_size']['text'] ?? '12px';
-$table_heading_text_font = $_SESSION['theme']['table_heading_text_font']['text'] ?? 'arial';
+$table_heading_text_font = $_SESSION['theme']['table_heading_text_font']['text'] ?? 'Arial';
 $table_heading_background_color = $_SESSION['theme']['table_heading_background_color']['text'] ?? 'none';
 $table_heading_border_color = $_SESSION['theme']['table_heading_border_color']['text'] ?? '#a4aebf';
 $table_heading_padding = $_SESSION['theme']['table_heading_padding']['text'] ?? '4px 7px';
 $table_row_text_color = $_SESSION['theme']['table_row_text_color']['text'] ?? '#000';
-$table_row_text_font = $_SESSION['theme']['table_row_text_font']['text'] ?? 'arial';
+$table_row_text_font = $_SESSION['theme']['table_row_text_font']['text'] ?? 'Arial';
 $table_row_text_size = $_SESSION['theme']['table_row_text_size']['text'] ?? '12px';
 $table_row_text_link_color = $_SESSION['theme']['table_row_text_link_color']['text'] ?? $text_link_color;
 $table_row_text_link_color_hover = $_SESSION['theme']['table_row_text_link_color_hover']['text'] ?? $text_link_color_hover;
@@ -319,7 +319,7 @@ if (!empty($_SESSION['theme'])) {
 					$font_name = trim($font_name);
 					$fonts[] = $font_name;
 				}
-				if (sizeof($fonts) == 1 && strtolower($fonts[0]) != 'arial') { $fonts[] = 'Arial'; } //fall back font
+				if (sizeof($fonts) == 1 && strtolower($fonts[0]) != 'Arial') { $fonts[] = 'Arial'; } //fall back font
 				$_SESSION['theme'][$subcategory]['text'] = "'".implode("','", $fonts)."'";
 			}
 		}
@@ -588,7 +588,7 @@ else { //default: white
 
 	.footer {
 		font-size: 11px;
-		font-family: arial;
+		font-family: Arial;
 		line-height: 14px;
 		color: <?=$footer_color?>;
 		white-space: nowrap;
@@ -1504,7 +1504,7 @@ else { //default: white
 		bottom: 0;
 		width: 340px;
 		padding: 20px 20px 100px 20px;
-		font-family: arial, san-serif;
+		font-family: Arial, san-serif;
 		font-size: 10pt;
 		overflow: hidden;
 		background: <?=$domain_selector_background_color?>;
@@ -2463,7 +2463,7 @@ else { //default: white
 		z-index: 99999;
 		margin: 0 auto;
 		text-align: center;
-		font-family: arial, san-serif;
+		font-family: Arial, san-serif;
 		font-size: 10pt;
 		display: block;
 		color: <?=$message_default_color?>;
@@ -2602,7 +2602,7 @@ else { //default: white
 	td.op_ext_info {
 		text-align: left;
 		vertical-align: top;
-		font-family: arial;
+		font-family: Arial;
 		font-size: 10px;
 		overflow: auto;
 		width: 100%;
@@ -2638,7 +2638,7 @@ else { //default: white
 		}
 
 	.op_user_info {
-		font-family: arial;
+		font-family: Arial;
 		font-size: 10px;
 		display: inline-block;
 		}
@@ -2650,14 +2650,14 @@ else { //default: white
 	.op_caller_info {
 		display: block;
 		margin-top: 4px;
-		font-family: arial;
+		font-family: Arial;
 		font-size: 10px;
 		}
 
 	.op_call_info {
 		display: inline-block;
 		padding: 0px;
-		font-family: arial;
+		font-family: Arial;
 		font-size: 10px;
 		}
 
@@ -3040,7 +3040,7 @@ else { //default: white
 		background-image: none;
 		background-color: #fff;
 		white-space: nowrap;
-		font-family: arial;
+		font-family: Arial;
 		font-size: 12px;
 		color: #444;
 		}
