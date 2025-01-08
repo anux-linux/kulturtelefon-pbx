@@ -1,7 +1,7 @@
 <?php
 
 	//application details
-		$apps[$x]['name'] = "Goditel Theme";
+		$apps[$x]['name'] = "goditel";
 		$apps[$x]['uuid'] = "3a6e3ad5-c7e2-4bdc-9c89-e10047efb953";
 		$apps[$x]['category'] = "Theme";
 		$apps[$x]['subcategory'] = "";
@@ -671,6 +671,38 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "side";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Set the style of the main menu.";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "ed3d428b-8507-41ca-8802-2c6a0d3e8138";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "menu_brand_text_color";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "#ffffff";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Set the text color of the main menu brand.";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "ed3d428b-8507-41ca-8802-2c6a0d3e8138";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "menu_brand_text_size";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "13pt";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Set the text size of the main menu brand.";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "ed3d428b-8507-41ca-8802-2c6a0d3e8138";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "menu_brand_text_color_hover";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "#ffffff";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Set the text color of the main menu brand hover.";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "ed3d428b-8507-41ca-8802-2c6a0d3e8138";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "menu_brand_image";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "/themes/goditel/images/logo.png";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Sets the logo of the main menu.";
 		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "71c68ea8-8242-4820-93ac-4825f91eb123";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";

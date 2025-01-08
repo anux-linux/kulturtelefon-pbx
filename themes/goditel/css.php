@@ -33,6 +33,7 @@ $menu_main_border_radius = $_SESSION['theme']['menu_main_border_radius']['text']
 $menu_brand_text_color = $_SESSION['theme']['menu_brand_text_color']['text'] ?? 'rgba(255,255,255,0.80)';
 $menu_brand_text_size = $_SESSION['theme']['menu_brand_text_size']['text'] ?? '13pt';
 $menu_brand_text_color_hover = $_SESSION['theme']['menu_brand_text_color_hover']['text'] ?? 'rgba(255,255,255,1.0)';
+$menu_brand_text_color_hover = $_SESSION['theme']['menu_brand_text_color_hover']['text'] ?? '/themes/goditel/images/logo.png';
 $menu_main_text_font = $_SESSION['theme']['menu_main_text_font']['text'] ?? 'Montserrat';
 $menu_main_text_size = $_SESSION['theme']['menu_main_text_size']['text'] ?? '10.25pt';
 $menu_main_text_color = $_SESSION['theme']['menu_main_text_color']['text'] ?? '#000';
