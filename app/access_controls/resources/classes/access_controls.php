@@ -2,11 +2,7 @@
 
 /**
  * access controls class
- *
- * @method null download
  */
-if (!class_exists('access_controls')) {
-
 	class access_controls {
 
 		/**
@@ -264,6 +260,4 @@ if (!class_exists('access_controls')) {
 			}
 		}
 	}
-
-}
 ?>

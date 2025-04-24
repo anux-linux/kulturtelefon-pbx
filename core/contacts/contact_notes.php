@@ -82,8 +82,12 @@
 					$contact_note = $row['contact_note'];
 					$contact_note = escape($contact_note);
 					$contact_note = str_replace("\n","<br />",$contact_note);
+					$list_row_url = '';
 					if (permission_exists('contact_note_add')) {
 						$list_row_url = "contact_note_edit.php?contact_uuid=".escape($row['contact_uuid'])."&id=".escape($row['contact_note_uuid']);
+						if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
+							$list_row_url .= '&domain_uuid='.urlencode($row['domain_uuid']).'&domain_change=true';
+						}
 					}
 					echo "<tr class='list-row' href='".$list_row_url."'>\n";
 					if (permission_exists('contact_note_delete')) {
@@ -96,7 +100,7 @@
 					echo "	<td class='description no-wrap'><strong>".escape($row['last_mod_user'])."</strong>: ".date("j M Y @ H:i:s", strtotime($row['last_mod_date']))."</td>\n";
 					if (permission_exists('contact_note_edit') && $list_row_edit_button == 'true') {
 						echo "	<td class='action-button'>\n";
-						echo button::create(['type'=>'button','title'=>$text['button-edit'],'icon'=>$_SESSION['theme']['button_icon_edit'],'link'=>$list_row_url]);
+						echo button::create(['type'=>'button','title'=>$text['button-edit'],'icon'=>$settings->get('theme', 'button_icon_edit'),'link'=>$list_row_url]);
 						echo "	</td>\n";
 					}
 					echo "</tr>\n";
@@ -112,3 +116,4 @@
 	}
 
 ?>
+

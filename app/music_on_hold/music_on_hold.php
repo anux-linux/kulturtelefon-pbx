@@ -308,7 +308,6 @@
 					$cache = new cache;
 					$cache->delete("configuration:local_stream.conf");
 
-				//require_once "app/music_on_hold/resources/classes/switch_music_on_hold.php";
 					$music = new switch_music_on_hold;
 					$music->reload();
 
@@ -374,9 +373,9 @@
 		echo 	"<form id='form_upload' class='inline' method='post' enctype='multipart/form-data'>\n";
 		echo 	"<input name='action' type='hidden' value='upload'>\n";
 		echo 	"<input type='hidden' name='".$token['name']."' value='".$token['hash']."'>\n";
-		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_add','onclick'=>"$(this).fadeOut(250, function(){ ".$modify_add_action." $('span#form_upload').fadeIn(250); });"]);
+		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','onclick'=>"$(this).fadeOut(250, function(){ ".$modify_add_action." $('span#form_upload').fadeIn(250); });"]);
 		echo 	"<span id='form_upload' style='display: none;'>";
-		echo button::create(['label'=>$text['button-cancel'],'icon'=>$_SESSION['theme']['button_icon_cancel'],'type'=>'button','id'=>'btn_upload_cancel','onclick'=>"$('span#form_upload').fadeOut(250, function(){ name_mode('select'); document.getElementById('form_upload').reset(); $('#btn_add').fadeIn(250) });"]);
+		echo button::create(['label'=>$text['button-cancel'],'icon'=>$settings->get('theme', 'button_icon_cancel'),'type'=>'button','id'=>'btn_upload_cancel','onclick'=>"$('span#form_upload').fadeOut(250, function(){ name_mode('select'); document.getElementById('form_upload').reset(); $('#btn_add').fadeIn(250) });"]);
 		//name (category)
 			echo 	"<select name='name' id='name_select' class='formfld' style='width: auto; margin: 0;'>\n";
 			echo "		<option value='' selected='selected' disabled='disabled'>".$text['label-category']."</option>\n";
@@ -439,7 +438,7 @@
 			echo 	"<input type='file' id='file' name='file' style='display: none;' accept='.wav,.mp3,.ogg' onchange=\"document.getElementById('filename').value = this.files.item(0).name; check_file_type(this);\">";
 		//submit
 			$margin_right = permission_exists('music_on_hold_delete') ? 'margin-right: 15px;' : null;
-			echo button::create(['type'=>'submit','label'=>$text['button-upload'],'style'=>$margin_right,'icon'=>$_SESSION['theme']['button_icon_upload']]);
+			echo button::create(['type'=>'submit','label'=>$text['button-upload'],'style'=>$margin_right,'icon'=>$settings->get('theme', 'button_icon_upload')]);
 		echo 	"</span>\n";
 		echo 	"</form>";
 	}
@@ -448,11 +447,11 @@
 			echo "		<input type='hidden' name='show' value='all'>";
 		}
 		else {
-			echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$_SESSION['theme']['button_icon_all'],'link'=>'?type=&show=all'.(!empty($search) ? "&search=".urlencode($search) : null)]);
+			echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$settings->get('theme', 'button_icon_all'),'link'=>'?type=&show=all'.(!empty($search) ? "&search=".urlencode($search) : null)]);
 		}
 	}
 	if (permission_exists('music_on_hold_delete') && $streams) {
-		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
 	}
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
@@ -573,7 +572,7 @@
 								case "ogg" : $stream_file_type = "audio/ogg"; break;
 							}
 							//playback progress bar
-								echo "<tr class='list-row' id='recording_progress_bar_".$row_uuid."' style='display: none;' onclick=\"recording_seek(event,'".escape($row_uuid)."')\"><td id='playback_progress_bar_background_".escape($row_uuid)."' class='playback_progress_bar_background' colspan='5'><span class='playback_progress_bar' id='recording_progress_".$row_uuid."'></span></td></tr>\n";
+								echo "<tr class='list-row' id='recording_progress_bar_".$row_uuid."' style='display: none;' onclick=\"recording_play('".escape($row_uuid)."','".urlencode($stream_file)."')\"><td id='playback_progress_bar_background_".escape($row_uuid)."' class='playback_progress_bar_background' colspan='5'><span class='playback_progress_bar' id='recording_progress_".$row_uuid."'></span></td></tr>\n";
 								echo "<tr class='list-row' style='display: none;'><td></td></tr>\n"; // dummy row to maintain alternating background color
 							$list_row_link = "javascript:recording_play('".$row_uuid."','".urlencode($stream_file)."');";
 							echo "<tr class='list-row' href=\"".$list_row_link."\">\n";
@@ -595,8 +594,8 @@
 							echo "	<td class='overflow'>".escape($stream_file)."</td>\n";
 							echo "	<td class='button center no-link no-wrap'>";
 							echo 		"<audio id='recording_audio_".$row_uuid."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".$row_uuid."')\" onended=\"recording_reset('".$row_uuid."');\" src='music_on_hold.php?action=download&id=".escape($row['music_on_hold_uuid'])."&file=".urlencode($stream_file)."' type='".$stream_file_type."'></audio>";
-							echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$_SESSION['theme']['button_icon_play'],'id'=>'recording_button_'.$row_uuid,'onclick'=>"recording_play('".$row_uuid."','".urlencode($stream_file)."');"]);
-							echo button::create(['type'=>'button','title'=>$text['label-download'],'icon'=>$_SESSION['theme']['button_icon_download'],'link'=>"?action=download&id=".urlencode($row['music_on_hold_uuid'])."&file=".urlencode($stream_file)]);
+							echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$settings->get('theme', 'button_icon_play'),'id'=>'recording_button_'.$row_uuid,'onclick'=>"recording_play('".$row_uuid."','".urlencode($stream_file)."');"]);
+							echo button::create(['type'=>'button','title'=>$text['label-download'],'icon'=>$settings->get('theme', 'button_icon_download'),'link'=>"?action=download&id=".urlencode($row['music_on_hold_uuid'])."&file=".urlencode($stream_file)]);
 							echo "	</td>\n";
 							echo "	<td class='right no-wrap hide-xs'>".escape($stream_file_size)."</td>\n";
 							echo "	<td class='right no-wrap hide-sm-dn'>".escape($stream_file_date)."</td>\n";

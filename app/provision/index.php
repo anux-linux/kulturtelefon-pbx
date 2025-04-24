@@ -210,7 +210,7 @@
 
 		//get the domain_uuid
 			$sql = "select domain_uuid from v_domains ";
-			$sql .= "where domain_name = :domain_name ";
+			$sql .= "where lower(domain_name) = lower(:domain_name) ";
 			$parameters['domain_name'] = $domain_name;
 			$domain_uuid = $database->select($sql, $parameters, 'column');
 			unset($sql, $parameters);
@@ -223,6 +223,11 @@
 			syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt but the remote auth server said no for ".escape($_REQUEST['mac']));
 			http_error('404');
 		}
+	} else {
+		//check for a valid match
+			if (empty($device_uuid)) {
+				http_error(403);
+			}
 	}
 
 //use the device address to get the vendor
@@ -246,6 +251,9 @@
 	if (empty($device_uuid) && $settings->get('provision', 'auto_insert_enabled', false)) {
 		http_error(403);
 	}
+
+//get all provision settings
+	$provision = $settings->get('provision', null, []);
 
 //check the cidr range
 	if (!empty($provision['cidr'])) {

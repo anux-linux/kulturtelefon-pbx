@@ -55,8 +55,7 @@
 	$speech_enabled = $settings->get('speech', 'enabled', false);
 	$recording_storage_type = $settings->get('recordings','storage_type');
 	$recording_password = $settings->get('recordings','recording_password');
-	$domain_paging = $settings->get('domain','paging');
-	$domain_paging = $settings->get('domain','paging', );
+	$domain_paging = $settings->get('domain','paging', 100);
 	$theme_button_icon_edit = $settings->get('theme','button_icon_edit');
 	$theme_button_icon_add = $settings->get('theme','button_icon_add');
 	$theme_button_icon_upload = $settings->get('theme','button_icon_upload');
@@ -530,8 +529,12 @@
 				echo "<tr class='list-row' id='recording_progress_bar_".escape($row['recording_uuid'])."' onclick=\"recording_seek(event,'".escape($row['recording_uuid'] ?? '')."')\" style='display: none;'><td id='playback_progress_bar_background_".escape($row['recording_uuid'])."' class='playback_progress_bar_background' style='padding: 0; border: none;' colspan='".$col_count."'><span class='playback_progress_bar' id='recording_progress_".escape($row['recording_uuid'])."'></span></td></tr>\n";
 				echo "<tr class='list-row' style='display: none;'><td></td></tr>\n"; // dummy row to maintain alternating background color
 			}
+			$list_row_url = '';
 			if (permission_exists('recording_edit')) {
 				$list_row_url = "recording_edit.php?id=".urlencode($row['recording_uuid']);
+				if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
+					$list_row_url .= '&domain_uuid='.urlencode($row['domain_uuid']).'&domain_change=true';
+				}
 			}
 			echo "<tr class='list-row' href='".$list_row_url."'>\n";
 			if (permission_exists('recording_delete')) {
@@ -711,3 +714,4 @@
 	}
 
 ?>
+
