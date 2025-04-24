@@ -25,7 +25,6 @@
 */
 
 //define the fax class
-if (!class_exists('fax')) {
 	class fax {
 
 		/**
@@ -99,7 +98,7 @@ if (!class_exists('fax')) {
 						$array['dialplan_details'][0]['domain_uuid'] = $this->domain_uuid;
 
 					//grant temporary permissions
-						$p = new permissions;
+						$p = permissions::new();
 						$p->add('dialplan_detail_delete', 'temp');
 
 					//execute delete
@@ -166,7 +165,7 @@ if (!class_exists('fax')) {
 				$array['dialplans'][] = $dialplan;
 
 			//add the dialplan permission
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add("dialplan_add", 'temp');
 				$p->add("dialplan_detail_add", 'temp');
 				$p->add("dialplan_edit", 'temp');
@@ -312,7 +311,7 @@ if (!class_exists('fax')) {
 							if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('fax_delete', 'temp');
 									$p->add('fax_user_delete', 'temp');
 									$p->add('fax_file_delete', 'temp');
@@ -625,7 +624,7 @@ if (!class_exists('fax')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('fax_add', 'temp');
 									$p->add('dialplan_add', 'temp');
 
@@ -725,7 +724,6 @@ if (!class_exists('fax')) {
 		}
 
 	} //class
-}
 
 /*
 $o = new fax;
@@ -738,5 +736,3 @@ $c->destination_number = $fax_destination_number;
 $c->fax_description = $fax_description;
 $c->dialplan();
 */
-
-?>

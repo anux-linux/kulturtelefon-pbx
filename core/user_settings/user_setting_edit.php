@@ -156,14 +156,14 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 
 					//update the timezone
 						if ($detail_action == "update") {
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('dialplan_detail_edit', 'temp');
 
 							$array['dialplan_details'][0]['dialplan_detail_uuid'] = $dialplan_detail_uuid;
 							$array['dialplan_details'][0]['dialplan_detail_data'] = 'timezone='.$user_setting_value;
 						}
 						else {
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('dialplan_detail_add', 'temp');
 
 							$array['dialplan_details'][0]['domain_uuid'] = $domain_uuid;
@@ -266,7 +266,7 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 									$array['dialplan_details'][0]['dialplan_detail_group'] = !empty($dialplan_detail_group) ? $dialplan_detail_group : 'null';
 									$array['dialplan_details'][0]['dialplan_detail_order'] = '15';
 
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('dialplan_detail_add', 'temp');
 
 									$database->app_name = 'user_settings';
@@ -284,7 +284,7 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 									$array['dialplan_details'][0]['domain_uuid'] = $_SESSION["domain_uuid"];
 									$array['dialplan_details'][0]['dialplan_uuid'] = $dialplan_uuid;
 
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('dialplan_detail_edit', 'temp');
 
 									$database->app_name = 'user_settings';
@@ -297,6 +297,9 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 						}
 					}
 				}
+
+			//clear the user settings cache
+				settings::clear_cache('user');
 
 			//redirect the browser
 				if ($action == "update") {
@@ -358,8 +361,8 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	}
 	echo	"</div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'style'=>'margin-right: 15px;','link'=>'/core/users/user_edit.php?id='.urlencode($user_uuid)]);
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'style'=>'margin-right: 15px;','link'=>'/core/users/user_edit.php?id='.urlencode($user_uuid)]);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -372,6 +375,8 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	}
 	echo "<br /><br />\n";
 
+
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -539,8 +544,8 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 		echo "    	<option value='textarea' ".($user_setting_value == "textarea" ? "selected='selected'" : null).">TextArea</option>\n";
 		echo "	</select>\n";
 	}
-	else if ($user_setting_subcategory == 'password' || substr_count($user_setting_subcategory, '_password') > 0 || $user_setting_category == "login" && $user_setting_subcategory == "password_reset_key" && $user_setting_name == "text") {
-		echo "	<input class='formfld' type='password' id='user_setting_value' name='user_setting_value' maxlength='255' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" value=\"".escape($user_setting_value)."\">\n";
+	else if ($user_setting_subcategory == 'password' || (substr_count($user_setting_subcategory, '_password') > 0 && $user_setting_subcategory != 'input_text_font_password') || $user_setting_category == "login" && $user_setting_subcategory == "password_reset_key" && $user_setting_name == "text") {
+		echo "	<input class='formfld password' type='password' id='user_setting_value' name='user_setting_value' maxlength='255' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" value=\"".escape($user_setting_value)."\">\n";
 	}
 	else if ($user_setting_category == "theme" && substr_count($user_setting_subcategory, "_color") > 0 && ($user_setting_name == "text" || $user_setting_name == 'array')) {
 		echo "	<input type='text' class='formfld colorpicker' id='user_setting_value' name='user_setting_value' value=\"".$user_setting_value."\">\n";
@@ -705,7 +710,7 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	echo "<br />\n";
 	echo $text['description-value']."\n";
 	if ($user_setting_category == "theme" && substr_count($user_setting_subcategory, "_font") > 0 && $user_setting_name == "text") {
-		echo "&nbsp;&nbsp;".$text['label-reference'].": <a href='https://www.google.com/fonts' target='_blank'>".$text['label-web_fonts']."</a>\n";
+		echo "&nbsp;&nbsp;".$text['label-reference'].": <a href='https://fonts.google.com' target='_blank'>".$text['label-web_fonts']."</a>\n";
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
@@ -785,18 +790,21 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	echo "		</td>\n";
 	echo "	</tr>";
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br />";
 	echo "</form>";
 
 	echo "<script>\n";
-//hide/convert password fields then submit form
+	echo "	//hide/convert password fields then submit form\n";
 	echo "	function submit_form() {\n";
 	echo "		hide_password_fields();\n";
 	echo "		$('form#frm').submit();\n";
 	echo "	}\n";
-//define lowercase class
+	echo "\n";
+	echo "	//define lowercase class\n";
 	echo "	$('.lowercase').on('blur',function(){ this.value = this.value.toLowerCase(); });";
-//show order if array
+	echo "\n";
+	echo "	//show order if array\n";
 	echo "	$('#user_setting_name').on('keyup',function(){ \n";
 	echo "		(this.value.toLowerCase() == 'array') ? $('#tr_order').slideDown('fast') : $('#tr_order').slideUp('fast');\n";
 	echo "	});\n";

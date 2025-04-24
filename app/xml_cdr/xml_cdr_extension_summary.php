@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -67,7 +67,7 @@
 
 		//set the headers
 			header('Content-type: application/octet-binary');
-			header('Content-Disposition: attachment; filename=user-summary.csv');
+			header('Content-Disposition: attachment; filename=extension-summary.csv');
 
 		//show the column names on the first line
 			$z = 0;
@@ -117,11 +117,11 @@
 	echo "	<div class='heading'><b>".$text['title-extension_summary']."</b></div>\n";
 	echo "	<div class='actions'>\n";
 	if (permission_exists('xml_cdr_extension_summary_all') && $_GET['show'] != 'all') {
-		echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$_SESSION['theme']['button_icon_all'],'collapse'=>'hide-sm-dn','link'=>'xml_cdr_extension_summary.php?show=all']);
+		echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$settings->get('theme', 'button_icon_all'),'collapse'=>'hide-sm-dn','link'=>'xml_cdr_extension_summary.php?show=all']);
 	}
-	echo button::create(['type'=>'button','label'=>$text['button-download_csv'],'icon'=>$_SESSION['theme']['button_icon_download'],'collapse'=>'hide-sm-dn','link'=>'xml_cdr_extension_summary.php?'.(!empty($_SERVER["QUERY_STRING"]) ? $_SERVER["QUERY_STRING"].'&' : null).'type=csv']);
-	echo button::create(['type'=>'button','label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'collapse'=>'hide-xs','style'=>'margin-left: 15px;','link'=>'xml_cdr_extension_summary.php']);
-	echo button::create(['type'=>'button','label'=>$text['button-update'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','collapse'=>'hide-xs','onclick'=>"document.getElementById('frm').submit();"]);
+	echo button::create(['type'=>'button','label'=>$text['button-download_csv'],'icon'=>$settings->get('theme', 'button_icon_download'),'collapse'=>'hide-sm-dn','link'=>'xml_cdr_extension_summary.php?'.(!empty($_SERVER["QUERY_STRING"]) ? $_SERVER["QUERY_STRING"].'&' : null).'type=csv']);
+	echo button::create(['type'=>'button','label'=>$text['button-reset'],'icon'=>$settings->get('theme', 'button_icon_reset'),'collapse'=>'hide-xs','style'=>'margin-left: 15px;','link'=>'xml_cdr_extension_summary.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-update'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','collapse'=>'hide-xs','onclick'=>"document.getElementById('frm').submit();"]);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -129,9 +129,11 @@
 	if (permission_exists('xml_cdr_search')) {
 		echo "<form name='frm' id='frm' method='get'>\n";
 
-		echo "<div class='form_grid' style='padding-bottom: 35px;'>\n";
+		echo "<div class='card' style='margin-bottom: 30px;'>\n";
+		echo "<div class='form_grid'>\n";
 
 		echo "	<div class='form_set'>\n";
+
 		echo "		<div class='label'>\n";
 		echo "			".$text['label-preset']."\n";
 		echo "		</div>\n";
@@ -147,9 +149,7 @@
 		echo "				<option value='7' ".(($quick_select == 7) ? "selected='selected'" : null).">".$text['option-this_year']."</option>\n";
 		echo "			</select>\n";
 		echo "		</div>\n";
-		echo "	</div>\n";
 
-		echo "	<div class='form_set'>\n";
 		echo "		<div class='label'>\n";
 		echo "			".$text['label-include_internal']."\n";
 		echo "		</div>\n";
@@ -159,26 +159,27 @@
 		echo "				<option value='1' ".((!empty($include_internal) && $include_internal == 1) ? "selected" : null).">".$text['option-true']."</option>\n";
 		echo "			</select>\n";
 		echo "		</div>\n";
-		echo "	</div>\n";
 
+		echo "	</div>\n";
 		echo "	<div class='form_set'>\n";
+
 		echo "		<div class='label'>\n";
 		echo "			".$text['label-start_date_time']."\n";
 		echo "		</div>\n";
 		echo "		<div class='field'>\n";
 		echo "			<input type='text' class='formfld datetimepicker' data-toggle='datetimepicker' data-target='#start_stamp_begin' onblur=\"$(this).datetimepicker('hide');\" style='min-width: 115px; width: 115px; max-width: 115px;' name='start_stamp_begin' id='start_stamp_begin' placeholder='".$text['label-from']."' value='".escape($start_stamp_begin ?? '')."'>\n";
 		echo "		</div>\n";
-		echo "	</div>\n";
 
-		echo "	<div class='form_set'>\n";
 		echo "		<div class='label'>\n";
 		echo "			".$text['label-end_date_time']."\n";
 		echo "		</div>\n";
 		echo "		<div class='field'>\n";
 		echo "			<input type='text' class='formfld datetimepicker' data-toggle='datetimepicker' data-target='#start_stamp_end' onblur=\"$(this).datetimepicker('hide');\" style='min-width: 115px; width: 115px; max-width: 115px;' name='start_stamp_end' id='start_stamp_end' placeholder='".$text['label-to']."' value='".escape($start_stamp_end ?? '')."'>\n";
 		echo "		</div>\n";
+
 		echo "	</div>\n";
 
+		echo "</div>\n";
 		echo "</div>\n";
 
 		if (!empty($_GET['show']) && $_GET['show'] == 'all' && permission_exists('xml_cdr_extension_summary_all')) {
@@ -189,6 +190,7 @@
 	}
 
 //show the results
+	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "	<tr class='list-header'>\n";
 	if (!empty($_GET['show']) && $_GET['show'] === "all" && permission_exists('xml_cdr_extension_summary_all')) {
@@ -237,6 +239,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br />\n";
 
 //show the footer

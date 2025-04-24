@@ -42,6 +42,12 @@
 	$language = new text;
 	$text = $language->get();
 
+<<<<<<< HEAD
+=======
+//initialize the database connection
+	$database = database::new();
+
+>>>>>>> develop
 //set defaults
 	$recording_name = '';
 	$recording_message = '';
@@ -52,6 +58,7 @@
 
 //add the settings object
 	$settings = new settings(["domain_uuid" => $_SESSION['domain_uuid'], "user_uuid" => $_SESSION['user_uuid']]);
+<<<<<<< HEAD
 	$speech_enabled = $settings->get('speech', 'enabled', 'false');
 	$speech_engine = $settings->get('speech', 'engine', '');
 	$transcribe_enabled = $settings->get('transcribe', 'enabled', 'false');
@@ -59,6 +66,15 @@
 
 //add the speech object and get the voices and languages arrays
 	if ($speech_enabled == 'true' && !empty($speech_engine)) {
+=======
+	$speech_enabled = $settings->get('speech', 'enabled', false);
+	$speech_engine = $settings->get('speech', 'engine', '');
+	$transcribe_enabled = $settings->get('transcribe', 'enabled', false);
+	$transcribe_engine = $settings->get('transcribe', 'engine', '');
+
+//add the speech object and get the voices and languages arrays
+	if ($speech_enabled && !empty($speech_engine)) {
+>>>>>>> develop
 		$speech = new speech($settings);
 		$voices = $speech->get_voices();
 		//$speech_models = $speech->get_models();
@@ -68,7 +84,11 @@
 	}
 
 //add the transcribe object and get the languages arrays
+<<<<<<< HEAD
 	if ($transcribe_enabled == 'true' && !empty($transcribe_engine)) {
+=======
+	if ($transcribe_enabled && !empty($transcribe_engine)) {
+>>>>>>> develop
 		$transcribe = new transcribe($settings);
 		//$transcribe_models = $transcribe->get_models();
 		//$translate_enabled = $transcribe->get_translate_enabled();
@@ -196,7 +216,11 @@
 
 				//determine whether to create the recording
 				$create_recording = false;
+<<<<<<< HEAD
 				if ($speech_enabled == 'true' && !empty($recording_voice) && !empty($recording_message)) {
+=======
+				if ($speech_enabled && !empty($recording_voice) && !empty($recording_message)) {
+>>>>>>> develop
 					if ($action == 'add') {
 						$create_recording = true;
 					}
@@ -229,7 +253,11 @@
 				}
 
 				//audio to text - get the transcription from the audio file
+<<<<<<< HEAD
 				if ($transcribe_enabled == 'true' && empty($recording_message)) {
+=======
+				if ($transcribe_enabled && empty($recording_message)) {
+>>>>>>> develop
 					$transcribe->audio_path = $recording_path;
 					$transcribe->audio_filename = $recording_filename;
 					$recording_message = $transcribe->transcribe();
@@ -240,14 +268,21 @@
 				$array['recordings'][0]['recording_uuid'] = $recording_uuid;
 				$array['recordings'][0]['recording_filename'] = $recording_filename;
 				$array['recordings'][0]['recording_name'] = $recording_name;
+<<<<<<< HEAD
 				if ($speech_enabled == 'true' || $transcribe_enabled == 'true') {
+=======
+				if ($speech_enabled || $transcribe_enabled) {
+>>>>>>> develop
 					$array['recordings'][0]['recording_voice'] = $recording_voice;
 					$array['recordings'][0]['recording_message'] = $recording_message;
 				}
 				$array['recordings'][0]['recording_description'] = $recording_description;
 
 				//execute update
+<<<<<<< HEAD
 				$database = new database;
+=======
+>>>>>>> develop
 				$database->app_name = 'recordings';
 				$database->app_uuid = '83913217-c7a2-9e90-925d-a866eb40b60e';
 				$database->save($array);
@@ -273,7 +308,6 @@
 		$sql .= "and recording_uuid = :recording_uuid ";
 		$parameters['domain_uuid'] = $domain_uuid;
 		$parameters['recording_uuid'] = $recording_uuid;
-		$database = new database;
 		$row = $database->select($sql, $parameters, 'row');
 		if (is_array($row) && @sizeof($row) != 0) {
 			$recording_filename = $row["recording_filename"];
@@ -299,11 +333,17 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-edit']."</b></div>\n";
 	echo "	<div class='actions'>\n";
+<<<<<<< HEAD
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'recordings.php']);
 	if (permission_exists('recording_delete') && !empty($recording_uuid) && is_uuid($recording_uuid)) {
 		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','style'=>'margin-right: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+=======
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'recordings.php']);
+	if (permission_exists('recording_delete') && !empty($recording_uuid) && is_uuid($recording_uuid)) {
+		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'name'=>'btn_delete','style'=>'margin-right: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+>>>>>>> develop
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -312,6 +352,7 @@
 		echo modal::create(['id'=>'modal-delete','type'=>'delete','actions'=>button::create(['type'=>'submit','label'=>$text['button-continue'],'icon'=>'check','id'=>'btn_delete','style'=>'float: right; margin-left: 15px;','collapse'=>'never','name'=>'action','value'=>'delete','onclick'=>"modal_close();"])]);
 	}
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -339,7 +380,11 @@
 		echo "</tr>\n";
 	}
 
+<<<<<<< HEAD
 	if ($speech_enabled == 'true' || $transcribe_enabled == 'true') {
+=======
+	if ($speech_enabled || $transcribe_enabled) {
+>>>>>>> develop
 		//models
 		if (!empty($models)) {
 			echo "<tr>\n";
@@ -438,7 +483,11 @@
 		echo "    ".$text['label-message']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
+<<<<<<< HEAD
 		echo "    <textarea class='formfld' name='recording_message' style='width: 300px; height: 150px;'>".escape($recording_message)."</textarea>\n";
+=======
+		echo "    <textarea class='formfld' name='recording_message' style='width: 300px; height: 150px;'>".escape_textarea($recording_message)."</textarea>\n";
+>>>>>>> develop
 		echo "<br />\n";
 		echo $text['description-message']."\n";
 		echo "</td>\n";
@@ -458,8 +507,13 @@
 			}
 			else {
 				echo "	<select class='formfld' id='create_recording' name='create_recording'>\n";
+<<<<<<< HEAD
 				echo "		<option value='true' ".($create_recording == 'true' ? "selected='selected'" : null).">".$text['option-true']."</option>\n";
 				echo "		<option value='false' ".($create_recording == 'false' ? "selected='selected'" : null).">".$text['option-false']."</option>\n";
+=======
+				echo "		<option value='true'>".$text['option-true']."</option>\n";
+				echo "		<option value='false' selected='selected'>".$text['option-false']."</option>\n";
+>>>>>>> develop
 				echo "	</select>\n";
 			}
 			echo "<br />\n";
@@ -481,6 +535,7 @@
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br /><br />";
 
 	if (!empty($recording_uuid) && is_uuid($recording_uuid)) {

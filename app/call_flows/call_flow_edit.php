@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -237,7 +237,7 @@
 			$array["call_flows"][$i]["call_flow_description"] = $call_flow_description;
 
 		//add the dialplan permission
-			$p = new permissions;
+			$p = permissions::new();
 			$p->add("dialplan_add", "temp");
 			$p->add("dialplan_edit", "temp");
 
@@ -452,12 +452,13 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-call_flow']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'call_flows.php']);
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'call_flows.php']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -625,7 +626,11 @@
 			case 'ogg' : $mime_type = 'audio/ogg'; break;
 		}
 		echo "<audio id='recording_audio_".$instance_id."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".$instance_id."')\" onended=\"recording_reset('".$instance_id."');\" src='".($playable ?? '')."' type='".($mime_type ?? '')."'></audio>";
+<<<<<<< HEAD
 		echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$_SESSION['theme']['button_icon_play'],'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'));"]);
+=======
+		echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$settings->get('theme', 'button_icon_play'),'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'));"]);
+>>>>>>> develop
 		unset($playable, $mime_type);
 	}
 	echo "<br />\n";
@@ -727,7 +732,11 @@
 			case 'ogg' : $mime_type = 'audio/ogg'; break;
 		}
 		echo "<audio id='recording_audio_".$instance_id."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".$instance_id."')\" onended=\"recording_reset('".$instance_id."');\" src='".($playable ?? '')."' type='".($mime_type ?? '')."'></audio>";
+<<<<<<< HEAD
 		echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$_SESSION['theme']['button_icon_play'],'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'));"]);
+=======
+		echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$settings->get('theme', 'button_icon_play'),'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'));"]);
+>>>>>>> develop
 		unset($playable, $mime_type);
 	}
 	echo "<br />\n";
@@ -793,6 +802,7 @@
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br /><br />";
 
 	if ($action == "update") {

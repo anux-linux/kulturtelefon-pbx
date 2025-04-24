@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -139,16 +139,16 @@
 	echo "	<div class='heading'><b>".$text['title-call-statistics']."</b></div>\n";
 	echo "	<div class='actions'>\n";
 	if (substr_count($_SERVER['HTTP_REFERER'], 'app/xml_cdr/xml_cdr.php') != 0) {
-		echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'xml_cdr.php']);
+		echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'xml_cdr.php']);
 	}
 	if (permission_exists('xml_cdr_search_advanced')) {
 		echo button::create(['type'=>'button','label'=>$text['button-advanced_search'],'icon'=>'tools','link'=>'xml_cdr_search.php?type=advanced'.$search_url]);
 	}
 	if (permission_exists('xml_cdr_all') && !$show_all) {
-		echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$_SESSION['theme']['button_icon_all'],'link'=>'xml_cdr_statistics.php?showall=true'.$search_url]);
+		echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$settings->get('theme', 'button_icon_all'),'link'=>'xml_cdr_statistics.php?showall=true'.$search_url]);
 	}
 	echo button::create(['type'=>'button','label'=>$text['button-extension_summary'],'icon'=>'list','link'=>'xml_cdr_extension_summary.php']);
-	echo button::create(['type'=>'button','label'=>$text['button-download_csv'],'icon'=>$_SESSION['theme']['button_icon_download'],'link'=>'xml_cdr_statistics_csv.php?type=csv'.$search_url]);
+	echo button::create(['type'=>'button','label'=>$text['button-download_csv'],'icon'=>$settings->get('theme', 'button_icon_download'),'link'=>'xml_cdr_statistics_csv.php?type=csv'.$search_url]);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -156,11 +156,12 @@
 	echo $text['label-call-statistics-description']."\n";
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	?>
 	<script src='/resources/chartjs/chart.min.js'></script>
 	<script src='/resources/chartjs/chartjs-adapter-date-fns.bundle.min.js'></script>
 
-	<div align='center' style="justify-content: center;">
+	<div align='center' style="justify-content: center; margin-bottom: 25px;">
 		<div style="max-width: 100%; width: 800px; height: 280px;">
 			<canvas id="cdr_stats_chart" style="width: 100%; height: 100%;"></canvas>
 		</div>
@@ -271,18 +272,28 @@
 	</script>
 
 	<?php
+	echo "</div>\n";
 
 //show the results
+	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
 	echo "	<th>".$text['label-hours']."</th>\n";
 	echo "	<th>".$text['label-date']."</th>\n";
 	echo "	<th class='no-wrap'>".$text['label-time']."</th>\n";
+<<<<<<< HEAD
 	echo "	<th>Volume</th>\n";
 	echo "	<th>".$text['label-minutes']."</th>\n";
 	echo "	<th>".$text['label-calls-per-minute']."</th>\n";
 	echo "	<th class='center'>".$text['label-missed']."</th>\n";
 	echo "	<th>ASR</th>\n";
+=======
+	echo "	<th title='".$text['description-volume']."'>".$text['label-volume']."</th>\n";
+	echo "	<th>".$text['label-minutes']."</th>\n";
+	echo "	<th title='".$text['description-calls-per-minute']."'>".$text['label-calls-per-minute']."</th>\n";
+	echo "	<th class='center'>".$text['label-missed']."</th>\n";
+	echo "	<th title='".$text['description-asr']."'>".$text['label-asr']."</th>\n";
+>>>>>>> develop
 	echo "	<th title='".$text['description-aloc']."'>".$text['label-aloc']."</th>\n";
 	echo "</tr>\n";
 
@@ -326,7 +337,7 @@
 		}
 		echo "	<td>".escape($row['volume'])."&nbsp;</td>\n";
 		echo "	<td>".escape(round($row['minutes'] ?? 0, 2))."&nbsp;</td>\n";
-		echo "	<td>".escape(round($row['avg_min'] ?? 0, 2))."&nbsp;/&nbsp;".escape(round($row['cpm_ans'] ?? 0, 2))."&nbsp;</td>\n";
+		echo "	<td>".escape(round($row['avg_min'] ?? 0, 2))."&nbsp;/&nbsp;".escape(round($row['cpm_answered'] ?? 0, 2))."&nbsp;</td>\n";
 		echo "	<td class='center'><a href=\"xml_cdr.php?call_result=missed&direction=".$direction."&start_epoch=".escape($row['start_epoch'] ?? '')."&stop_epoch=".escape($row['stop_epoch'] ?? '')."\">".escape($row['missed'] ?? '')."</a>&nbsp;</td>\n";
 		echo "	<td>".escape(round($row['asr'] ?? 0, 2))."&nbsp;</td>\n";
 		echo "	<td>".escape(round($row['aloc'] ?? 0, 2))."&nbsp;</td>\n";
@@ -334,6 +345,7 @@
 		$i++;
 	}
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br><br>";
 
 //include the footer

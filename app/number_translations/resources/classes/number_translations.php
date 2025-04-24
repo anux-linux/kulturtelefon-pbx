@@ -25,7 +25,6 @@
 */
 
 //define the number translations class
-if (!class_exists('number_translations')) {
 	class number_translations {
 
 		/**
@@ -119,7 +118,7 @@ if (!class_exists('number_translations')) {
 							}
 						}
 					//grant temporary permissions
-						$p = new permissions;
+						$p = permissions::new();
 						$p->add('number_translation_add', 'temp');
 						$p->add('number_translation_detail_add', 'temp');
 					//execute insert
@@ -176,7 +175,7 @@ if (!class_exists('number_translations')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('number_translation_detail_delete', 'temp');
 
 								//execute delete
@@ -390,7 +389,7 @@ if (!class_exists('number_translations')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('number_translation_detail_add', 'temp');
 
 								//save the array
@@ -414,11 +413,8 @@ if (!class_exists('number_translations')) {
 		} //method
 
 	} //class
-}
 
 /*
 $obj = new number_translations;
 $obj->delete();
 */
-
-?>

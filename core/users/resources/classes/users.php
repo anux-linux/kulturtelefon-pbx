@@ -26,12 +26,7 @@
 
 /**
  * users class
- *
- * @method null delete
- * @method null toggle
- * @method null copy
  */
-if (!class_exists('users')) {
 	class users {
 
 		/**
@@ -130,7 +125,7 @@ if (!class_exists('users')) {
 						//delete the checked rows
 							if (is_array($array) && @sizeof($array) != 0) {
 								//execute
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('user_setting_delete', 'temp');
 									$p->add('user_group_delete', 'temp');
 
@@ -315,6 +310,3 @@ if (!class_exists('users')) {
 			}
 		}
 	}
-}
-
-?>

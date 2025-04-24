@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -91,7 +91,7 @@
 		$user_uuid = $_REQUEST["user_uuid"];
 		$conference_uuid = $_REQUEST["id"];
 
-		$p = new permissions;
+		$p = permissions::new();
 		$p->add('conference_user_delete', 'temp');
 
 		$array['conference_users'][0]['domain_uuid'] = $_SESSION['domain_uuid'];
@@ -124,7 +124,7 @@
 			$array['conference_users'][0]['conference_uuid'] = $conference_uuid;
 			$array['conference_users'][0]['user_uuid'] = $user_uuid;
 
-			$p = new permissions;
+			$p = permissions::new();
 			$p->add('conference_user_add', 'temp');
 
 			$database = new database;
@@ -239,7 +239,7 @@
 					$array['dialplans'][0]['dialplan_enabled'] = $conference_enabled;
 					$array['dialplans'][0]['dialplan_description'] = $conference_description;
 
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('dialplan_add', 'temp');
 					$p->add('dialplan_edit', 'temp');
 
@@ -367,19 +367,19 @@
 	echo "	</div>\n";
 	echo "	<div class='actions'>\n";
 
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'conferences.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'conferences.php']);
 	if ($action == 'update') {
 		if (permission_exists('conference_cdr_view')) {
 			echo button::create(['type'=>'button','label'=>$text['button-cdr'],'icon'=>'list','link'=>PROJECT_PATH.'/app/conference_cdr/conference_cdr.php?id='.urlencode($conference_uuid)]);
 		}
 		if (permission_exists('conference_interactive_view')) {
-			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'style'=>'','link'=>'../conferences_active/conference_interactive.php?c='.urlencode($conference_extension)]);
+			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$settings->get('theme', 'button_icon_view'),'style'=>'','link'=>'../conferences_active/conference_interactive.php?c='.urlencode($conference_extension)]);
 		}
 		else if (permission_exists('conference_active_view')) {
-			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'style'=>'','link'=>'../conferences_active/conferences_active.php']);
+			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$settings->get('theme', 'button_icon_view'),'style'=>'','link'=>'../conferences_active/conferences_active.php']);
 		}
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -387,6 +387,7 @@
 	echo $text['description']."\n";
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -448,7 +449,7 @@
 				echo "			<option value='".escape($field['user_uuid'])."'>".escape($field['username'])."</option>\n";
 			}
 			echo "			</select>";
-			echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add']]);
+			echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add')]);
 
 			echo "			<br>\n";
 			echo "			".$text['description-user-add']."\n";
@@ -584,6 +585,7 @@
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br><br>";
 
 	if ($action == "update") {

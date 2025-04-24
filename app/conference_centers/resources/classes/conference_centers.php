@@ -26,7 +26,6 @@ Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 */
 
 //define the conference centers class
-if (!class_exists('conference_centers')) {
 	class conference_centers {
 
 		/**
@@ -349,7 +348,7 @@ if (!class_exists('conference_centers')) {
 							if (!empty($array)) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('dialplan_detail_delete', 'temp');
 									$p->add('dialplan_delete', 'temp');
 
@@ -425,7 +424,7 @@ if (!class_exists('conference_centers')) {
 							if (!empty($array)) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('conference_room_user_delete', 'temp');
 									$p->add('conference_room_delete', 'temp');
 
@@ -489,7 +488,7 @@ if (!class_exists('conference_centers')) {
 							if (!empty($array)) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('conference_session_detail_delete', 'temp');
 									$p->add('conference_user_delete', 'temp');
 
@@ -578,7 +577,7 @@ if (!class_exists('conference_centers')) {
 							if (!empty($array)) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add("dialplan_edit", "temp");
 
 								//save the array
@@ -800,7 +799,7 @@ if (!class_exists('conference_centers')) {
 
 
 	} //class
-}
+
 
 //example conference center
 	/*
@@ -814,5 +813,3 @@ if (!class_exists('conference_centers')) {
 	$result = $conference_center->rooms();
 	print_r($result);
 	*/
-
-?>

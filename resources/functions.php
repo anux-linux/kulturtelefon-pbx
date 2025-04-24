@@ -27,6 +27,21 @@
 	  Luis Daniel Lucio Quiroz <dlucio@okay.com.mx>
 	*/
 
+	if (!function_exists('str_contains')) {
+		/**
+		 * Determine if a string contains a given substring
+		 * <p>Performs a case-sensitive check indicating if <b>needle</b> is contained in <b>haystack</b>.</p>
+		 * @param string $haystack The string to search in.
+		 * @param string $needle The substring to search for in the <b>haystack</b>.
+		 * @return bool Returns <i>true</i> if <b>needle</b> is in <b>haystack</b>, <i>false</i> otherwise
+		 * @link https://www.php.net/manual/en/function.str-contains.php Official PHP documentation
+		 * @see str_ends_with(), str_starts_with(), strpos(), stripos(), strrpos(), strripos(), strstr(), strpbrk(), substr(), preg_match()
+		 */
+		function str_contains(string $haystack, string $needle): bool {
+			return strpos($haystack, $needle) !== false;
+		}
+	}
+
 	if (!function_exists('str_starts_with')) {
 		/**
 		 * Checks if a string starts with a given substring
@@ -116,13 +131,35 @@
 
 	if (!function_exists('check_cidr')) {
 
+		/**
+		 * Checks if the $ip_address is within the range of the given $cidr
+		 * @param string|array $cidr
+		 * @param string $ip_address
+		 * @return bool return true if the IP address is in CIDR or if it is empty
+		 */
 		function check_cidr($cidr, $ip_address) {
-			if (isset($cidr) && !empty($cidr)) {
-				list ($subnet, $mask) = explode('/', $cidr);
-				return ( ip2long($ip_address) & ~((1 << (32 - $mask)) - 1) ) == ip2long($subnet);
-			} else {
-				return false;
+
+			//no cidr restriction
+			if (empty($cidr)) {
+				return true;
 			}
+
+			//check to see if the user's remote address is in the cidr array
+			if (is_array($cidr)) {
+			    	//cidr is an array
+				foreach ($cidr as $value) {
+					if (check_cidr($value, $ip_address)) {
+						return true;
+					}
+				}
+			} else {
+				//cidr is a string
+				list ($subnet, $mask) = explode('/', $cidr);
+				return (ip2long($ip_address) & ~((1 << (32 - $mask)) - 1)) == ip2long($subnet);
+			}
+
+			//value not found in cidr
+			return false;
 		}
 
 	}
@@ -322,9 +359,10 @@
 	//check if the permission exists
 	if (!function_exists('permission_exists')) {
 
-		function permission_exists($permission_name, $operator = 'or') {
+		function permission_exists($permission_name) {
+			global $domain_uuid, $user_uuid;
 			$database = database::new();
-			$permission = new permissions($database);
+			$permission = permissions::new($database, $domain_uuid, $user_uuid);
 			return $permission->exists($permission_name);
 		}
 
@@ -722,7 +760,7 @@
 					$array['extension_users'][$x]['extension_uuid'] = $extension_uuid;
 					$array['extension_users'][$x]['user_uuid'] = $row["user_uuid"];
 					//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('extension_user_add', 'temp');
 					//execute insert
 					$database = database::new();
@@ -771,7 +809,7 @@
 				$array['user_groups'][0]['user_uuid'] = $user_uuid;
 
 				//grant temporary permissions
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add('user_add', 'temp');
 				$p->add('user_group_add', 'temp');
 				//execute insert
@@ -1044,19 +1082,23 @@
 
 //check password strength against requirements (if any)
 	function check_password_strength($password, $text, $type = 'default') {
+
+		//initialize the settigns object
+		$settings = new settings(['database' => $database, 'domain_uuid' => $_SESSION['domain_uuid']]);
+
 		if (!empty($password)) {
 			if ($type == 'default') {
-				$req['length'] = $_SESSION['extension']['password_length']['numeric'];
-				$req['number'] = ($_SESSION['extension']['password_number']['boolean'] == 'true') ? true : false;
-				$req['lowercase'] = ($_SESSION['extension']['password_lowercase']['boolean'] == 'true') ? true : false;
-				$req['uppercase'] = ($_SESSION['extension']['password_uppercase']['boolean'] == 'true') ? true : false;
-				$req['special'] = ($_SESSION['extension']['password_special']['boolean'] == 'true') ? true : false;
+				$req['length'] = $settings->get('extension', 'password_length', '10');
+				$req['number'] = $settings->get('extension', 'password_number', true);
+				$req['lowercase'] = $settings->get('extension', 'password_lowercase', true);
+				$req['uppercase'] = $settings->get('extension', 'password_uppercase', false);
+				$req['special'] = $settings->get('extension', 'password_special', false);
 			} elseif ($type == 'user') {
-				$req['length'] = $_SESSION['user']['password_length']['numeric'];
-				$req['number'] = ($_SESSION['user']['password_number']['boolean'] == 'true') ? true : false;
-				$req['lowercase'] = ($_SESSION['user']['password_lowercase']['boolean'] == 'true') ? true : false;
-				$req['uppercase'] = ($_SESSION['user']['password_uppercase']['boolean'] == 'true') ? true : false;
-				$req['special'] = ($_SESSION['user']['password_special']['boolean'] == 'true') ? true : false;
+				$req['length'] = $settings->get('users', 'password_length', '10');
+				$req['number'] = $settings->get('users', 'password_number', true);
+				$req['lowercase'] = $settings->get('users', 'password_lowercase', true);
+				$req['uppercase'] = $settings->get('users', 'password_uppercase', false);
+				$req['special'] = $settings->get('users', 'password_special', false);
 			}
 			if (is_numeric($req['length']) && $req['length'] != 0 && !preg_match_all('$\S*(?=\S{' . $req['length'] . ',})\S*$', $password)) { // length
 				$msg_errors[] = $req['length'] . '+ ' . $text['label-characters'];
@@ -2024,20 +2066,37 @@
 		return false;
 	}
 
-//escape user data
-	function escape($string) {
-		if (is_string($string)) {
-			return htmlentities($string, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-		} elseif (is_numeric($string)) {
-			return $string;
-		} else {
-			$string = (array) $string;
-			if (isset($string[0])) {
-				return htmlentities($string[0], ENT_QUOTES | ENT_HTML5, 'UTF-8');
-			}
+/**
+ * Escape the user data
+ * <p>Escapes all characters which have HTML character entity
+ * @param string $string the value to escape
+ * @return string
+ * @link https://www.php.net/htmlentities
+ */
+function escape($string) {
+	if (is_string($string)) {
+		return htmlentities($string, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	} elseif (is_numeric($string)) {
+		return $string;
+	} else {
+		$string = (array) $string;
+		if (isset($string[0])) {
+			return htmlentities($string[0], ENT_QUOTES | ENT_HTML5, 'UTF-8');
 		}
-		return false;
 	}
+	return false;
+}
+
+/**
+ * Escape the user data for a textarea
+ * <p>Escapes & " ' < and > characters</p>
+ * @param string $string the value to escape
+ * @return string
+ * @link https://www.php.net/htmlspecialchars
+ */
+function escape_textarea($string) {
+	return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+}
 
 //output pre-formatted array keys and values
 	if (!function_exists('view_array')) {
@@ -2113,7 +2172,7 @@
 //define email button (src: https://buttons.cm)
 	if (!function_exists('email_button')) {
 
-		function email_button($text = 'Click Here!', $link = URL, $bg_color = '#dddddd', $fg_color = '#000000', $radius = '') {
+		function email_button($text = 'Click Here!', $link = 'URL', $bg_color = '#dddddd', $fg_color = '#000000', $radius = '') {
 
 			// default button radius
 			$radius = !empty($radius) ? $radius : '3px';
@@ -2467,4 +2526,55 @@ if (!function_exists('url_get_contents')) {
 	}
 }
 
-?>
+//get system memory details
+if (!function_exists('get_memory_details')) {
+	function get_memory_details() {
+		if (PHP_OS == 'Linux') {
+			$meminfo = file_get_contents("/proc/meminfo");
+			$data = [];
+
+			foreach (explode("\n", $meminfo) as $line) {
+				if (preg_match('/^(\w+):\s+(\d+)\skB$/', $line, $matches)) {
+					$data[$matches[1]] = $matches[2];
+				}
+			}
+
+			if (isset($data['MemTotal']) && isset($data['MemAvailable'])) {
+				$array['total_memory'] = $data['MemTotal'];
+				$array['available_memory'] = $data['MemAvailable'];
+				$array['used_memory'] = $array['total_memory'] - $array['available_memory'];
+
+				$array['memory_usage'] = ($array['used_memory'] / $array['total_memory']) * 100;
+				$array['memory_percent'] = round($array['memory_usage'], 2);
+				return $array;
+			}
+		}
+
+		if (PHP_OS == 'FreeBSD') {
+			//define the output array
+			$output = [];
+
+			// get the memory information using sysctl
+			exec('sysctl -n hw.physmem hw.pagesize vm.stats.vm.v_free_count vm.stats.vm.v_inactive_count vm.stats.vm.v_cache_count vm.stats.vm.v_wire_count', $output);
+
+			if (count($output) === 6) {
+				list($array['total_memory'], $page_size, $free_pages, $inactive_pages, $cache_pages, $wired_pages) = $output;
+
+				// total memory in bytes
+				$array['total_memory'] = (int)$array['total_memory'];
+
+				// pages to bytes conversion
+				$array['available_memory'] = ($free_pages + $inactive_pages + $cache_pages) * (int)$page_size;
+				$array['used_memory'] = $array['total_memory'] - $array['available_memory'];
+
+				// calculate memory usage percentage
+				$array['memory_usage'] = ($array['used_memory'] / $array['total_memory']) * 100;
+
+				$array['memory_percent'] = round($array['memory_usage'], 2) . '%';
+				return $array;
+			}
+		}
+
+		return false;
+	}
+}

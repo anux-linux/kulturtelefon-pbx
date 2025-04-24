@@ -143,7 +143,11 @@
 //add not found dialplan to inbound routes
 	/*
 	if ($domains_processed == 1) {
+<<<<<<< HEAD
 		if (is_readable($setting->get('switch','dialplan'))) {
+=======
+		if (is_readable($settings->get('switch','dialplan'))) {
+>>>>>>> develop
 			$sql = "select count(*) from v_dialplans ";
 			$sql .= "where dialplan_uuid = 'ea5339de-1982-46ca-9695-c35176165314' ";
 			$num_rows = $database->select($sql, null, 'column');
@@ -170,7 +174,7 @@
 				$array['dialplan_details'][1]['dialplan_detail_data'] = 'WARNING [inbound routes] 404 not found \${sip_network_ip}';
 				$array['dialplan_details'][1]['dialplan_detail_order'] = '20';
 
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add('dialplan_add', 'temp');
 				$p->add('dialplan_detail_add', 'temp');
 

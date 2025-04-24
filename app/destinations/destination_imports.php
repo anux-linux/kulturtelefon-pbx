@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2018-2022
+	Portions created by the Initial Developer are Copyright (C) 2018-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -334,7 +334,7 @@
 										$array["dialplans"][$row_id]["dialplan_xml"] .= "</extension>\n";
 
 									//dialplan details
-										if ($_SESSION['destinations']['dialplan_details']['boolean'] == "true") {
+										if (filter_var($_SESSION['destinations']['dialplan_details']['boolean'] ?? false, FILTER_VALIDATE_BOOL)) {
 
 											//check the destination number
 												$array["dialplans"][$row_id]["dialplan_details"][$y]["domain_uuid"] = $domain_uuid;
@@ -729,8 +729,8 @@
 			echo "<div class='action_bar' id='action_bar'>\n";
 			echo "	<div class='heading'><b>".$text['header-destination_import']."</b></div>\n";
 			echo "	<div class='actions'>\n";
-			echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'destination_imports.php']);
-			echo button::create(['type'=>'submit','label'=>$text['button-import'],'icon'=>$_SESSION['theme']['button_icon_import'],'id'=>'btn_save']);
+			echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'destination_imports.php']);
+			echo button::create(['type'=>'submit','label'=>$text['button-import'],'icon'=>$settings->get('theme', 'button_icon_import'),'id'=>'btn_save']);
 			echo "	</div>\n";
 			echo "	<div style='clear: both;'></div>\n";
 			echo "</div>\n";
@@ -738,6 +738,7 @@
 			echo $text['description-destination_import']."\n";
 			echo "<br /><br />\n";
 
+			echo "<div class='card'>\n";
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 			if (isset($_SESSION['file_name']) && !empty($_SESSION['file_name'])) {
@@ -904,6 +905,7 @@
 			echo "</tr>\n";
 
 			echo "</table>\n";
+			echo "</div>\n";
 			echo "<br /><br />\n";
 
 			echo "<input name='from_row' type='hidden' value='".$from_row."'>\n";
@@ -942,8 +944,8 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['header-destination_import']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'destinations.php']);
-	echo button::create(['type'=>'submit','label'=>$text['button-continue'],'icon'=>$_SESSION['theme']['button_icon_upload'],'id'=>'btn_save']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'destinations.php']);
+	echo button::create(['type'=>'submit','label'=>$text['button-continue'],'icon'=>$settings->get('theme', 'button_icon_upload'),'id'=>'btn_save']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -951,6 +953,7 @@
 	echo $text['description-destination_import']."\n";
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	echo "<table border='0' cellpadding='0' cellspacing='0' width='100%'>\n";
 
 	echo "<tr>\n";
@@ -1025,6 +1028,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br><br>";
 
 	echo "<input name='type' type='hidden' value='csv'>\n";

@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -153,7 +153,7 @@
 					$array['dialplans'][0]['dialplan_context'] = $dialplan_context;
 
 				//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('dialplan_add', 'temp');
 			}
 			else if ($action == "update") {
@@ -161,7 +161,7 @@
 					$array['dialplan_details'][0]['dialplan_uuid'] = $dialplan_uuid;
 
 				//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('dialplan_detail_delete', 'temp');
 
 				//execute delete
@@ -182,7 +182,7 @@
 					}
 
 				//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('dialplan_edit', 'temp');
 			}
 
@@ -481,7 +481,7 @@
 		//execute query
 			if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 				//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('dialplan_detail_add', 'temp');
 					$p->add('dialplan_detail_edit', 'temp');
 
@@ -823,7 +823,11 @@
 					case 'hour': //hours of day
 						<?php
 						if ( $_SESSION['domain']['time_format']['text'] =="24h") {
+<<<<<<< HEAD
 						
+=======
+
+>>>>>>> develop
 							for ($h = 0; $h <= 23; $h++) {
 								echo "sel_start.options[sel_start.options.length] = new Option(".$h.", ".$h.");\n";
 								echo "sel_stop.options[sel_stop.options.length] = new Option(".$h.", ".$h.");\n";
@@ -966,11 +970,11 @@ echo "<form method='post' name='frm' id='frm' onsubmit=\"return check_submit();\
 echo "<div class='action_bar' id='action_bar'>\n";
 echo "	<div class='heading'><b>".$text['title-time_condition']."</b></div>\n";
 echo "	<div class='actions'>\n";
-echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>PROJECT_PATH.'/app/time_conditions/time_conditions.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1']);
+echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>PROJECT_PATH.'/app/time_conditions/time_conditions.php?app_uuid=4b821450-926b-175a-af93-a03c441818b1']);
 if ($action == 'update' && permission_exists('dialplan_edit')) {
 	echo button::create(['type'=>'button','label'=>$text['button-dialplan'],'icon'=>'list','style'=>'margin-right: 15px;','link'=>PROJECT_PATH.'/app/dialplans/dialplan_edit.php?id='.urlencode($dialplan_uuid).'&app_uuid=4b821450-926b-175a-af93-a03c441818b1']);
 }
-echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save']);
+echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save']);
 echo "	</div>\n";
 echo "	<div style='clear: both;'></div>\n";
 echo "</div>\n";
@@ -978,6 +982,7 @@ echo "</div>\n";
 echo $text['description-time_conditions']."\n";
 echo "<br /><br />\n";
 
+echo "<div class='card'>\n";
 echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 echo "<tr>\n";
@@ -1062,7 +1067,11 @@ if ($action == 'update') {
 
 							//adjust time one minute earlier to account for freeswitch one minute early on start condition behavior.
 							$cond_val_start = $cond_val_start - 1;
+<<<<<<< HEAD
 							
+=======
+
+>>>>>>> develop
 							$cond_val_start = number_pad(floor($cond_val_start / 60),2).":".number_pad(fmod($cond_val_start, 60),2);
 							if ($cond_val_stop != '') {
 								$cond_val_stop = number_pad(floor($cond_val_stop / 60),2).":".number_pad(fmod($cond_val_stop, 60),2);
@@ -1333,6 +1342,7 @@ if ($action == 'update') {
 	echo "</tr>\n";
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br /><br />\n";
 
 	if ($action == "update") {

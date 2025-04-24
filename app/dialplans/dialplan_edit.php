@@ -117,7 +117,11 @@
 		$esl = event_socket::create();
 		if ($esl->is_connected()) {
 			$result = event_socket::api('show application');
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> develop
 			$show_applications = explode("\n\n", $result);
 			$raw_applications = explode("\n", $show_applications[0]);
 			unset($result);
@@ -532,7 +536,7 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-dialplan_edit']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'dialplans.php'.(!empty($app_uuid) && is_uuid($app_uuid) ? "?app_uuid=".urlencode($app_uuid) : null)]);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'dialplans.php'.(!empty($app_uuid) && is_uuid($app_uuid) ? "?app_uuid=".urlencode($app_uuid) : null)]);
 	if ($action == 'update') {
 		if (permission_exists('dialplan_xml')) {
 			echo button::create(['type'=>'button','label'=>$text['button-xml'],'icon'=>'code','style'=>'margin-left: 15px;','link'=>'dialplan_xml.php?id='.urlencode($dialplan_uuid ?? null).(!empty($app_uuid) && is_uuid($app_uuid) ? "&app_uuid=".urlencode($app_uuid ?? null) : null)]);
@@ -545,7 +549,7 @@
 			permission_exists('fifo_add') ||
 			permission_exists('time_condition_add')
 			) {
-			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'name'=>'btn_copy','style'=>$button_margin ?? null,'onclick'=>"modal_open('modal-copy','btn_copy');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$settings->get('theme', 'button_icon_copy'),'name'=>'btn_copy','style'=>$button_margin ?? null,'onclick'=>"modal_open('modal-copy','btn_copy');"]);
 			unset($button_margin);
 		}
 		if (
@@ -556,11 +560,11 @@
 			permission_exists('fifo_delete') ||
 			permission_exists('time_condition_delete')
 			) {
-			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','style'=>$button_margin ?? null,'onclick'=>"modal_open('modal-delete','btn_delete');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'name'=>'btn_delete','style'=>$button_margin ?? null,'onclick'=>"modal_open('modal-delete','btn_delete');"]);
 			unset($button_margin);
 		}
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -590,6 +594,7 @@
 	echo $text['description-dialplan-edit']."\n";
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 	echo "<tr>\n";
 	echo "<td width='50%' style='vertical-align: top;'>\n";
@@ -774,7 +779,8 @@
 	echo "</td>";
 	echo "</tr>";
 	echo "</table>";
-	echo "<br><br>";
+	echo "</div>\n";
+	echo "<br>";
 
 	//dialplan details
 	if ($action == "update") {
@@ -796,6 +802,7 @@
 		//display the results
 			if (is_array($details) && @sizeof($details) != 0) {
 
+				echo "<div class='card'>\n";
 				echo "<table width='100%' border='0' cellpadding='0' cellspacing='0' style='margin: -2px; border-spacing: 2px;'>\n";
 
 				$x = 0;
@@ -1068,6 +1075,7 @@
 				unset($details);
 
 				echo "</table>";
+				echo "</div>\n";
 
 			} //end if results
 

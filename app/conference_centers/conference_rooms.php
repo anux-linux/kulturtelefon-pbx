@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -49,7 +49,7 @@
 	$search = $_GET["search"] ?? null;
 
 //set from session variables
-	$list_row_edit_button = !empty($_SESSION['theme']['list_row_edit_button']['boolean']) ? $_SESSION['theme']['list_row_edit_button']['boolean'] : 'false';
+	$list_row_edit_button = $settings->get('theme', 'list_row_edit_button', false);
 
 //get the http post data
 	if (!empty($_POST['conference_rooms'])) {
@@ -222,14 +222,14 @@
 
 //show the content
 	echo "<div class='action_bar' id='action_bar'>\n";
-	echo "	<div class='heading'><b>".$text['title-conference_rooms']." (".$num_rows.")</b></div>\n";
+	echo "	<div class='heading'><b>".$text['title-conference_rooms']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'conference_centers.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'conference_centers.php']);
 	if (permission_exists('conference_room_add')) {
-		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_add','link'=>'conference_room_edit.php']);
+		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','link'=>'conference_room_edit.php']);
 	}
 	if (permission_exists('conference_room_edit') && $result) {
-		echo button::create(['type'=>'button','label'=>$text['button-toggle'],'icon'=>$_SESSION['theme']['button_icon_toggle'],'id'=>'btn_toggle','name'=>'btn_toggle','style'=>'display: none;','onclick'=>"toggle_select(); this.blur();"]);
+		echo button::create(['type'=>'button','label'=>$text['button-toggle'],'icon'=>$settings->get('theme', 'button_icon_toggle'),'id'=>'btn_toggle','name'=>'btn_toggle','style'=>'display: none;','onclick'=>"toggle_select(); this.blur();"]);
 		echo 		"<select class='formfld' style='display: none; width: auto;' id='conference_room_feature' onchange=\"if (this.selectedIndex != 0) { modal_open('modal-toggle','btn_toggle'); }\">";
 		echo "			<option value='' selected='selected'>".$text['label-select']."</option>";
 		echo "			<option value='record'>".$text['label-record']."</option>";
@@ -243,12 +243,12 @@
 		echo "		</select>";
 	}
 	if (permission_exists('conference_room_delete') && $result) {
-		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
 	}
 	echo 		"<form id='form_search' class='inline' method='get'>\n";
 	echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown='list_search_reset();'>";
-	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search','style'=>(!empty($search) ? 'display: none;' : null)]);
-	echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','link'=>'conference_rooms.php','style'=>(empty($search) ? 'display: none;' : null)]);
+	echo button::create(['label'=>$text['button-search'],'icon'=>$settings->get('theme', 'button_icon_search'),'type'=>'submit','id'=>'btn_search','style'=>(!empty($search) ? 'display: none;' : null)]);
+	echo button::create(['label'=>$text['button-reset'],'icon'=>$settings->get('theme', 'button_icon_reset'),'type'=>'button','id'=>'btn_reset','link'=>'conference_rooms.php','style'=>(empty($search) ? 'display: none;' : null)]);
 	if (!empty($paging_controls_mini)) {
 		echo 	"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>\n";
 	}
@@ -272,6 +272,7 @@
 	echo "<input type='hidden' id='toggle_field' name='toggle_field' value=''>\n";
 	echo "<input type='hidden' name='search' value=\"".escape($search)."\">\n";
 
+	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
 	if (permission_exists('conference_room_add') || permission_exists('conference_room_edit') || permission_exists('conference_room_delete')) {
@@ -299,7 +300,7 @@
 		echo th_order_by('enabled', $text['label-enabled'], $order_by, $order, null, "class='center'");
 	}
 	echo th_order_by('description', $text['label-description'], $order_by, $order, null, "class='hide-sm-dn'");
-	if (permission_exists('conference_room_edit') && $list_row_edit_button == 'true') {
+	if (permission_exists('conference_room_edit') && $list_row_edit_button) {
 		echo "	<td class='action-button'>&nbsp;</td>\n";
 	}
 	echo "</tr>\n";
@@ -318,8 +319,12 @@
 				$participant_pin = substr($participant_pin, 0, 3) ."-".  substr($participant_pin, 3, 3) ."-". substr($participant_pin, -3)."\n";
 			}
 
+			$list_row_url = '';
 			if (permission_exists('conference_room_edit')) {
 				$list_row_url = "conference_room_edit.php?id=".urlencode($row['conference_room_uuid']);
+				if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
+					$list_row_url .= '&domain_uuid='.urlencode($row['domain_uuid']).'&domain_change=true';
+				}
 			}
 			echo "<tr class='list-row' href='".$list_row_url."'>\n";
 			if (permission_exists('conference_room_add') || permission_exists('conference_room_edit') || permission_exists('conference_room_delete')) {
@@ -456,10 +461,10 @@
 			else if (permission_exists('conference_active_view')) {
 				echo "		<a href='".PROJECT_PATH."/app/conferences_active/conferences_active.php'>".$text['label-view']."</a>\n";
 			}
-			if (permission_exists('conference_cdr_view')) {	
+			if (permission_exists('conference_cdr_view')) {
 				echo "		<a href='/app/conference_cdr/conference_cdr.php?id=".urlencode($row['conference_room_uuid'])."'>".$text['button-cdr']."</a>\n";
 			}
-			if (permission_exists('conference_session_view')) {	
+			if (permission_exists('conference_session_view')) {
 				echo "		<a href='conference_sessions.php?id=".urlencode($row['conference_room_uuid'])."'>".$text['label-sessions']."</a>\n";
 			}
 			echo "	</td>\n";
@@ -485,9 +490,9 @@
 			}
 
 			echo "	<td class='description overflow hide-sm-dn'>".escape($row['description'])."</td>\n";
-			if (permission_exists('conference_room_edit') && $list_row_edit_button == 'true') {
+			if (permission_exists('conference_room_edit') && $list_row_edit_button) {
 				echo "	<td class='action-button'>\n";
-				echo button::create(['type'=>'button','title'=>$text['button-edit'],'icon'=>$_SESSION['theme']['button_icon_edit'],'link'=>$list_row_url]);
+				echo button::create(['type'=>'button','title'=>$text['button-edit'],'icon'=>$settings->get('theme', 'button_icon_edit'),'link'=>$list_row_url]);
 				echo "	</td>\n";
 			}
 			echo "</tr>\n";
@@ -497,6 +502,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br />\n";
 	echo "<div align='center'>".!empty($paging_controls)."</div>\n";
 	echo "<input type='hidden' name='".$token['name']."' value='".$token['hash']."'>\n";
@@ -506,3 +512,4 @@
 	require_once "resources/footer.php";
 
 ?>
+

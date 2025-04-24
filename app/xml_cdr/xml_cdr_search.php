@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2008-2023
+	Copyright (C) 2008-2024
 	All Rights Reserved.
 
 	Contributor(s):
@@ -113,12 +113,13 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-advanced_search']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'xml_cdr.php']);
-	echo button::create(['type'=>'submit','label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'id'=>'btn_save']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'xml_cdr.php']);
+	echo button::create(['type'=>'submit','label'=>$text['button-search'],'icon'=>$settings->get('theme', 'button_icon_search'),'id'=>'btn_save']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
-	
+
+	echo "<div class='card'>\n";
 	echo "<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n";
 	echo "	<tr>\n";
 	echo "		<td width='50%' style='vertical-align: top;'>\n";
@@ -336,11 +337,33 @@
 			unset($sql, $parameters, $call_center_queues, $row, $selected);
 		}
 
+<<<<<<< HEAD
+=======
+		if (permission_exists('xml_cdr_search_ring_groups')) {
+			echo "	<tr>";
+			echo "		<td class='vncell'>".$text['label-ring_group']."</td>";
+			echo "		<td class='vtable'>";
+			echo "			<select class='formfld' name='ring_group_uuid' id='ring_group_uuid'>\n";
+			echo "				<option value=''></option>";
+			if (is_array($ring_groups) && @sizeof($ring_groups) != 0) {
+				foreach ($ring_groups as $row) {
+					$selected = ($row['ring_group_uuid'] == $ring_group_uuid) ? "selected" : null;
+					echo "		<option value='".escape($row['ring_group_uuid'])."' ".escape($selected).">".((is_numeric($row['ring_group_extension'])) ? escape($row['ring_group_extension']." (".$row['ring_group_name'].")") : escape($row['ring_group_extension'])." (".escape($row['ring_group_extension']).")")."</option>";
+				}
+			}
+			echo "			</select>\n";
+			echo "		</td>";
+			echo "	</tr>\n";
+			unset($sql, $parameters, $ring_groups, $row, $selected);
+		}
+
+>>>>>>> develop
 		echo "</table>\n";
 	
 	echo "		</td>";
 	echo "	</tr>";
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br><br>";
 	
 	echo "</form>";

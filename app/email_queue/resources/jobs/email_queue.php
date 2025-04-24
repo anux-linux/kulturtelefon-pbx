@@ -11,7 +11,6 @@
 
 //includes files
 	require_once "resources/pdo.php";
-	include "resources/classes/permissions.php";
 	require $_SERVER['DOCUMENT_ROOT']."/app/email_queue/resources/functions/transcribe.php";
 
 //increase limits
@@ -74,7 +73,11 @@
 	$setting = new settings(["category" => "email_queue"]);
 
 //email queue enabled
+<<<<<<< HEAD
 	if ($setting->get('email_queue', 'enabled') != 'true') {
+=======
+	if ($settings->get('email_queue', 'enabled') != 'true') {
+>>>>>>> develop
 		echo "Email Queue is disabled in Default Settings\n";
 		exit;
 	}
@@ -103,20 +106,34 @@
 	}
 
 //get the call center settings
+<<<<<<< HEAD
 	$interval = $setting->get('email_queue', 'interval');
+=======
+	$interval = $settings->get('email_queue', 'interval');
+>>>>>>> develop
 
 //set the defaults
 	if (!is_numeric($interval)) { $interval = 30; }
 
 //set the email queue limit
+<<<<<<< HEAD
 	if (!empty($setting->get('email_queue', 'limit'))) {
 		$email_queue_limit = $setting->get('email_queue', 'limit');
+=======
+	if (!empty($settings->get('email_queue', 'limit'))) {
+		$email_queue_limit = $settings->get('email_queue', 'limit');
+>>>>>>> develop
 	}
 	else {
 		$email_queue_limit = '30';
 	}
+<<<<<<< HEAD
 	if (!empty($setting->get('email_queue', 'debug'))) {
 		$debug = $setting->get('email_queue', 'debug');
+=======
+	if (!empty($settings->get('email_queue', 'debug'))) {
+		$debug = $settings->get('email_queue', 'debug');
+>>>>>>> develop
 	}
 
 //get the messages waiting in the email queue
@@ -140,7 +157,11 @@
     if (is_array($email_queue) && @sizeof($email_queue) != 0) {
 	$which_php = exec('which php');
         foreach($email_queue as $row) {
+<<<<<<< HEAD
             $command = $which_php." ".$_SERVER['DOCUMENT_ROOT']."/app/email_queue/resources/jobs/email_send.php ";
+=======
+            $command = PHP_BINARY." ".$_SERVER['DOCUMENT_ROOT']."/app/email_queue/resources/jobs/email_send.php ";
+>>>>>>> develop
             $command .= "'action=send&email_queue_uuid=".$row["email_queue_uuid"]."&hostname=".$hostname."'";
             if (isset($debug)) {
                 //run process inline to see debug info

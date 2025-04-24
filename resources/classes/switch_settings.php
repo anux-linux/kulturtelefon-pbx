@@ -5,7 +5,6 @@
  *
  * @method settings will add missing switch directories to default settings
  */
-if (!class_exists('switch_settings')) {
 	class switch_settings {
 
 		public $event_socket_ip_address;
@@ -248,7 +247,7 @@ if (!class_exists('switch_settings')) {
 					}
 					if (is_array($array) && @sizeof($array) != 0) {
 						//grant temporary permissions
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('default_setting_add', 'temp');
 
 						//execute insert
@@ -276,6 +275,3 @@ if (!class_exists('switch_settings')) {
 				unset($array);
 		}
 	}
-}
-
-?>

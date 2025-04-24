@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2018-2023
+	Portions created by the Initial Developer are Copyright (C) 2018-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -62,12 +62,12 @@
 	}
 //check to see if the http post exists
 	if (!empty($_POST) && empty($_POST["persistformvar"])) {
-	
+
 		//get the uuid
 			if ($action == "update") {
 				$conference_profile_uuid = $_POST["conference_profile_uuid"];
 			}
-	
+
 		//validate the token
 			$token = new token;
 			if (!$token->validate($_SERVER['PHP_SELF'])) {
@@ -88,13 +88,13 @@
 				echo "<div align='center'>\n";
 				echo "<table><tr><td>\n";
 				echo $msg."<br />";
-				echo "</td></tr></table>\n";																	
+				echo "</td></tr></table>\n";
 				persistformvar($_POST);
 				echo "</div>\n";
 				require_once "resources/footer.php";
 				return;
 			}
-	
+
 		//add or update the database
 			if (empty($_POST["persistformvar"])) {
 
@@ -106,7 +106,7 @@
 					$array['conference_profiles'][0]['conference_profile_uuid'] = uuid();
 					message::add($text['message-add']);
 				}
-	
+
 				if ($action == "update" && permission_exists('conference_profile_edit')) {
 					$array['conference_profiles'][0]['conference_profile_uuid'] = $conference_profile_uuid;
 					message::add($text['message-update']);
@@ -161,12 +161,13 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-conference_profile']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','collapse'=>'hide-xs','style'=>'margin-right: 15px;','link'=>'conference_profiles.php']);
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','collapse'=>'hide-xs']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','collapse'=>'hide-xs','style'=>'margin-right: 15px;','link'=>'conference_profiles.php']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','collapse'=>'hide-xs']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -213,6 +214,7 @@
 	echo "</td>\n";
 
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br /><br />";
 
 	if ($action == "update") {

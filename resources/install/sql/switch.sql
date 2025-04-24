@@ -6,7 +6,7 @@ CREATE TABLE agents (
    name character varying(255),
    instance_id character varying(255),
    type character varying(255),
-   contact character varying(255),
+   contact character varying(1024),
    status character varying(255),
    state character varying(255),
    max_no_answer integer DEFAULT 0 NOT NULL,
@@ -341,7 +341,8 @@ CREATE TABLE sip_authentication (
     profile_name character varying(255),
     hostname character varying(255),
     last_nc integer,
-sip_authentication_uuid uuid PRIMARY KEY default gen_random_uuid()
+    algorithm integer DEFAULT 1 NOT NULL
+    sip_authentication_uuid uuid PRIMARY KEY default gen_random_uuid()
 );
 ALTER TABLE sip_authentication OWNER TO fusionpbx;
 

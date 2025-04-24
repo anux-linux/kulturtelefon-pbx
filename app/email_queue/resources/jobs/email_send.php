@@ -10,12 +10,20 @@
 	}
 
 //include files
+<<<<<<< HEAD
 	include "resources/classes/permissions.php";
+=======
+	include_once "resources/phpmailer/class.phpmailer.php";
+	include_once "resources/phpmailer/class.smtp.php";
+>>>>>>> develop
 
 //increase limits
 	set_time_limit(0);
 	//ini_set('max_execution_time',1800); //30 minutes
 	ini_set('memory_limit', '512M');
+
+//connect to the database
+	$database = database::new();
 
 //save the arguments to variables
 	$script_name = $argv[0];
@@ -49,12 +57,20 @@
 		//check to see if the process is running
 		if (file_exists($file)) {
 			$pid = file_get_contents($file);
-			if (posix_getsid($pid) === false) {
-				//process is not running
-				$exists = false;
+			if (function_exists('posix_getsid')) {
+				//check if the process is running
+				$pid = posix_getsid($pid);
+				if ($pid === null || $pid === 0) {
+					//process is not running
+					$exists = false;
+				}
+				else {
+					//process is running
+					$exists = true;
+				}
 			}
 			else {
-				//process is running
+				//file exists assume the pid is running
 				$exists = true;
 			}
 		}
@@ -68,7 +84,7 @@
 
 //prevent the process running more than once
 	if ($pid_exists) {
-		//echo "Cannot lock pid file {$pid_file}\n";
+		echo "Cannot lock pid file {$pid_file}\n";
 		exit;
 	}
 
@@ -117,15 +133,14 @@
 		}
 	}
 
-//includes
-	include_once "resources/phpmailer/class.phpmailer.php";
-	include_once "resources/phpmailer/class.smtp.php";
-
 //get the email details to send
 	$sql = "select * from v_email_queue ";
 	$sql .= "where email_queue_uuid = :email_queue_uuid ";
 	$parameters['email_queue_uuid'] = $email_queue_uuid;
+<<<<<<< HEAD
 	$database = new database();
+=======
+>>>>>>> develop
 	$row = $database->select($sql, $parameters, 'row');
 	if (is_array($row)) {
 		$domain_uuid = $row["domain_uuid"];
@@ -148,7 +163,11 @@
 
 //get the email settings
 	$retry_limit = $settings->get('email_queue', 'retry_limit');
+<<<<<<< HEAD
 	$transcribe_enabled = $settings->get('transcribe', 'enabled');
+=======
+	$transcribe_enabled = $settings->get('transcribe', 'enabled', false);
+>>>>>>> develop
 	$save_response = $settings->get('email_queue', 'save_response');
 
 //set defaults
@@ -181,6 +200,12 @@
 		//$voicemail_description = $row["voicemail_description"];
 		//$voicemail_name_base64 = $row["voicemail_name_base64"];
 		//$voicemail_tutorial = $row["voicemail_tutorial"];
+<<<<<<< HEAD
+=======
+		if (gettype($voicemail_transcription_enabled) === 'string') {
+			$voicemail_transcription_enabled = ($voicemail_transcription_enabled === 'true') ? true : false;
+		}
+>>>>>>> develop
 	}
 	unset($parameters);
 
@@ -199,7 +224,7 @@
 			$email_attachment_name = $field['email_attachment_name'];
 			$email_attachment_mime_type = $field['email_attachment_mime_type'];
 
-			if (!$email_attachment_mime_type) {
+			if (empty($email_attachment_mime_type)) {
 				switch ($email_attachment_type) {
 					case "wav":
 						$email_attachment_mime_type = "audio/x-wav";
@@ -220,7 +245,11 @@
 				}
 			}
 
+<<<<<<< HEAD
 			if (isset($transcribe_enabled) && $transcribe_enabled === 'true' && isset($voicemail_transcription_enabled) && $voicemail_transcription_enabled === 'true') {
+=======
+			if ($transcribe_enabled && isset($voicemail_transcription_enabled) && $voicemail_transcription_enabled) {
+>>>>>>> develop
 				//debug message
 				echo "transcribe enabled: true\n";
 
@@ -236,11 +265,18 @@
 						//transcribe the voicemail recording
 						$transcribe->audio_path = $email_attachment_path;
 						$transcribe->audio_filename = $email_attachment_name;
+<<<<<<< HEAD
 						$transcribe_message = $transcribe->transcribe();
 					}
 
 					echo "transcribe path: ".$email_attachment_path."\n";
 					echo "transcribe name: ".$email_attachment_name."\n";
+=======
+						$transcribe->audio_mime_type = $email_attachment_mime_type;
+						$transcribe->audio_string = (!empty($field['email_attachment_base64'])) ? base64_decode($field['email_attachment_base64']) : '';
+						$transcribe_message = $transcribe->transcribe();
+					}
+>>>>>>> develop
 				}
 				else {
 					$transcribe_message = $email_transcription;
@@ -288,7 +324,7 @@
 	//echo "Body: ".$email_body."\n";
 
 //update the message transcription
-	if (isset($voicemail_transcription_enabled) && $voicemail_transcription_enabled == 'true' && isset($transcribe_message)) {
+	if (isset($voicemail_transcription_enabled) && $voicemail_transcription_enabled && isset($transcribe_message)) {
 		$sql = "update v_voicemail_messages ";
 		$sql .= "set message_transcription = :message_transcription ";
 		$sql .= "where voicemail_message_uuid = :voicemail_message_uuid; ";
@@ -441,7 +477,7 @@
 			$array['email_queue'][0]['email_status'] = 'sent';
 
 		//grant temporary permissions
-			$p = new permissions;
+			$p = permissions::new();
 			$p->add('email_queue_add', 'temp');
 			$p->add('email_queue_update', 'temp');
 		//execute insert
@@ -472,7 +508,7 @@
 		$array['email_queue'][0]['email_status'] = 'failed';
 
 		//grant temporary permissions
-		$p = new permissions;
+		$p = permissions::new();
 		$p->add('email_queue_add', 'temp');
 
 		//execute insert
@@ -526,7 +562,7 @@
 					$array['email_logs'][0]['status'] = 'failed';
 					$array['email_logs'][0]['email'] = str_replace("'", "''", $msg);
 				//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('email_log_add', 'temp');
 				//execute insert
 					$database->app_name = 'v_mailto';
@@ -569,5 +605,8 @@
 
 	//fwrite($esl, $content);
 	//fclose($esl);
+<<<<<<< HEAD
 
 ?>
+=======
+>>>>>>> develop

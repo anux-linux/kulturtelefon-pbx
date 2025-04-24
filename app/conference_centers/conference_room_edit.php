@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -114,14 +114,19 @@
 
 //define fucntion get_conference_pin - used to find a unique pin number
 	function get_conference_pin($length, $conference_room_uuid) {
+		//set the variable as global
+		global $database;
+
+		//get the pin number
 		$pin = generate_password($length,1);
+
+		//return an available pin number
 		$sql = "select count(*) from v_conference_rooms ";
 		$sql .= "where domain_uuid = :domain_uuid ";
 		$sql .= "and conference_room_uuid <> :conference_room_uuid ";
 		$sql .= "and (moderator_pin = :pin or participant_pin = :pin) ";
 		$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 		$parameters['conference_room_uuid'] = $conference_room_uuid;
-		
 		$parameters['pin'] = $pin;
 		$num_rows = $database->select($sql, $parameters, 'column');
 		if ($num_rows == 0) {
@@ -133,18 +138,26 @@
 		unset($sql, $parameters);
 	}
 
-//record announcment
+//record the announcement
 	if (!empty($record) && $record == "true") {
 		//prepare the values
-			$default_language = 'en';
-			$default_dialect = 'us';
-			$default_voice = 'callie';
-			$switch_cmd = "conference ".$conference_room_uuid."@".$_SESSION['domain_name']." play ".$_SESSION['switch']['sounds']['dir']."/".$default_language."/".$default_dialect."/".$default_voice."/ivr/ivr-recording_started.wav";
+		$default_language = 'en';
+		$default_dialect = 'us';
+		$default_voice = 'callie';
+		$switch_cmd = "conference ".$conference_room_uuid."@".$_SESSION['domain_name']." play ".$_SESSION['switch']['sounds']['dir']."/".$default_language."/".$default_dialect."/".$default_voice."/ivr/ivr-recording_started.wav";
+
 		//connect to event socket
+<<<<<<< HEAD
 			$esl = event_socket::create();
 			if ($esl->is_connected()) {
 				$switch_result = event_socket::api($switch_cmd);
 			}
+=======
+		$esl = event_socket::create();
+		if ($esl->is_connected()) {
+			$switch_result = event_socket::api($switch_cmd);
+		}
+>>>>>>> develop
 	}
 
 //generate the pin number length
@@ -182,14 +195,14 @@
 				$array['conference_room_users'][0]['domain_uuid'] = $_SESSION['domain_uuid'];
 
 			//un-assigne the users from the conference room
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add('conference_room_user_delete', 'temp');
 
 				$database->app_name = 'conference_centers';
 				$database->app_uuid = '8d083f5a-f726-42a8-9ffa-8d28f848f10e';
 				$database->delete($array);
 				unset($array);
-				
+
 				$p->delete('conference_room_user_delete', 'temp');
 		}
 
@@ -352,7 +365,7 @@
 							$array['conference_room_users'][0]['conference_room_uuid'] = $conference_room_uuid;
 							$array['conference_room_users'][0]['user_uuid'] = $_SESSION["user_uuid"];
 
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('conference_room_user_add', 'temp');
 
 							$database->app_name = 'conference_centers';
@@ -434,7 +447,7 @@
 					$array['conference_room_users'][0]['conference_room_uuid'] = $conference_room_uuid;
 					$array['conference_room_users'][0]['user_uuid'] = $user_uuid;
 
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('conference_room_user_add', 'temp');
 
 					$database->app_name = 'conference_centers';
@@ -564,23 +577,24 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-conference_room']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'conference_rooms.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'conference_rooms.php']);
 	if (!empty($conference_room_uuid) && is_uuid($conference_room_uuid)) {
 		if (permission_exists('conference_interactive_view')) {
-			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'style'=>'margin-left: 15px;','link'=>'../conferences_active/conference_interactive.php?c='.urlencode($conference_room_uuid)]);
+			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$settings->get('theme', 'button_icon_view'),'style'=>'margin-left: 15px;','link'=>'../conferences_active/conference_interactive.php?c='.urlencode($conference_room_uuid)]);
 		}
 		else if (permission_exists('conference_active_view')) {
-			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'style'=>'margin-left: 15px;','link'=>'../conferences_active/conferences_active.php']);
+			echo button::create(['type'=>'button','label'=>$text['button-view'],'icon'=>$settings->get('theme', 'button_icon_view'),'style'=>'margin-left: 15px;','link'=>'../conferences_active/conferences_active.php']);
 		}
 		if (permission_exists('conference_session_view')) {
 			echo button::create(['type'=>'button','label'=>$text['button-sessions'],'icon'=>'list','link'=>'conference_sessions.php?id='.urlencode($conference_room_uuid)]);
 		}
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -652,7 +666,7 @@
 			}
 			echo "			</select>";
 			if ($action == "update") {
-				echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add']]);
+				echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add')]);
 			}
 			unset($users);
 			echo "			<br>\n";
@@ -965,6 +979,7 @@
 	echo "</tr>\n";
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br><br>\n";
 
 	if ($action == "update") {

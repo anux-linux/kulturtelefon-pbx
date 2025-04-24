@@ -48,6 +48,7 @@ log = require "resources.functions.log".ring_group
 	require "resources.functions.channel_utils"
 	require "resources.functions.format_ringback"
 	require "resources.functions.send_presence";
+	require "resources.functions.mkdir";
 
 --- include libs
 	local route_to_bridge = require "resources.functions.route_to_bridge"
@@ -181,11 +182,6 @@ log = require "resources.functions.log".ring_group
 		call_direction = "local";
 	end
 
---set ring ready
-	if (session:ready()) then
-		session:execute("ring_ready", "");
-	end
-
 --define additional variables
 	external = "false";
 
@@ -239,6 +235,7 @@ log = require "resources.functions.log".ring_group
 		ring_group_caller_id_number = row["ring_group_caller_id_number"];
 		ring_group_cid_name_prefix = row["ring_group_cid_name_prefix"];
 		ring_group_cid_number_prefix = row["ring_group_cid_number_prefix"];
+		ring_group_call_screen_enabled = row["ring_group_call_screen_enabled"];
 		ring_group_call_forward_enabled = row["ring_group_call_forward_enabled"];
 		ring_group_follow_me_enabled = row["ring_group_follow_me_enabled"];
 		missed_call_app = row["ring_group_missed_call_app"];
@@ -249,6 +246,17 @@ log = require "resources.functions.log".ring_group
 	local Settings = require "resources.functions.lazy_settings";
 	local settings = Settings.new(dbh, domain_name, domain_uuid);
 
+<<<<<<< HEAD
+=======
+--get the recordings dir
+	--recordings_dir = settings:get('switch', 'recordings', 'dir');
+
+--set the default record extension
+	if (record_ext == nil) then
+		record_ext = 'wav';
+	end
+
+>>>>>>> develop
 --prepare the recording path
 	record_path = recordings_dir .. "/" .. domain_name .. "/archive/" .. os.date("%Y/%b/%d");
 	record_path = record_path:gsub("\\", "/");
@@ -284,9 +292,83 @@ log = require "resources.functions.log".ring_group
 	if (session:ready()) then
 		if (ring_group_greeting and #ring_group_greeting > 0) then
 			session:answer();
+			session_answer = true
 			session:sleep(1000);
 			play_file(dbh, domain_name, domain_uuid, ring_group_greeting)
 			session:sleep(1000);
+		else
+			session_answer = false
+		end
+	end
+
+--call screen enabled
+	if (ring_group_call_screen_enabled == 'true') then
+
+		--local codecs = session:getVariable("codec_string")
+		local codecs = session:getVariable("rtp_use_codec_string");
+
+		--put the codecs into an array
+		local codec_array = explode(",",codecs);
+
+		--exclude video codecs and resave the new list to a string
+		local new_codec_array = {}
+		for index, value in ipairs(codec_array) do
+			if (value ~= "H264" and value ~= 'VP8') then
+				table.insert(new_codec_array, value)
+			end
+		end
+		local new_codecs = table.concat(new_codec_array, ",");
+
+		--set a new allowed codec string
+		session:setVariable("absolute_codec_string", new_codecs);
+
+		--callback function detecting dtmf
+		function on_dtmf(s, _type, obj, arg)
+			local k, v = nil, nil
+			if (_type == "dtmf") then
+				dtmf_entered = 1;
+				return 'break'
+			else
+				return ''
+			end
+		end
+
+		--answer the call if not answered
+		if (not session_answer) then
+			session:answer();
+		end
+
+		--set the variables
+		min_digits = 1;
+		max_digits = 1;
+		max_attempts = 1;
+		timeout = 3000
+
+		--play the name record
+		dtmf_digits = '';
+		session:execute("playback", "phrase:voicemail_record_name");
+		--session:execute("sleep", "1000");
+		session:streamFile("tone_stream://L=1;%(1000, 0, 640)");
+
+		--recording settings
+		max_length_seconds = 30;
+		silence_threshold = settings:get('recordings', 'recording_silence_threshold', 'numeric') or 200;
+		silence_seconds = settings:get('recordings', 'recording_silence_seconds', 'numeric') or 3;
+
+		--create the call scree file name
+		call_sreen_name = 'call_screen.'..uuid..'.'..record_ext;
+
+		--make sure the recording directory exists
+		if (not file_exists(record_path)) then
+			mkdir(record_path);
+		end
+
+		--set callback function for when a caller sends DTMF
+		session:setInputCallback('on_dtmf', '');
+
+		--record the name and reason for calling
+		if (session:ready()) then
+			result = session:recordFile(record_path..'/'..call_sreen_name, max_length_seconds, silence_threshold, silence_seconds);
 		end
 	end
 
@@ -334,9 +416,9 @@ log = require "resources.functions.log".ring_group
 					local sql = "SELECT * FROM v_email_templates ";
 					sql = sql .. "WHERE (domain_uuid = :domain_uuid or domain_uuid is null) ";
 					sql = sql .. "AND template_language = :template_language ";
-					sql = sql .. "AND template_category = 'missed' "
-					sql = sql .. "AND template_enabled = 'true' "
-					sql = sql .. "ORDER BY domain_uuid DESC "
+					sql = sql .. "AND template_category = 'missed' ";
+					sql = sql .. "AND template_enabled = 'true' ";
+					sql = sql .. "ORDER BY domain_uuid DESC ";
 					local params = {domain_uuid = domain_uuid, template_language = default_language.."-"..default_dialect};
 					if (debug["sql"]) then
 						freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
@@ -573,11 +655,15 @@ log = require "resources.functions.log".ring_group
 			end);
 			--freeswitch.consoleLog("NOTICE", "[ring_group] external "..external.."\n");
 
-		--get the dialplan data and save it to a table
+		--run this if there are any external destinations
 			if (external == "true") then
-				dialplans = route_to_bridge.preload_dialplan(
-					dbh, domain_uuid, {hostname = hostname, context = context}
-				)
+				-- set ignore early media
+					session:execute("set", "ignore_early_media=true");
+
+				--get the dialplan data and save it to a table
+					--dialplans = route_to_bridge.preload_dialplan(
+					--	dbh, domain_uuid, {hostname = hostname, context = context}
+					--)
 			end
 
 		---add follow me destinations
@@ -805,7 +891,9 @@ log = require "resources.functions.log".ring_group
 						end
 
 					--determine confirm prompt
-						if (destination_prompt == nil) then
+						if (ring_group_call_screen_enabled ~= nil and ring_group_call_screen_enabled == 'true') then
+							group_confirm = "group_confirm_key=exec,group_confirm_file=lua ".. scripts_dir:gsub('\\','/') .."/confirm.lua,confirm=true,";
+						elseif (destination_prompt == nil) then
 							group_confirm = "confirm=false,";
 						elseif (destination_prompt == "1") then
 							group_confirm = "group_confirm_key=exec,group_confirm_file=lua ".. scripts_dir:gsub('\\','/') .."/confirm.lua,confirm=true,";
@@ -833,6 +921,11 @@ log = require "resources.functions.log".ring_group
 							record_session = true;
 						end
 
+					--set record session to false if the recording was already started
+						if (session:getVariable("record_path") ~= nil and session:getVariable("record_name") ~= nil) then
+							record_session = false;
+						end
+
 					--record the session
 						if (record_session) then
 							record_session = ",api_on_answer='uuid_record "..uuid.." start ".. record_path .. "/" .. record_name .. "',record_path='".. record_path .."',record_name="..record_name;
@@ -841,6 +934,25 @@ log = require "resources.functions.log".ring_group
 							record_session = '';
 						end
 						row.record_session = record_session
+
+					--call timeout ignored with enterprise adjust the destinaton_timeout to honor the call timeout
+						if (ring_group_strategy == "enterprise") then
+							delay = tonumber(destination_delay)
+							if (delay >= 1000) then
+								delay = delay / 1000;
+							end
+							timeout = tonumber(destination_timeout);
+							call_timeout = tonumber(ring_group_call_timeout);
+							if (delay == 0 and call_timeout < timeout) then
+								destination_timeout = call_timeout;
+							end
+							if (delay > 0 and call_timeout < delay + timeout) then
+								destination_timeout = (delay + timeout) - call_timeout;
+								if (delay >= call_timeout) then
+									goto continue
+								end
+							end
+						end
 
 					--process according to user_exists, sip_uri, external number
 						if (user_exists == "true") then
@@ -853,7 +965,11 @@ log = require "resources.functions.log".ring_group
 							user_hold_music = trim(api:executeString(cmd));
 							if (user_hold_music ~= nil) and (string.len(user_hold_music) > 0) then
 								hold_music = user_hold_music;
+<<<<<<< HEAD
 							else 
+=======
+							else
+>>>>>>> develop
 								hold_music = default_hold_music
 							end
 
@@ -955,6 +1071,7 @@ log = require "resources.functions.log".ring_group
 					--increment the value of x
 						x = x + 1;
 				end
+				::continue::
 			end
 
 		--release dbh before bridge

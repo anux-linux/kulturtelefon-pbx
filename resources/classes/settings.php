@@ -9,7 +9,7 @@
  * @access public
  * @author Mark Crane <mark@fusionpbx.com>
  */
-class settings {
+class settings implements clear_cache {
 
 	/**
 	 * Set in the constructor. String used to load a specific domain. Must be a value domain UUID before sending to the constructor.
@@ -54,6 +54,12 @@ class settings {
 	private $database;
 
 	/**
+	 * Tracks if the APCu extension is loaded for database queries
+	 * @var bool
+	 */
+	private $apcu_enabled;
+
+	/**
 	 * Create a settings object using key/value pairs in the $setting_array.
 	 *
 	 * Valid values are: database, domain_uuid, user_uuid, device_uuid, device_profile_uuid, and category.
@@ -62,6 +68,16 @@ class settings {
 	 * @access public
 	 */
 	public function __construct($setting_array = []) {
+
+		//try to use RAM cache by default
+		if (!isset($setting_array['allow_caching'])) {
+			$setting_array['allow_caching'] = true;
+		}
+
+		//track ram caching
+		if ($setting_array['allow_caching']) {
+			$this->apcu_enabled = function_exists('apcu_enabled') && apcu_enabled();
+		}
 
 		//open a database connection
 		if (empty($setting_array['database'])) {
@@ -145,17 +161,39 @@ class settings {
 	}
 
 	/**
+	 * Returns the domain_uuid in this object used to load the settings
+	 * @return string UUID of the domain used to load the object or an empty string
+	 */
+	public function get_domain_uuid(): string {
+		if (!empty($this->domain_uuid)) {
+			return $this->domain_uuid;
+		}
+		return "";
+	}
+
+	/**
+	 * Returns the user_uuid in this object used to load the settings
+	 * @return string UUID of the user used to load the object or an empty string
+	 */
+	public function get_user_uuid(): string {
+		if (!empty($this->user_uuid)) {
+			return $this->user_uuid;
+		}
+		return "";
+	}
+
+	/**
 	 * set the default, domain, user, device or device profile settings
 	 * @param string $table_prefix prefix for the table.
 	 * @param string $uuid uuid of the setting if available. If set to an empty string then a new uuid will be created.
 	 * @param string $category Category of the setting.
 	 * @param string $subcategory Subcategory of the setting.
-	 * @param string $type Type of the setting (array, numeric, text, etc)
 	 * @param string $value (optional) Value to set. Default is empty string.
+	 * @param string $type Type of the setting (array, numeric, text, etc)
 	 * @param bool $enabled (optional) True or False. Default is True.
 	 * @param string $description (optional) Description. Default is empty string.
 	 */
-	public function set(string $table_prefix, string $uuid, string $category, string $subcategory, string $type = 'text', string $value = "", bool $enabled = true, string $description = "") {
+	public function set(string $table_prefix, string $uuid, string $category, string $subcategory, string $value = "", string $type = 'text', bool $enabled = true, string $description = "") {
 
 		//set the table name
 		$table_name = $table_prefix.'_settings';
@@ -188,7 +226,7 @@ class settings {
 		$record[$table_name][0][$table_prefix.'_setting_description'] = $description;
 
 		//grant temporary permissions
-		$p = new permissions;
+		$p = permissions::new();
 		$p->add($table_prefix.'_setting_add', 'temp');
 		$p->add($table_prefix.'_setting_edit', 'temp');
 
@@ -207,6 +245,15 @@ class settings {
 	 */
 	private function default_settings() {
 
+		//set the key for global defaults
+		$key = 'settings_global_' . $this->category;
+
+		//if the apcu extension is loaded get the already parsed array
+		if ($this->apcu_enabled && apcu_exists($key)) {
+			$this->settings = apcu_fetch($key);
+			return;
+		}
+
 		//get the default settings
 		$sql = "select * from v_default_settings ";
 		$sql .= "where default_setting_enabled = 'true' ";
@@ -221,19 +268,11 @@ class settings {
 				$name = $row['default_setting_name'];
 				$category = $row['default_setting_category'];
 				$subcategory = $row['default_setting_subcategory'];
-				if (empty($subcategory)) {
-					if ($name == "array") {
-						if (!isset($this->settings[$category]) || !is_array($this->settings[$category])) {
-							$this->settings[$category] = array();
-						}
-						$this->settings[$category][] = $row['default_setting_value'];
+				if (isset($row['default_setting_value']) && $row['default_setting_value'] !== '') {
+					if ($name == "boolean") {
+						$this->settings[$category][$subcategory] = filter_var($row['default_setting_value'], FILTER_VALIDATE_BOOLEAN);
 					}
-					else {
-						$this->settings[$category] = $row['default_setting_value'];
-					}
-				}
-				else {
-					if ($name == "array") {
+					elseif ($name == "array") {
 						if (!isset($this->settings[$category][$subcategory]) || !is_array($this->settings[$category][$subcategory])) {
 							$this->settings[$category][$subcategory] = array();
 						}
@@ -245,7 +284,11 @@ class settings {
 				}
 			}
 		}
-		unset($sql, $result, $row);
+
+		//if the apcu extension is loaded store the result
+		if ($this->apcu_enabled) {
+			apcu_store($key, $this->settings);
+		}
 	}
 
 	/**
@@ -253,13 +296,22 @@ class settings {
 	 * @access private
 	 */
 	private function domain_settings() {
-
-		$sql = "select * from v_domain_settings ";
-		$sql .= "where domain_uuid = :domain_uuid ";
-		$sql .= "and domain_setting_enabled = 'true' ";
-		$parameters['domain_uuid'] = $this->domain_uuid;
-		$result = $this->database->select($sql, $parameters, 'all');
-		unset($sql, $parameters);
+		$key = 'settings_domain_'.$this->domain_uuid;
+		$result = '';
+		//if the apcu extension is loaded get the cached database result
+		if ($this->apcu_enabled && apcu_exists($key)) {
+			$result = apcu_fetch($key);
+		} else {
+			$sql = "select * from v_domain_settings ";
+			$sql .= "where domain_uuid = :domain_uuid ";
+			$sql .= "and domain_setting_enabled = 'true' ";
+			$parameters['domain_uuid'] = $this->domain_uuid;
+			$result = $this->database->select($sql, $parameters, 'all');
+			//if the apcu extension is loaded store the result
+			if ($this->apcu_enabled) {
+				apcu_store($key, $result);
+			}
+		}
 		if (!empty($result)) {
 			//domain setting array types override the default settings set as type array
 			foreach ($result as $row) {
@@ -276,18 +328,10 @@ class settings {
 				$name = $row['domain_setting_name'];
 				$category = $row['domain_setting_category'];
 				$subcategory = $row['domain_setting_subcategory'];
-				if (empty($subcategory)) {
-					if ($name == "array") {
-						if (!isset($this->settings[$category]) || !is_array($this->settings[$category])) {
-							$this->settings[$category] = array();
-						}
-						$this->settings[$category][] = $row['domain_setting_value'];
+				if (isset($row['domain_setting_value']) && $row['domain_setting_value'] !== '') {
+					if ($name == "boolean") {
+						$this->settings[$category][$subcategory] = filter_var($row['domain_setting_value'], FILTER_VALIDATE_BOOLEAN);
 					}
-					else {
-						$this->settings[$category] = $row['domain_setting_value'];
-					}
-				}
-				else {
 					if ($name == "array") {
 						if (!isset($this->settings[$category][$subcategory]) || !is_array($this->settings[$category][$subcategory])) {
 							$this->settings[$category][$subcategory] = array();
@@ -298,9 +342,9 @@ class settings {
 						$this->settings[$category][$subcategory] = $row['domain_setting_value'];
 					}
 				}
+
 			}
 		}
-		unset($result, $row);
 	}
 
 	/**
@@ -309,37 +353,41 @@ class settings {
 	 * @depends $this->domain_uuid
 	 */
 	private function user_settings() {
-
-		$sql = "select * from v_user_settings ";
-		$sql .= "where domain_uuid = :domain_uuid ";
-		$sql .= "and user_uuid = :user_uuid ";
-		$sql .= " order by user_setting_order asc ";
-		$parameters['domain_uuid'] = $this->domain_uuid;
-		$parameters['user_uuid'] = $this->user_uuid;
-		$result = $this->database->select($sql, $parameters, 'all');
-		if (is_array($result)) {
+		$key = 'settings_user_'.$this->user_uuid;
+		$result = '';
+		//if the apcu extension is loaded get the cached database result
+		if ($this->apcu_enabled && apcu_exists($key)) {
+			$result = apcu_fetch($key);
+		} else {
+			$sql = "select * from v_user_settings ";
+			$sql .= "where domain_uuid = :domain_uuid ";
+			$sql .= "and user_uuid = :user_uuid ";
+			$sql .= " order by user_setting_order asc ";
+			$parameters['domain_uuid'] = $this->domain_uuid;
+			$parameters['user_uuid'] = $this->user_uuid;
+			$result = $this->database->select($sql, $parameters, 'all');
+			//if the apcu extension is loaded store the result
+			if ($this->apcu_enabled) {
+				apcu_store($key, $result);
+			}
+		}
+		if (!empty($result)) {
 			foreach ($result as $row) {
 				if ($row['user_setting_enabled'] == 'true') {
 					$name = $row['user_setting_name'];
 					$category = $row['user_setting_category'];
 					$subcategory = $row['user_setting_subcategory'];
-					if (!empty($row['user_setting_value'])) {
-						if (empty($subcategory)) {
-							if ($name == "array") {
-								$this->settings[$category][] = $row['user_setting_value'];
-							}
-							else {
-								$this->settings[$category] = $row['user_setting_value'];
-							}
+					if (isset($row['user_setting_value']) && $row['user_setting_value'] !== '') {
+						if ($name == "boolean") {
+							$this->settings[$category][$subcategory] = filter_var($row['user_setting_value'], FILTER_VALIDATE_BOOLEAN);
+						}
+						elseif ($name == "array") {
+							$this->settings[$category][$subcategory][] = $row['user_setting_value'];
 						}
 						else {
-							if ($name == "array") {
-								$this->settings[$category][$subcategory][] = $row['user_setting_value'];
-							}
-							else {
-								$this->settings[$category][$subcategory] = $row['user_setting_value'];
-							}
+							$this->settings[$category][$subcategory] = $row['user_setting_value'];
 						}
+
 					}
 				}
 			}
@@ -397,6 +445,28 @@ class settings {
 			}
 		}
 	}
-}
 
-?>
+	public static function clear_cache() {
+		if (function_exists('apcu_enabled') && apcu_enabled()) {
+			$cache = apcu_cache_info(false);
+			if (!empty($cache['cache_list'])) {
+				//clear apcu cache
+				foreach ($cache['cache_list'] as $entry) {
+					$key = $entry['info'];
+					if (str_starts_with($key, 'settings_')) {
+						apcu_delete($key);
+					}
+				}
+				global $settings;
+				//check there is a settings object
+				if (!empty($settings) && ($settings instanceof settings)) {
+					$database = $settings->database();
+					$domain_uuid = $settings->get_domain_uuid();
+					$user_uuid = $settings->get_user_uuid();
+					//recreate the settings object to reload all settings from database
+					$settings = new settings(['database' => $database, 'domain_uuid' => $domain_uuid, 'user_uuid' => $user_uuid]);
+				}
+			}
+		}
+	}
+}

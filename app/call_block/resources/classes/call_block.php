@@ -2,10 +2,7 @@
 
 /**
  * call block class
- *
- * @method null download
  */
-if (!class_exists('call_block')) {
 	class call_block {
 
 		/**
@@ -435,7 +432,7 @@ if (!class_exists('call_block')) {
 									unset($rows, $parameters);
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('dialplan_edit', 'temp');
 
 								//save the array
@@ -459,6 +456,9 @@ if (!class_exists('call_block')) {
 		} //method
 
 	} //class
+<<<<<<< HEAD
 }
 
 ?>
+=======
+>>>>>>> develop

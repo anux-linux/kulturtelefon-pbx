@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2022
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -248,7 +248,7 @@
 			}
 
 		//add the dialplan permission
-			$p = new permissions;
+			$p = permissions::new();
 			$p->add("extension_edit", "temp");
 
 		//save the data
@@ -341,7 +341,7 @@
 		*/
 
 		//send feature event notify to the phone
-			if (!empty($_SESSION['device']['feature_sync']['boolean']) && $_SESSION['device']['feature_sync']['boolean'] == "true") {
+			if (filter_var($_SESSION['device']['feature_sync']['boolean'] ?? false, FILTER_VALIDATE_BOOL)) {
 				$ring_count = ceil($call_timeout / 6);
 				$feature_event_notify = new feature_event_notify;
 				$feature_event_notify->domain_name = $_SESSION['domain_name'];
@@ -358,7 +358,7 @@
 				else {
 					$feature_event_notify->forward_all_destination = $forward_all_destination;
 				}
-				
+
 				if ($forward_busy_destination == "") {
 					$feature_event_notify->forward_busy_destination = "0";
 				}
@@ -421,7 +421,6 @@
 
 		//synchronize configuration
 			if (!empty($_SESSION['switch']['extensions']['dir']) && is_readable($_SESSION['switch']['extensions']['dir'])) {
-				require_once "app/extensions/resources/classes/extension.php";
 				$ext = new extension;
 				$ext->xml();
 				unset($ext);
@@ -504,7 +503,7 @@
 	}
 
 //prepare the autocomplete
-	if(!empty($_SESSION['follow_me']['follow_me_autocomplete']['boolean']) && $_SESSION['follow_me']['follow_me_autocomplete']['boolean'] == 'true') {
+	if(filter_var($_SESSION['follow_me']['follow_me_autocomplete']['boolean'] ?? false, FILTER_VALIDATE_BOOLEAN)) {
 		echo "<link rel=\"stylesheet\" href=\"".PROJECT_PATH."/resources/jquery/jquery-ui.min.css\" />\n";
 		echo "<script src=\"".PROJECT_PATH."/resources/jquery/jquery-ui.min.js\"></script>\n";
 		echo "<script type=\"text/javascript\">\n";
@@ -533,14 +532,22 @@
 	$object = new token;
 	$token = $object->create($_SERVER['PHP_SELF']);
 
+//save the back button location using referer
+	$back_destination = "window.location.href='" . ($_SESSION['call_forward_back'] ?? "/app/call_forward/call_forward.php") . "'";
+
 //show the content
 	echo "<form method='post' name='frm' id='frm'>\n";
 
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-call_forward']."</b></div>\n";
 	echo "	<div class='actions'>\n";
+<<<<<<< HEAD
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','onclick'=>'history.back();']);
 	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+=======
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','onclick'=>$back_destination]);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
+>>>>>>> develop
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -548,6 +555,7 @@
 	echo $text['description']." <strong>".escape($extension)."</strong>\n";
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -739,6 +747,7 @@
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br /><br />";
 
 	if (!empty($action) && $action == "update") {

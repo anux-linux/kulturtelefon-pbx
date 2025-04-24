@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2018-2023
+	Portions created by the Initial Developer are Copyright (C) 2018-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -104,17 +104,17 @@
 	}
 
 //get the list
-	$sql = "select "; 
+	$sql = "select ";
 	$sql .= "	distinct p.permission_name, \n";
 	$sql .= "	p.application_name, \n";
-	$sql .= "	g.permission_protected, \n"; 
-	$sql .= "	g.group_permission_uuid, \n"; 
+	$sql .= "	g.permission_protected, \n";
+	$sql .= "	g.group_permission_uuid, \n";
 	$sql .= "	g.permission_assigned \n";
-	$sql .= "from v_permissions as p \n"; 
-	$sql .= "left join \n"; 
-	$sql .= "	v_group_permissions as g \n"; 
-	$sql .= "	on p.permission_name = g.permission_name \n"; 
-	$sql .= "	and group_name = :group_name \n"; 
+	$sql .= "from v_permissions as p \n";
+	$sql .= "left join \n";
+	$sql .= "	v_group_permissions as g \n";
+	$sql .= "	on p.permission_name = g.permission_name \n";
+	$sql .= "	and group_name = :group_name \n";
 	$sql .= " 	and g.group_uuid = :group_uuid \n";
 	$sql .= "where true \n";
 	if (!empty($search)) {
@@ -123,7 +123,7 @@
 		$sql .= ") ";
 		$parameters['search'] = '%'.$search.'%';
 	}
-	$sql .= "	order by p.application_name, p.permission_name asc "; 
+	$sql .= "	order by p.application_name, p.permission_name asc ";
 	$parameters['group_name'] = $group_name;
 	$parameters['group_uuid'] = $group_uuid;
 	$group_permissions = $database->select($sql, $parameters, 'all');
@@ -274,10 +274,10 @@
 
 //show the content
 	echo "<div class='action_bar' id='action_bar'>\n";
-	echo "	<div class='heading'><b>".$text['title-group_permissions']." (".escape($group_name).")</b></div>\n";
+	echo "	<div class='heading'><b>".$text['title-group_permissions']."</b><div class='count'>".escape($group_name)."</div></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','collapse'=>'hide-md-dn','link'=>'groups.php']);
-	echo button::create(['type'=>'button','label'=>$text['button-reload'],'icon'=>$_SESSION['theme']['button_icon_reload'],'collapse'=>'hide-md-dn','link'=>'?group_uuid='.urlencode($group_uuid).'&action=reload'.($view ? '&view='.urlencode($view) : null).($search ? '&search='.urlencode($search) : null)]);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','collapse'=>'hide-md-dn','link'=>'groups.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-reload'],'icon'=>$settings->get('theme', 'button_icon_reload'),'collapse'=>'hide-md-dn','link'=>'?group_uuid='.urlencode($group_uuid).'&action=reload'.($view ? '&view='.urlencode($view) : null).($search ? '&search='.urlencode($search) : null)]);
 	if (permission_exists('group_member_view')) {
 		echo button::create(['type'=>'button','label'=>$text['button-members'],'icon'=>'users','collapse'=>'hide-md-dn','link'=>'group_members.php?group_uuid='.urlencode($group_uuid)]);
 	}
@@ -290,10 +290,10 @@
 	echo 		"	<option value='protected' ".($view == 'protected' ? "selected='selected'" : null).">".$text['label-group_protected']."</option>\n";
 	echo 		"</select>\n";
 	echo 		"<input type='text' class='txt list-search' style='margin-left: 0;' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown='list_search_reset();'>";
-	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search','collapse'=>'hide-md-dn','style'=>($search != '' ? 'display: none;' : null)]);
-	echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','collapse'=>'hide-md-dn','link'=>'group_permissions.php?group_uuid='.urlencode($group_uuid),'style'=>($search == '' ? 'display: none;' : null)]);
+	echo button::create(['label'=>$text['button-search'],'icon'=>$settings->get('theme', 'button_icon_search'),'type'=>'submit','id'=>'btn_search','collapse'=>'hide-md-dn','style'=>($search != '' ? 'display: none;' : null)]);
+	echo button::create(['label'=>$text['button-reset'],'icon'=>$settings->get('theme', 'button_icon_reset'),'type'=>'button','id'=>'btn_reset','collapse'=>'hide-md-dn','link'=>'group_permissions.php?group_uuid='.urlencode($group_uuid),'style'=>($search == '' ? 'display: none;' : null)]);
 	if (permission_exists('group_permission_edit')) {
-		echo button::create(['type'=>'button','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','collapse'=>'hide-md-dn','style'=>'margin-left: 15px;','onclick'=>"document.getElementById('form_list').submit();"]);
+		echo button::create(['type'=>'button','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','collapse'=>'hide-md-dn','style'=>'margin-left: 15px;','onclick'=>"document.getElementById('form_list').submit();"]);
 	}
 	echo "		</form>\n";
 	echo "	</div>\n";
@@ -308,7 +308,9 @@
 	echo "<input type='hidden' name='group_uuid' value='".escape($group_uuid)."'>\n";
 	echo "<input type='hidden' name='view' value=\"".escape($view)."\">\n";
 	echo "<input type='hidden' name='search' value=\"".escape($search)."\">\n";
-	echo "<table class='list' style='margin-bottom: 25px;'>\n";
+
+	echo "<div class='card'>\n";
+	echo "<table class='list'>\n";
 	if (is_array($group_permissions) && @sizeof($group_permissions) != 0) {
 		$x = 0;
 		foreach ($group_permissions as $row) {
@@ -388,6 +390,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "</form>\n";
 
 //include the footer

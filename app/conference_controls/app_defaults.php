@@ -32,7 +32,11 @@
 		if ($num_rows == 0) {
 
 			//set the directory
+<<<<<<< HEAD
 				$xml_dir = $setting->get('switch','conf').'/autoload_configs';
+=======
+				$xml_dir = $settings->get('switch','conf').'/autoload_configs';
+>>>>>>> develop
 				$xml_file = $xml_dir."/conference.conf";
 				$xml_file_alt = $_SERVER["DOCUMENT_ROOT"].'/'.PROJECT_PATH.'/app/switch/resources/conf/autoload_configs/conference.conf';
 
@@ -65,7 +69,7 @@
 						$array['conference_controls'][0]['control_name'] = $control_name;
 						$array['conference_controls'][0]['control_enabled'] = 'true';
 
-						$p = new permissions;
+						$p = permissions::new();
 						$p->add('conference_control_add', 'temp');
 
 						$database->app_name = 'conference_controls';
@@ -96,7 +100,7 @@
 								}
 								$array['conference_control_details'][0]['control_enabled'] = $control_enabled;
 
-								$p = new permissions;
+								$p = permissions::new();
 								$p->add('conference_control_detail_add', 'temp');
 
 								$database->app_name = 'conference_controls';

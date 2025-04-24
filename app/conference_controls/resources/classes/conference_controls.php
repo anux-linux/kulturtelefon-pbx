@@ -26,12 +26,7 @@
 
 /**
  * conference_controls class
- *
- * @method null delete
- * @method null toggle
- * @method null copy
  */
-if (!class_exists('conference_controls')) {
 	class conference_controls {
 
 		/**
@@ -103,7 +98,7 @@ if (!class_exists('conference_controls')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('conference_control_detail_delete', 'temp');
 
 								//execute delete
@@ -426,6 +421,3 @@ if (!class_exists('conference_controls')) {
 		}
 
 	}
-}
-
-?>

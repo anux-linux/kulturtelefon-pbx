@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -50,7 +50,7 @@
 	else {
 		$action = "add";
 	}
-	
+
 //set the defaults
 	$broadcast_name = '';
 	$broadcast_start_time = '';
@@ -333,15 +333,15 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-call_broadcast']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'call_broadcast.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'call_broadcast.php']);
 	if ($action == "update") {
-		echo button::create(['type'=>'button','label'=>$text['button-start'],'icon'=>$_SESSION['theme']['button_icon_start'],'style'=>'margin-left: 15px;','link'=>'call_broadcast_send.php?id='.urlencode($call_broadcast_uuid)]);
-		echo button::create(['type'=>'button','label'=>$text['button-stop'],'icon'=>$_SESSION['theme']['button_icon_stop'],'link'=>'call_broadcast_stop.php?id='.urlencode($call_broadcast_uuid)]);
+		echo button::create(['type'=>'button','label'=>$text['button-start'],'icon'=>$settings->get('theme', 'button_icon_start'),'style'=>'margin-left: 15px;','link'=>'call_broadcast_send.php?id='.urlencode($call_broadcast_uuid)]);
+		echo button::create(['type'=>'button','label'=>$text['button-stop'],'icon'=>$settings->get('theme', 'button_icon_stop'),'link'=>'call_broadcast_stop.php?id='.urlencode($call_broadcast_uuid)]);
 		if (permission_exists('call_broadcast_delete')) {
-			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','style'=>'margin-left: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'name'=>'btn_delete','style'=>'margin-left: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
 		}
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -350,6 +350,7 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 		echo modal::create(['id'=>'modal-delete','type'=>'delete','actions'=>button::create(['type'=>'submit','label'=>$text['button-continue'],'icon'=>'check','id'=>'btn_delete','style'=>'float: right; margin-left: 15px;','collapse'=>'never','name'=>'action','value'=>'delete','onclick'=>"modal_close();"])]);
 	}
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -567,6 +568,7 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br><br>";
 
 	if ($action == "update") {

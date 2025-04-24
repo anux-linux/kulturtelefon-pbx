@@ -25,7 +25,6 @@
 */
 
 //define the directory class
-if (!class_exists('extension')) {
 	class extension {
 
 		/**
@@ -153,7 +152,7 @@ if (!class_exists('extension')) {
 					//build update array
 						$array['voicemails'][0]['voicemail_uuid'] = $voicemail_uuid;
 					//grant temporary permissions
-						$p = new permissions;
+						$p = permissions::new();
 						$p->add('voicemail_edit', 'temp');
 				}
 				else {
@@ -161,7 +160,7 @@ if (!class_exists('extension')) {
 						$array['voicemails'][0]['voicemail_uuid'] = uuid();
 						$array['voicemails'][0]['domain_uuid'] = $this->domain_uuid;
 					//grant temporary permissions
-						$p = new permissions;
+						$p = permissions::new();
 						$p->add('voicemail_add', 'temp');
 				}
 				if (is_array($array) && @sizeof($array) != 0) {
@@ -639,7 +638,7 @@ if (!class_exists('extension')) {
 									}
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('extension_user_delete', 'temp');
 									$p->add('follow_me_delete', 'temp');
 									$p->add('follow_me_destination_delete', 'temp');
@@ -743,7 +742,7 @@ if (!class_exists('extension')) {
 							if (is_array($array) && @sizeof($array) != 0) {
 
 								//grant temporary permissions
-									$p = new permissions;
+									$p = permissions::new();
 									$p->add('extension_edit', 'temp');
 
 								//save the array
@@ -795,7 +794,10 @@ if (!class_exists('extension')) {
 		}
 
 	}
+<<<<<<< HEAD
 }
 
 ?>
 
+=======
+>>>>>>> develop

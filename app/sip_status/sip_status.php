@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -42,6 +42,9 @@
 	$language = new text;
 	$text = $language->get();
 
+//create the database object
+	$database = database::new();
+
 //create event socket
 	$esl = event_socket::create();
 	if (!$esl->is_connected()) {
@@ -52,7 +55,6 @@
 	$sql = "select g.domain_uuid, g.gateway, g.gateway_uuid, d.domain_name ";
 	$sql .= "from v_gateways as g left ";
 	$sql .= "outer join v_domains as d on d.domain_uuid = g.domain_uuid";
-	$database = new database;
 	$gateways = $database->select($sql, null, 'all');
 	unset($sql);
 
@@ -69,7 +71,6 @@
 		$parameters['sip_profile_hostname'] = $hostname;
 	}
 	$sql .= "order by sip_profile_name asc ";
-	$database = new database;
 	$rows = $database->select($sql, $parameters ?? null, 'all');
 	if (!empty($rows)) {
 		foreach ($rows as $row) {
@@ -83,7 +84,31 @@
 		$cmd = "sofia xmlstatus";
 		$xml_response = trim(event_socket::api($cmd));
 		if ($xml_response) {
+			//read the xml string into an xml object
 			$xml = new SimpleXMLElement($xml_response);
+
+			//sort the SIP profiles alphabetically
+			//turn into array
+			$profiles_array = array();
+			foreach($xml->profile as $profile) {
+				$profiles_array[] = $profile;
+			}
+
+			//sort the array
+			function sort_xml($a, $b) {
+				return strnatcmp($a->name, $b->name);
+			}
+			usort($profiles_array, 'sort_xml');
+
+			//convert array back to SimpleXMLElement
+			$xml_string = "<?xml version='1.0'?><profiles>";
+			foreach ($profiles_array as $node) {
+				$xml_string .= $node->saveXML();
+			}
+			$xml_string .= "</profiles>";
+
+			//read the xml string into a new xml object
+			$xml = simplexml_load_string($xml_string);
 		}
 	}
 	catch(Exception $e) {
@@ -104,6 +129,7 @@
 
 //define registration object
 	$registration = new registrations;
+	$registration->show = 'all';
 
 //include the header
 	$document['title'] = $text['title-sip_status'];
@@ -118,7 +144,7 @@
 		echo button::create(['type'=>'button','label'=>$text['button-reload_acl'],'icon'=>'shield-alt','collapse'=>'hide-xs','link'=>'cmd.php?action=reloadacl']);
 		echo button::create(['type'=>'button','label'=>$text['button-reload_xml'],'icon'=>'code','collapse'=>'hide-xs','link'=>'cmd.php?action=reloadxml']);
 	}
-	echo button::create(['type'=>'button','label'=>$text['button-refresh'],'icon'=>$_SESSION['theme']['button_icon_refresh'],'collapse'=>'hide-xs','style'=>'margin-left: 15px;','link'=>'sip_status.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-refresh'],'icon'=>$settings->get('theme', 'button_icon_refresh'),'collapse'=>'hide-xs','style'=>'margin-left: 15px;','link'=>'sip_status.php']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -131,6 +157,8 @@
 		echo "<br />\n";
 
 		echo "<div id='sofia_status' style='margin-top: 20px; margin-bottom: 40px;'>";
+
+		echo "<div class='card'>\n";
 		echo "<table class='list'>\n";
 		echo "<tr class='list-header'>\n";
 		echo "	<th>".$text['label-name']."</th>\n";
@@ -217,6 +245,7 @@
 
 		echo "</table>\n";
 		echo "</div>\n";
+		echo "</div>\n";
 		unset($gateways, $xml, $xml_gateways);
 	}
 
@@ -246,18 +275,20 @@
 			echo button::create(['type'=>'button','label'=>$text['button-flush_registrations'],'icon'=>'eraser','collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=flush_inbound_reg']);
 			echo button::create(['type'=>'button','label'=>$text['button-registrations'].' ('.$registration->count($sip_profile_name).')','icon'=>'phone-alt','collapse'=>'hide-xs','link'=>PROJECT_PATH.'/app/registrations/registrations.php?profile='.urlencode($sip_profile_name)]);
 			if ($profile_state == 'stopped') {
-				echo button::create(['type'=>'button','label'=>$text['button-start'],'icon'=>$_SESSION['theme']['button_icon_start'],'collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=start']);
+				echo button::create(['type'=>'button','label'=>$text['button-start'],'icon'=>$settings->get('theme', 'button_icon_start'),'collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=start']);
 			}
 			if ($profile_state == 'running') {
-				echo button::create(['type'=>'button','label'=>$text['button-stop'],'icon'=>$_SESSION['theme']['button_icon_stop'],'collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=stop']);
+				echo button::create(['type'=>'button','label'=>$text['button-stop'],'icon'=>$settings->get('theme', 'button_icon_stop'),'collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=stop']);
 			}
-			echo button::create(['type'=>'button','label'=>$text['button-restart'],'icon'=>$_SESSION['theme']['button_icon_reload'],'collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=restart']);
-			echo button::create(['type'=>'button','label'=>$text['button-rescan'],'icon'=>$_SESSION['theme']['button_icon_search'],'collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=rescan']);
+			echo button::create(['type'=>'button','label'=>$text['button-restart'],'icon'=>$settings->get('theme', 'button_icon_reload'),'collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=restart']);
+			echo button::create(['type'=>'button','label'=>$text['button-rescan'],'icon'=>$settings->get('theme', 'button_icon_search'),'collapse'=>'hide-xs','link'=>'cmd.php?profile='.urlencode($sip_profile_name).'&action=rescan']);
 			echo "	</div>\n";
 			echo "	<div style='clear: both;'></div>\n";
 			echo "</div>\n";
 
 			echo "<div id='".escape($sip_profile_name)."' style='display: none; margin-bottom: 30px;'>";
+
+			echo "<div class='card'>\n";
 			echo "<table width='100%' cellspacing='0' cellpadding='5'>\n";
 			echo "<tr><th colspan='2' style='font-size: 1px; padding: 0;'>&nbsp;</th></tr>\n";
 
@@ -302,6 +333,7 @@
 			}
 			echo "</table>\n";
 			echo "</div>";
+			echo "</div>";
 			unset($xml);
 		}
 	}
@@ -311,10 +343,15 @@
 		$response = event_socket::api("status");
 		echo "<b><a href='javascript:void(0);' onclick=\"$('#status').slideToggle();\">".$text['title-status']."</a></b>\n";
 		echo "<div id='status' style='margin-top: 20px; font-size: 9pt;'>";
-		echo "<pre>";
+		echo "<div class='card'>\n";
+		echo "<pre style='margin-bottom: 0;'>";
 		echo trim(escape($response));
 		echo "</pre>\n";
 		echo "</div>";
+<<<<<<< HEAD
+=======
+		echo "</div>";
+>>>>>>> develop
 	}
 
 //include the footer

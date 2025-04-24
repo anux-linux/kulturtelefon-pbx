@@ -56,24 +56,36 @@
 		return $exists;
 	}
 
+<<<<<<< HEAD
 //get the email queue settings
 	$setting = new settings(["category" => "fax_queue"]);
 
 //set the fax queue interval
 	if (!empty($setting->get('fax_queue', 'interval'))) {
 		$fax_queue_interval = $setting->get('fax_queue', 'interval');
+=======
+//set the fax queue interval
+	if (!empty($settings->get('fax_queue', 'interval'))) {
+		$fax_queue_interval = $settings->get('fax_queue', 'interval');
+>>>>>>> develop
 	}
 	else {
 		$fax_queue_interval = '30';
 	}
 
 //set the fax queue limit
+<<<<<<< HEAD
 	if (!empty($setting->get('fax_queue', 'limit'))) {
 		$fax_queue_limit = $setting->get('fax_queue', 'limit');
+=======
+	if (!empty($settings->get('fax_queue', 'limit'))) {
+		$fax_queue_limit = $settings->get('fax_queue', 'limit');
+>>>>>>> develop
 	}
 	else {
 		$fax_queue_limit = '30';
 	}
+<<<<<<< HEAD
 	if (!empty($setting->get('fax_queue', 'debug'))) {
 		$debug = $setting->get('fax_queue', 'debug');
 	}
@@ -81,6 +93,15 @@
 //set the fax queue retry interval
 	if (!empty($setting->get('fax_queue', 'retry_interval'))) {
 		$fax_retry_interval = $setting->get('fax_queue', 'retry_interval');
+=======
+	if (!empty($settings->get('fax_queue', 'debug'))) {
+		$debug = $settings->get('fax_queue', 'debug');
+	}
+
+//set the fax queue retry interval
+	if (!empty($settings->get('fax_queue', 'retry_interval'))) {
+		$fax_retry_interval = $settings->get('fax_queue', 'retry_interval');
+>>>>>>> develop
 	}
 	else {
 		$fax_retry_interval = '180';
@@ -151,7 +172,7 @@
 //process the messages
 	if (is_array($fax_queue) && @sizeof($fax_queue) != 0) {
 		foreach($fax_queue as $row) {
-			$command = exec('which php')." ".$_SERVER['DOCUMENT_ROOT']."/app/fax_queue/resources/job/fax_send.php ";
+			$command = PHP_BINARY." ".$_SERVER['DOCUMENT_ROOT']."/app/fax_queue/resources/job/fax_send.php ";
 			$command .= "'action=send&fax_queue_uuid=".$row["fax_queue_uuid"]."&hostname=".$hostname."&debug=true'";
 			if (isset($debug)) {
 				//run process inline to see debug info

@@ -159,8 +159,8 @@
 			$database->app_name = 'extension settings';
 			$database->app_uuid = '1416a250-f6e1-4edc-91a6-5c9b883638fd';
 			$database->save($array);
-		
-		//clear the cache	
+
+		//clear the cache
 			$sql = "select extension, number_alias, user_context from v_extensions ";
 			$sql .= "where extension_uuid = :extension_uuid ";
 			$parameters['extension_uuid'] = $extension_uuid;
@@ -169,7 +169,7 @@
 			$cache = new cache;
 			$cache->delete("directory:".$extension["extension"]."@".$extension["user_context"]);
 			$cache->delete("directory:".$extension["number_alias"]."@".$extension["user_context"]);
-		
+
 		//redirect the user
 			if (isset($action)) {
 				if ($action == "add") {
@@ -234,16 +234,16 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-extension_setting']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','collapse'=>'hide-xs','style'=>'margin-right: 15px;','link'=>'extension_settings.php?id='.$extension_uuid]);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','collapse'=>'hide-xs','style'=>'margin-right: 15px;','link'=>'extension_settings.php?id='.$extension_uuid]);
 	if ($action == 'update') {
 		if (permission_exists('_add')) {
-			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'id'=>'btn_copy','name'=>'btn_copy','style'=>'display: none;','onclick'=>"modal_open('modal-copy','btn_copy');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$settings->get('theme', 'button_icon_copy'),'id'=>'btn_copy','name'=>'btn_copy','style'=>'display: none;','onclick'=>"modal_open('modal-copy','btn_copy');"]);
 		}
 		if (permission_exists('_delete')) {
-			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none; margin-right: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none; margin-right: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
 		}
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','collapse'=>'hide-xs']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','collapse'=>'hide-xs']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -260,6 +260,7 @@
 		}
 	}
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	//echo "<tr>\n";
@@ -369,6 +370,7 @@
 	echo "</tr>\n";
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br /><br />\n";
 
 	echo "<input type='hidden' name='extension_uuid' value='".$extension_uuid."'>\n";

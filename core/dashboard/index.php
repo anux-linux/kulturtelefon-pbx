@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2022-2024
+	Portions created by the Initial Developer are Copyright (C) 2022-2025
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -78,6 +78,7 @@
 	$sql .= "dashboard_name, ";
 	$sql .= "dashboard_path, ";
 	$sql .= "dashboard_icon, ";
+	$sql .= "dashboard_icon_color, ";
 	$sql .= "dashboard_url, ";
 	$sql .= "dashboard_target, ";
 	$sql .= "dashboard_width, ";
@@ -93,6 +94,7 @@
 	$sql .= "dashboard_label_background_color_hover, ";
 	$sql .= "dashboard_number_text_color, ";
 	$sql .= "dashboard_number_text_color_hover, ";
+	$sql .= "dashboard_number_background_color, ";
 	$sql .= "dashboard_background_color, ";
 	$sql .= "dashboard_background_color_hover, ";
 	$sql .= "dashboard_detail_background_color, ";
@@ -145,9 +147,11 @@
 			}
 
 			//save the data
-			$database->app_name = 'dashboard';
-			$database->app_uuid = '55533bef-4f04-434a-92af-999c1e9927f7';
-			$database->save($array);
+			if (is_array($array)) {
+				$database->app_name = 'dashboard';
+				$database->app_uuid = '55533bef-4f04-434a-92af-999c1e9927f7';
+				$database->save($array);
+			}
 
 			//redirect the browser
 			message::add($text['message-update']);
@@ -185,37 +189,37 @@
 
 //determine initial state all button to display
 	$expanded_all = true;
-	if (is_array($dashboard) && @sizeof($dashboard) != 0) {
+	if (!empty($dashboard)) {
 		foreach ($dashboard as $row) {
 			if ($row['dashboard_details_state'] == 'contracted' || $row['dashboard_details_state'] == 'hidden' || $row['dashboard_details_state'] == 'disabled') { $expanded_all = false; }
 		}
 	}
 
 //show the content
-	echo "<form id='dashboard' method='post' _onsubmit='setFormSubmitting()'>\n";
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-dashboard']."</b></div>\n";
 	echo "	<div class='actions'>\n";
+	echo "		<form id='dashboard' method='post' _onsubmit='setFormSubmitting()'>\n";
 	if ($_SESSION['theme']['menu_style']['text'] != 'side') {
 		echo "		".$text['label-welcome']." <a href='".PROJECT_PATH."/core/users/user_edit.php?id=user'>".$_SESSION["username"]."</a>&nbsp; &nbsp;";
 	}
 	if (permission_exists('dashboard_edit')) {
-		echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','name'=>'btn_back','style'=>'display: none;','onclick'=>"edit_mode('off');"]);
-		echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','name'=>'btn_save','style'=>'display: none; margin-left: 15px;']);
+		echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','name'=>'btn_back','style'=>'display: none;','onclick'=>"edit_mode('off');"]);
+		echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','name'=>'btn_save','style'=>'display: none; margin-left: 15px;']);
 	}
 	echo "<span id='expand_contract'>\n";
-		echo button::create(['type'=>'button','label'=>$text['button-expand_all'],'icon'=>$_SESSION['theme']['button_icon_expand'],'id'=>'btn_expand','name'=>'btn_expand','style'=>($expanded_all ? 'display: none;' : null),'onclick'=>"$('.hud_details').slideDown('fast'); $(this).hide(); $('#btn_contract').show(); toggle_grid_row_end_all();"]);
-		echo button::create(['type'=>'button','label'=>$text['button-collapse_all'],'icon'=>$_SESSION['theme']['button_icon_contract'],'id'=>'btn_contract','name'=>'btn_contract','style'=>(!$expanded_all ? 'display: none;' : null),'onclick'=>"$('.hud_details').slideUp('fast'); $(this).hide(); $('#btn_expand').show(); toggle_grid_row_end_all();"]);
+		echo button::create(['type'=>'button','label'=>$text['button-expand_all'],'icon'=>$settings->get('theme', 'button_icon_expand'),'id'=>'btn_expand','name'=>'btn_expand','style'=>($expanded_all ? 'display: none;' : null),'onclick'=>"$('.hud_details').slideDown('fast'); $(this).hide(); $('#btn_contract').show(); toggle_grid_row_end_all();"]);
+		echo button::create(['type'=>'button','label'=>$text['button-collapse_all'],'icon'=>$settings->get('theme', 'button_icon_contract'),'id'=>'btn_contract','name'=>'btn_contract','style'=>(!$expanded_all ? 'display: none;' : null),'onclick'=>"$('.hud_details').slideUp('fast'); $(this).hide(); $('#btn_expand').show(); toggle_grid_row_end_all();"]);
 	echo "</span>\n";
 	if (permission_exists('dashboard_edit')) {
-		echo button::create(['type'=>'button','label'=>$text['button-edit'],'icon'=>$_SESSION['theme']['button_icon_edit'],'id'=>'btn_edit','name'=>'btn_edit','style'=>'margin-left: 15px;','onclick'=>"edit_mode('on');"]);
-		echo button::create(['type'=>'button','label'=>$text['button-settings'],'icon'=>$_SESSION['theme']['button_icon_add'],'id'=>'btn_add','name'=>'btn_add','link'=>'dashboard.php']);
+		echo button::create(['type'=>'button','label'=>$text['button-edit'],'icon'=>$settings->get('theme', 'button_icon_edit'),'id'=>'btn_edit','name'=>'btn_edit','style'=>'margin-left: 15px;','onclick'=>"edit_mode('on');"]);
+		echo button::create(['type'=>'button','label'=>$text['button-settings'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','name'=>'btn_add','link'=>'dashboard.php']);
 	}
+	echo "		<input type='hidden' id='widget_order' name='widget_order' value='' />\n";
+	echo "		</form>\n";
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
-	echo "<input type='hidden' id='widget_order' name='widget_order' value='' />\n";
-	echo "</form>\n";
 
 //display login message
 	//if (if_group("superadmin") && isset($_SESSION['login']['message']['text']) && $_SESSION['login']['message']['text'] != '') {
@@ -249,6 +253,9 @@ div.hud_content {
 	flex-wrap: wrap;
 	justify-content: center;
 	align-content: start;
+	-webkit-transition: .4s;
+	-moz-transition: .4s;
+	transition: .4s;
 }
 
 div.hud_chart {
@@ -260,6 +267,11 @@ div.hud_chart {
 <?php
 foreach ($dashboard as $row) {
 	$dashboard_name = trim(preg_replace("/[^a-z]/", '_', strtolower($row['dashboard_name'])),'_');
+	if (!empty($row['dashboard_icon_color'])) {
+		echo "#".$dashboard_name." .hud_stat:has(i) {\n";
+		echo "	color: ".$row['dashboard_icon_color'].";\n";
+		echo "}\n";
+	}
 	if (!empty($row['dashboard_label_text_color']) || !empty($row['dashboard_label_background_color'])) {
 		echo "#".$dashboard_name." .hud_title {\n";
 		if (!empty($row['dashboard_label_text_color'])) { echo "	color: ".$row['dashboard_label_text_color'].";\n"; }
@@ -325,6 +337,9 @@ foreach ($dashboard as $row) {
 		echo "#".$dashboard_name." .hud_content {\n";
 		echo "	align-content: center;\n";
 		echo "}\n";
+		echo "#".$dashboard_name." .hud_chart {\n";
+		echo "	padding-top: 0;\n";
+		echo "}\n";
 	}
 	if ($row['dashboard_path'] == "dashboard/icon") {
 		echo "#".$dashboard_name." div.hud_content,\n";
@@ -362,6 +377,10 @@ foreach ($dashboard as $row) {
 			echo "	height: 300.5px;\n";
 			echo "}\n";
 			break;
+		default: //if empty
+			echo "#".$dashboard_name." .hud_content {\n";
+			echo "	height: 195px;\n";
+			echo "}\n";
 	}
 
 }
@@ -514,13 +533,11 @@ function toggle_grid_row_end_all() {
 		$dashboard_content_text_align = $row['dashboard_content_text_align'] ?? '';
 		$dashboard_content_details = $row['dashboard_content_details'] ?? '';
 		$dashboard_chart_type = $row['dashboard_chart_type'] ?? "doughnut";
-		$dashboard_label_text_color = $row['dashboard_label_text_color'] ?? $settings->get('theme', 'dashboard_label_text_color');
-		$dashboard_number_text_color = $row['dashboard_number_text_color'] ?? $settings->get('theme', 'dashboard_number_text_color');
+		$dashboard_label_text_color = $row['dashboard_label_text_color'] ?? $settings->get('theme', 'dashboard_label_text_color', '');
+		$dashboard_number_text_color = $row['dashboard_number_text_color'] ?? $settings->get('theme', 'dashboard_number_text_color', '');
+		$dashboard_number_background_color = $row['dashboard_number_background_color'] ?? $settings->get('theme', 'dashboard_number_background_color', '');
 		$dashboard_details_state = $row['dashboard_details_state'] ?? "expanded";
 		$dashboard_row_span = $row['dashboard_row_span'] ?? 2;
-		if ($dashboard_details_state == "expanded") {
-			$dashboard_row_span += 3;
-		}
 
 		//define the regex patterns
 		$uuid_pattern = '/[^-A-Fa-f0-9]/';
@@ -544,6 +561,7 @@ function toggle_grid_row_end_all() {
 		$dashboard_chart_type = preg_replace($text_pattern, '', $dashboard_chart_type);
 		$dashboard_label_text_color = preg_replace($text_pattern, '', $dashboard_label_text_color);
 		$dashboard_number_text_color = preg_replace($text_pattern, '', $dashboard_number_text_color);
+		$dashboard_number_background_color = preg_replace($text_pattern, '', $dashboard_number_background_color);
 		$dashboard_details_state = preg_replace($text_pattern, '', $dashboard_details_state);
 		$dashboard_row_span = preg_replace($number_pattern, '', $dashboard_row_span);
 		$dashboard_path = preg_replace($text_pattern, '', strtolower($row['dashboard_path']));
@@ -555,7 +573,9 @@ function toggle_grid_row_end_all() {
 		$path_array = glob(dirname(__DIR__, 2).'/*/'.$application_name.'/resources/dashboard/'.$widget_name.'.php');
 
 		echo "<div class='widget' style='grid-row-end: span ".$dashboard_row_span.";' data-state='".$dashboard_details_state."' id='".$dashboard_name_id."' draggable='false'>\n";
-		include $path_array[0];
+		if (file_exists($path_array[0])) {
+			include $path_array[0];
+		}
 		echo "</div>\n";
 
 		$x++;
@@ -662,4 +682,3 @@ function toggle_grid_row_end_all() {
 	require_once "resources/footer.php";
 
 ?>
-

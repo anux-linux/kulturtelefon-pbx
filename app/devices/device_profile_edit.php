@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Copyright (C) 2020-2023 All Rights Reserved.
+	Copyright (C) 2020-2024 All Rights Reserved.
 
 	Contributor(s):
 	Mark J Crane <markjcrane@fusionpbx.com>
@@ -391,11 +391,11 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-device_profile']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'device_profiles.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'device_profiles.php']);
 	if ($action == 'update') {
 		$button_margin = 'margin-left: 15px;';
 		if (permission_exists('device_profile_add')) {
-			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'name'=>'btn_copy','style'=>($button_margin ?? null),'onclick'=>"modal_open('modal-copy','btn_copy');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$settings->get('theme', 'button_icon_copy'),'name'=>'btn_copy','style'=>($button_margin ?? null),'onclick'=>"modal_open('modal-copy','btn_copy');"]);
 			unset($button_margin);
 		}
 		if (
@@ -403,11 +403,11 @@
 			permission_exists('device_profile_key_delete') ||
 			permission_exists('device_profile_setting_delete')
 			) {
-			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','style'=>($button_margin ?? null),'onclick'=>"modal_open('modal-delete','btn_delete');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'name'=>'btn_delete','style'=>($button_margin ?? null),'onclick'=>"modal_open('modal-delete','btn_delete');"]);
 			unset($button_margin);
 		}
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -427,6 +427,7 @@
 	echo $text['description-device_profiles']."\n";
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%'  border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -499,7 +500,7 @@
 			echo "				<th class='vtablereq'>".$text['label-device_key_id']."</td>\n";
 			echo "				<th class='vtablereq'>".$text['label-device_vendor']."</td>\n";
 			echo "				<th class='vtablereq'>".$text['label-device_key_type']."</td>\n";
-			if ($show_key_subtype) {	
+			if ($show_key_subtype) {
 				echo "				<th class='vtable'>".$text['label-device_key_subtype']."</th>\n";
 			}
 			echo "				<th class='vtablereq'>".$text['label-device_key_line']."</td>\n";
@@ -531,11 +532,11 @@
 		echo "			<td class='formfld'>\n";
 		echo "				<select class='formfld' name='device_profile_keys[$x][profile_key_category]'>\n";
 		echo "					<option value='line' ".($row['profile_key_category'] == "line" ? "selected='selected'" : null).">".$text['label-line']."</option>\n";
-		if ($row['profile_key_vendor'] !== "polycom") { 
+		if ($row['profile_key_vendor'] !== "polycom") {
 			echo "					<option value='memory' ".($row['profile_key_category'] == "memory" ? "selected='selected'" : null).">".$text['label-memory']."</option>\n";
 		}
 		echo "					<option value='programmable' ".($row['profile_key_category'] == "programmable" ? "selected='selected'" : null).">".$text['label-programmable']."</option>\n";
-		if ($row['profile_key_vendor'] !== "polycom") { 
+		if ($row['profile_key_vendor'] !== "polycom") {
 			if (empty($row['profile_key_vendor'])) {
 				echo "					<option value='expansion' ".($row['profile_key_category'] == "expansion" ? "selected='selected'" : null).">".$text['label-expansion']."</option>\n";
 				echo "					<option value='expansion-1' ".($row['profile_key_category'] == "expansion-1" ? "selected='selected'" : null).">".$text['label-expansion']." 1</option>\n";
@@ -791,6 +792,7 @@
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br /><br />";
 
 	echo "<input type='hidden' name='device_profile_uuid' value='".escape($device_profile_uuid)."'>\n";

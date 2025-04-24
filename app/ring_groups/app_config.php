@@ -142,6 +142,10 @@
 		$apps[$x]['permissions'][$y]['name'] = "ring_group_destinations";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
+		$y++;
+		$apps[$x]['permissions'][$y]['name'] = "ring_group_call_screen_enabled";
+		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
+		$apps[$x]['permissions'][$y]['groups'][] = "admin";
 
 	//default settings
 		$y=0;
@@ -208,6 +212,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Enable or disable the feature to add a range of extensions.";
+<<<<<<< HEAD
 		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "b8fbc27a-e44d-4b27-879f-33ba50e24647";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "ring_group";
@@ -224,6 +229,40 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Enable or disable the adding diversion header for external destinations.";
+=======
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "b8fbc27a-e44d-4b27-879f-33ba50e24647";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "ring_group";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "extension_range";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "700-799";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Set the suggested extension range(s) for ring groups";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "d25c1e2b-4098-408e-959b-c789ba4691e1";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "ring_group";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "diversion_enabled";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Enable or disable the adding diversion header for external destinations.";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "739019e3-d04e-4b4a-b556-78323c9b7512";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "ring_group";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "default_ringback";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
+		$y++;
+		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "50cbb1bb-3d67-4320-9f7e-0b09aa09676d";
+		$apps[$x]['default_settings'][$y]['default_setting_category'] = "ring_group";
+		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "ring_ready";
+		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
+		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Add ring_ready in the dialplan to send 180 ringing to calling party";
+>>>>>>> develop
 
 	//schema details
 		$y=0;
@@ -312,6 +351,10 @@
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "ring_group_ringback";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Select the ringback.";
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = "ring_group_call_screen_enabled";
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "ring_group_call_forward_enabled";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";

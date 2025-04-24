@@ -83,7 +83,7 @@
 
 		if (is_array($array) && sizeof($array) != 0) {
 			//update ring group
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add('ring_group_edit', 'temp');
 
 				$database->app_name = 'ring_groups';
@@ -235,7 +235,11 @@
 		echo "<div class='hud_details hud_box' id='hud_ring_group_forward_details' style='text-align: right;'>";
 
 		if (is_array($result) && @sizeof($result) != 0 && permission_exists('ring_group_forward')) {
+<<<<<<< HEAD
 			echo button::create(['type'=>'button','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'collapse'=>false,'style'=>"position: absolute; margin-top: -35px; margin-left: -72px;",'onclick'=>"list_form_submit('form_list_ring_group_forward');"]);
+=======
+			echo button::create(['type'=>'button','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'collapse'=>false,'style'=>"position: absolute; margin-top: -35px; margin-left: -72px;",'onclick'=>"list_form_submit('form_list_ring_group_forward');"]);
+>>>>>>> develop
 		}
 
 		echo "<table class='tr_hover' width='100%' cellpadding='0' cellspacing='0' border='0'>\n";

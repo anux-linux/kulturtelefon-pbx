@@ -66,6 +66,7 @@
 			//echo $e->getMessage();
 		}
 
+		echo "<div class='card'>\n";
 		echo "<table class='list'>\n";
 		echo "<tr class='list-header'>\n";
 		echo "	<th>".$text['label-name']."</th>\n";
@@ -143,9 +144,9 @@
 					echo "	<td>".escape($conference_extension)."</td>\n";
 					echo "	<td>".escape($participant_pin)."</td>\n";
 					echo "	<td class='center'>".escape($member_count)."</td>\n";
-					if (permission_exists('conference_interactive_view') && !empty($_SESSION['theme']['list_row_edit_button']['boolean']) && $_SESSION['theme']['list_row_edit_button']['boolean'] == 'true') {
+					if (permission_exists('conference_interactive_view') && filter_var($_SESSION['theme']['list_row_edit_button']['boolean'] ?? false, FILTER_VALIDATE_BOOL)) {
 						echo "	<td class='action-button'>";
-						echo button::create(['type'=>'button','title'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'link'=>$list_row_url]);
+						echo button::create(['type'=>'button','title'=>$text['button-view'],'icon'=>$settings->get('theme', 'button_icon_view'),'link'=>$list_row_url]);
 						echo "	</td>\n";
 					}
 					echo "</tr>\n";
@@ -153,6 +154,7 @@
 				}
 		}
 		echo "</table>\n";
+		echo "</div>\n";
 		echo "<br /><br />";
 	}
 

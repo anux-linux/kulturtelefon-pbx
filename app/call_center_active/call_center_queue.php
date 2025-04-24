@@ -66,7 +66,7 @@
 	$num_rows = $database->select($sql, $parameters, 'column');
 
 //paging the records
-	$rows_per_page = ($_SESSION['domain']['paging']['numeric'] != '') ? $_SESSION['domain']['paging']['numeric'] : 50;
+	$rows_per_page = $settings->get('domain', 'paging', 50);
 	$param = "&search=".$search;
 	$page = !empty($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 0;
 	list($paging_controls, $rows_per_page) = paging($num_rows, $param, $rows_per_page);
@@ -87,12 +87,12 @@
 
 //show the content
 	echo "<div class='action_bar' id='action_bar'>\n";
-	echo "	<div class='heading'><b>".$text['header-active_call_center']." (".$num_rows.")</b></div>\n";
+	echo "	<div class='heading'><b>".$text['header-active_call_center']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 	echo "	<div class='actions'>\n";
 	echo 		"<form id='form_search' class='inline' method='get'>\n";
 	echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown='list_search_reset();'>";
-	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search','style'=>($search != '' ? 'display: none;' : null)]);
-	echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','link'=>'call_center_queue.php','style'=>($search == '' ? 'display: none;' : null)]);
+	echo button::create(['label'=>$text['button-search'],'icon'=>$settings->get('theme', 'button_icon_search'),'type'=>'submit','id'=>'btn_search','style'=>($search != '' ? 'display: none;' : null)]);
+	echo button::create(['label'=>$text['button-reset'],'icon'=>$settings->get('theme', 'button_icon_reset'),'type'=>'button','id'=>'btn_reset','link'=>'call_center_queue.php','style'=>($search == '' ? 'display: none;' : null)]);
 	if ($paging_controls_mini != '') {
 		echo 	"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>";
 	}
@@ -104,6 +104,7 @@
 	echo $text['description-active_call_center']."\n";
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
 	echo th_order_by('queue_name', $text['label-queue_name'], $order_by, $order);
@@ -127,6 +128,9 @@
 		$x = 0;
 		foreach($call_center_queues as $row) {
 			$list_row_url = PROJECT_PATH."/app/call_center_active/call_center_active.php?queue_name=".escape($row['call_center_queue_uuid'])."&name=".urlencode(escape($row['queue_name']));
+			if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
+				$list_row_url .= '&domain_uuid='.urlencode($row['domain_uuid']).'&domain_change=true';
+			}
 			echo "<tr class='list-row' href='".$list_row_url."'>\n";
 			echo "	<td><a href='".$list_row_url."'>".escape($row['queue_name'])."</a></td>\n";
 			echo "	<td>".escape($row['queue_extension'])."</td>\n";
@@ -150,6 +154,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br />\n";
 	echo "<div align='center'>".$paging_controls."</div>\n";
 
@@ -157,3 +162,4 @@
 	require_once "resources/footer.php";
 
 ?>
+

@@ -26,11 +26,8 @@
 
 /**
  * cache class provides an abstracted cache
- *
- * @method string dialplan - builds the dialplan for call center
  */
 //define the call center class
-	if (!class_exists('call_center')) {
 		class call_center {
 			/**
 			 * define the variables
@@ -78,7 +75,7 @@
 							$array['dialplan_details'][0]['domain_uuid'] = $this->domain_uuid;
 
 						//grant temporary permissions
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('dialplan_delete', 'temp');
 							$p->add('dialplan_detail_delete', 'temp');
 
@@ -216,7 +213,7 @@
 					$array["dialplans"][0] = $dialplan;
 
 				//add temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add("dialplan_add", 'temp');
 					$p->add("dialplan_detail_add", 'temp');
 					$p->add("dialplan_edit", 'temp');
@@ -242,7 +239,7 @@
 					$array['call_center_queues'][0]['dialplan_uuid'] = $this->dialplan_uuid;
 
 				//grant temporary permissions
-					$p = new permissions;
+					$p = permissions::new();
 					$p->add('call_center_queue_edit', 'temp');
 
 				//execute update
@@ -349,7 +346,7 @@
 										}
 
 									//grant temporary permissions
-										$p = new permissions;
+										$p = permissions::new();
 										$p->add('call_center_tier_delete', 'temp');
 										$p->add('dialplan_delete', 'temp');
 										$p->add('dialplan_detail_delete', 'temp');
@@ -446,7 +443,7 @@
 										}
 
 									//grant temporary permissions
-										$p = new permissions;
+										$p = permissions::new();
 										$p->add('call_center_tier_delete', 'temp');
 
 									//execute delete
@@ -578,7 +575,7 @@
 								if (is_array($array) && @sizeof($array) != 0) {
 
 									//grant temporary permissions
-										$p = new permissions;
+										$p = permissions::new();
 										$p->add('call_center_tier_add', 'temp');
 										$p->add('dialplan_add', 'temp');
 
@@ -611,7 +608,6 @@
 			} //method
 
 		} //class
-	}
 
 /*
 $o = new call_center;
@@ -625,5 +621,8 @@ $c->destination_number = "";
 $c->queue_cc_exit_keys = "";
 $c->dialplan();
 */
+<<<<<<< HEAD
 
 ?>
+=======
+>>>>>>> develop

@@ -195,6 +195,19 @@
 		end
 	end
 
+<<<<<<< HEAD
+=======
+--bittel
+	if (vendor == "bittel") then
+		if (command == "reboot") then
+			event:addHeader('event-string', 'check-sync;reboot=true');
+		end
+		if (command == "check_sync") then
+			event:addHeader('event-string', 'check-sync;reboot=false');
+		end
+	end
+
+>>>>>>> develop
 --send the event
 	event:fire();
 

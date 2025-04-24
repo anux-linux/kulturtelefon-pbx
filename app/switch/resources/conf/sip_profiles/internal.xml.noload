@@ -83,6 +83,8 @@
 
 		<param name="context" value="public"/>
 		<param name="rfc2833-pt" value="101"/>
+		<!-- RFC 5626 : Send reg-id and sip.instance -->
+		<param name="enable-rfc-5626" value="true" enabled="false"/>
 		<!-- port to bind to for sip traffic -->
 		<param name="sip-port" value="5060"/>
 		<param name="dialplan" value="XML"/>
@@ -238,10 +240,7 @@
 		<param name="inbound-proxy-media" value="true" enabled="false"/>
 
 		<!-- Let calls hit the dialplan before selecting codec for the a-leg -->
-		<param name="inbound-late-negotiation" value="true"/>
-
-		<!-- Allow ZRTP clients to negotiate end-to-end security associations (also enables late negotiation) -->
-		<param name="inbound-zrtp-passthru" value="true"/>
+		<param name="inbound-late-negotiation" value="true" enabled="false"/>
 
 		<!-- this lets anything register -->
 		<!--  comment the next line and uncomment one or both of the other 2 lines for call authentication -->

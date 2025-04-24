@@ -58,7 +58,7 @@ if ($domains_processed == 1) {
 			}
 
 			if (!empty($array)) {
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add('call_center_tier_edit', 'temp');
 
 				$database->app_name = 'call_centers';
@@ -93,8 +93,13 @@ if ($domains_processed == 1) {
 
 				//add the recording path if needed
 					if ($row['queue_greeting'] != '') {
+<<<<<<< HEAD
 						if (file_exists($setting->get('switch','recordings').'/'.$row['domain_name'].'/'.$row['queue_greeting'])) {
 							$queue_greeting_path = $setting->get('switch','recordings').'/'.$row['domain_name'].'/'.$row['queue_greeting'];
+=======
+						if (file_exists($settings->get('switch','recordings').'/'.$row['domain_name'].'/'.$row['queue_greeting'])) {
+							$queue_greeting_path = $settings->get('switch','recordings').'/'.$row['domain_name'].'/'.$row['queue_greeting'];
+>>>>>>> develop
 						}
 						else {
 							$queue_greeting_path = trim($row['queue_greeting']);
@@ -168,7 +173,7 @@ if ($domains_processed == 1) {
 		//save the array to the database
 		if (!empty($array)) {
 			//add the dialplan permission
-				$p = new permissions;
+				$p = permissions::new();
 				$p->add("dialplan_add", "temp");
 				$p->add("dialplan_edit", "temp");
 

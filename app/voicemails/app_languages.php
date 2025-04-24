@@ -1782,6 +1782,7 @@ $text['description-voicemail_alternate_greet_id']['zh-cn'] = "默认问候语中
 $text['description-voicemail_alternate_greet_id']['ja-jp'] = "デフォルトのグリーティングで使用される代替グリーティング ID。";
 $text['description-voicemail_alternate_greet_id']['ko-kr'] = "기본 인사말에 사용되는 대체 인사말 ID입니다.";
 
+<<<<<<< HEAD
 $text['description-voicemail_mail_to']['en-us'] = "Enter the email address to send voicemail to. Multiple addresses may be separated by commas.";
 $text['description-voicemail_mail_to']['en-gb'] = "Enter the email address to send voicemail to. Multiple addresses may be separated by commas.";
 $text['description-voicemail_mail_to']['ar-eg'] = "أدخل عنوان البريد الإلكتروني لإرسال بريد صوتي إليه. يمكن فصل العناوين المتعددة بفاصلات.";
@@ -1808,6 +1809,34 @@ $text['description-voicemail_mail_to']['tr-tr'] = "Sesli mesajın gönderileceğ
 $text['description-voicemail_mail_to']['zh-cn'] = "输入要向其发送语音邮件的电子邮件地址。 多个地址可以用逗号分隔。";
 $text['description-voicemail_mail_to']['ja-jp'] = "ボイスメールの送信先の電子メール アドレスを入力します。 複数のアドレスはカンマで区切ることができます。";
 $text['description-voicemail_mail_to']['ko-kr'] = "음성 메일을 보낼 이메일 주소를 입력합니다. 여러 주소는 쉼표로 구분할 수 있습니다.";
+=======
+$text['description-voicemail_mail_to']['en-us'] = "Enter the email address to send voicemail to (optional). Multiple addresses may be separated by commas.";
+$text['description-voicemail_mail_to']['en-gb'] = "Enter the email address to send voicemail to (optional). Multiple addresses may be separated by commas.";
+$text['description-voicemail_mail_to']['ar-eg'] = "أدخل عنوان البريد الإلكتروني لإرسال البريد الصوتي إليه (اختياري). يمكن فصل العناوين المتعددة بفواصل.";
+$text['description-voicemail_mail_to']['de-at'] = "Geben Sie die E-Mail-Adresse ein, an die die Voicemail gesendet werden soll (optional). Mehrere Adressen können durch Kommas getrennt werden.";
+$text['description-voicemail_mail_to']['de-ch'] = "Geben Sie die E-Mail-Adresse ein, an die die Voicemail gesendet werden soll (optional). Mehrere Adressen können durch Kommas getrennt werden.";
+$text['description-voicemail_mail_to']['de-de'] = "Geben Sie die E-Mail-Adresse ein, an die die Voicemail gesendet werden soll (optional). Mehrere Adressen können durch Kommas getrennt werden.";
+$text['description-voicemail_mail_to']['el-gr'] = "Εισαγάγετε τη διεύθυνση email για αποστολή του φωνητικού μηνύματος (προαιρετικό). Πολλαπλές διευθύνσεις μπορούν να διαχωριστούν με κόμματα.";
+$text['description-voicemail_mail_to']['es-cl'] = "Ingrese la dirección de correo electrónico para enviar el correo de voz (opcional). Se pueden separar múltiples direcciones con comas.";
+$text['description-voicemail_mail_to']['es-mx'] = "Ingrese la dirección de correo electrónico para enviar el correo de voz (opcional). Se pueden separar múltiples direcciones con comas.";
+$text['description-voicemail_mail_to']['fr-ca'] = "Entrez l'adresse e-mail à laquelle envoyer la messagerie vocale (facultatif). Plusieurs adresses peuvent être séparées par des virgules.";
+$text['description-voicemail_mail_to']['fr-fr'] = "Entrez l'adresse e-mail à laquelle envoyer la messagerie vocale (facultatif). Plusieurs adresses peuvent être séparées par des virgules.";
+$text['description-voicemail_mail_to']['he-il'] = "הזן את כתובת האימייל לשליחת הדואר הקולי (אופציונלי). ניתן להפריד בין כתובות מרובות באמצעות פסיקים.";
+$text['description-voicemail_mail_to']['it-it'] = "Inserisci l'indirizzo email a cui inviare la segreteria telefonica (opzionale). Più indirizzi possono essere separati da virgole.";
+$text['description-voicemail_mail_to']['ka-ge'] = "შეიყვანეთ ელ.ფოსტის მისამართი, რომელზეც გაიგზავნება ხმოვანი ფოსტა (არასავალდებულო). შესაძლებელია მრავალი მისამართის მძიმით გამოყოფა.";
+$text['description-voicemail_mail_to']['nl-nl'] = "Voer het e-mailadres in om de voicemail naartoe te sturen (optioneel). Meerdere adressen kunnen worden gescheiden door komma's.";
+$text['description-voicemail_mail_to']['pl-pl'] = "Wprowadź adres e-mail, na który ma zostać wysłana poczta głosowa (opcjonalnie). Wiele adresów można oddzielić przecinkami.";
+$text['description-voicemail_mail_to']['pt-br'] = "Digite o endereço de e-mail para enviar o correio de voz (opcional). Vários endereços podem ser separados por vírgulas.";
+$text['description-voicemail_mail_to']['pt-pt'] = "Digite o endereço de e-mail para enviar o correio de voz (opcional). Vários endereços podem ser separados por vírgulas.";
+$text['description-voicemail_mail_to']['ro-ro'] = "Introduceți adresa de e-mail la care se va trimite mesageria vocală (opțional). Mai multe adrese pot fi separate prin virgule.";
+$text['description-voicemail_mail_to']['ru-ru'] = "Введите адрес электронной почты для отправки голосовой почты (необязательно). Несколько адресов можно разделять запятыми.";
+$text['description-voicemail_mail_to']['sv-se'] = "Ange e-postadressen som röstbrevet ska skickas till (valfritt). Flera adresser kan separeras med kommatecken.";
+$text['description-voicemail_mail_to']['uk-ua'] = "Введіть адресу електронної пошти для надсилання голосової пошти (необов’язково). Декілька адрес можна розділити комами.";
+$text['description-voicemail_mail_to']['tr-tr'] = "Sesli mesajın gönderileceği e-posta adresini girin (isteğe bağlı). Birden fazla adres virgülle ayrılabilir.";
+$text['description-voicemail_mail_to']['zh-cn'] = "输入要发送语音邮件的电子邮件地址（可选）。多个地址可用逗号分隔。";
+$text['description-voicemail_mail_to']['ja-jp'] = "ボイスメールを送信するメールアドレスを入力してください（オプション）。複数のアドレスはコンマで区切ることができます。";
+$text['description-voicemail_mail_to']['ko-kr'] = "보이스메일을 보낼 이메일 주소를 입력하세요(선택 사항). 여러 개의 주소는 쉼표로 구분할 수 있습니다.";
+>>>>>>> develop
 
 $text['description-voicemail_local_after_email']['en-us'] = "Choose whether to keep the voicemail in the system after sending the email notification.";
 $text['description-voicemail_local_after_email']['en-gb'] = "Choose whether to keep the voicemail in the system after sending the email notification.";
@@ -2726,4 +2755,8 @@ $text['message-emails_resent']['zh-cn'] = "电子邮件已重新发送";
 $text['message-emails_resent']['ja-jp'] = "再送信メール";
 $text['message-emails_resent']['ko-kr'] = "이메일 재전송";
 
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> develop

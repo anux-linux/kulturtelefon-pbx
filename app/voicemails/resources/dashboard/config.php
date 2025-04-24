@@ -4,7 +4,12 @@
 $array['dashboard'][$x]['dashboard_uuid'] = 'be2aaa22-d8f1-4d9b-b5f9-14a26da329cb';
 $array['dashboard'][$x]['dashboard_name'] = 'New Messages';
 $array['dashboard'][$x]['dashboard_path'] = 'voicemails/voicemails';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_icon'] = '';
+=======
+$array['dashboard'][$x]['dashboard_icon'] = 'fa-solid fa-envelope';
+$array['dashboard'][$x]['dashboard_icon_color'] = '#bfbfbf';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_url'] = '';
 $array['dashboard'][$x]['dashboard_target'] = '';
 $array['dashboard'][$x]['dashboard_width'] = '';
@@ -12,6 +17,7 @@ $array['dashboard'][$x]['dashboard_height'] = '';
 $array['dashboard'][$x]['dashboard_content'] = '';
 $array['dashboard'][$x]['dashboard_content_text_align'] = '';
 $array['dashboard'][$x]['dashboard_content_details'] = '';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_chart_type'] = 'doughnut';
 $array['dashboard'][$x]['dashboard_label_enabled'] = 'true';
 $array['dashboard'][$x]['dashboard_label_text_color'] = '';
@@ -27,6 +33,23 @@ $array['dashboard'][$x]['dashboard_detail_background_color'] = '';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
 $array['dashboard'][$x]['dashboard_row_span'] = '2';
 $array['dashboard'][$x]['dashboard_details_state'] = 'expanded';
+=======
+$array['dashboard'][$x]['dashboard_chart_type'] = 'icon';
+$array['dashboard'][$x]['dashboard_label_enabled'] = 'true';
+$array['dashboard'][$x]['dashboard_label_text_color'] = '#444444';
+$array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
+$array['dashboard'][$x]['dashboard_label_background_color'] = '';
+$array['dashboard'][$x]['dashboard_label_background_color_hover'] = '';
+$array['dashboard'][$x]['dashboard_number_text_color'] = '#ffffff';
+$array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
+$array['dashboard'][$x]['dashboard_number_background_color'] = '#03c04a';
+$array['dashboard'][$x]['dashboard_background_color'] = '#ffffff';
+$array['dashboard'][$x]['dashboard_background_color_hover'] = '';
+$array['dashboard'][$x]['dashboard_detail_background_color'] = '#ffffff';
+$array['dashboard'][$x]['dashboard_column_span'] = '1';
+$array['dashboard'][$x]['dashboard_row_span'] = '1';
+$array['dashboard'][$x]['dashboard_details_state'] = 'hidden';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_order'] = '70';
 $array['dashboard'][$x]['dashboard_enabled'] = 'true';
 $array['dashboard'][$x]['dashboard_description'] = 'Count the new voicemail messages and list of assigned voicemail boxes.';
@@ -57,15 +80,24 @@ $array['dashboard'][$x]['dashboard_content'] = '';
 $array['dashboard'][$x]['dashboard_content_text_align'] = '';
 $array['dashboard'][$x]['dashboard_content_details'] = '';
 $array['dashboard'][$x]['dashboard_chart_type'] = '';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_label'] = '';
 $array['dashboard'][$x]['dashboard_label_text_color'] = '';
+=======
+$array['dashboard'][$x]['dashboard_label_enabled'] = 'true';
+$array['dashboard'][$x]['dashboard_label_text_color'] = '#444444';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_number_background_color'] = '';
 $array['dashboard'][$x]['dashboard_number_text_color'] = '#5d5ce3';
 $array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_background_color'] ='';
+=======
+$array['dashboard'][$x]['dashboard_background_color'] = '#ffffff';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_detail_background_color'] = '';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
@@ -89,3 +121,4 @@ $array['dashboard'][$x]['dashboard_groups'][$y]['group_name'] = 'user';
 $y++;
 
 ?>
+

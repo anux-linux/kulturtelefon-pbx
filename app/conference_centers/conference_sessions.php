@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008 - 2019
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -46,7 +46,7 @@
 	$text = $language->get();
 
 //set from session variables
-	$list_row_edit_button = !empty($_SESSION['theme']['list_row_edit_button']['boolean']) ? $_SESSION['theme']['list_row_edit_button']['boolean'] : 'false';
+	$list_row_edit_button = $settings->get('theme', 'list_row_edit_button', false);
 
 //get the http post data
 	if (!empty($_POST['conference_sessions'])) {
@@ -97,7 +97,6 @@
 	list($paging_controls, $rows_per_page) = paging($num_rows, $param, $rows_per_page);
 	list($paging_controls_mini, $rows_per_page) = paging($num_rows, $param, $rows_per_page, true);
 	$offset = $rows_per_page * $page;
-	
 
 //get the list
 	$sql = "select * from v_conference_sessions ";
@@ -135,11 +134,11 @@
 
 //show the content
 	echo "<div class='action_bar' id='action_bar'>\n";
-	echo "	<div class='heading'><b>".$text['title-conference_sessions']." (".$num_rows.")</b></div>\n";
+	echo "	<div class='heading'><b>".$text['title-conference_sessions']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'conference_rooms.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'conference_rooms.php']);
 	if (permission_exists('conference_session_delete') && $conference_sessions) {
-		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','style'=>'margin-left: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'name'=>'btn_delete','style'=>'margin-left: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
 	}
 	if ($paging_controls_mini != '') {
 		echo 	"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>\n";
@@ -159,6 +158,7 @@
 	echo "<input type='hidden' id='action' name='action' value=''>\n";
 	echo "<input type='hidden' name='meeting_uuid' value=\"".escape($meeting_uuid)."\">\n";
 
+	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
 	if (permission_exists('conference_session_delete')) {
@@ -172,7 +172,7 @@
 	echo th_order_by('profile', $text['label-profile'], $order_by, $order);
 	//echo th_order_by('recording', $text['label-recording'], $order_by, $order);
 	echo "<th>".$text['label-tools']."</th>\n";
-	if ($list_row_edit_button == 'true') {
+	if ($list_row_edit_button) {
 		echo "	<td class='action-button'>&nbsp;</td>\n";
 	}
 	echo "</tr>\n";
@@ -216,7 +216,7 @@
 					echo "<table border='0' cellpadding='0' cellspacing='0'>\n";
 					echo "<tr>\n";
 					echo "<td>\n";
-					echo button::create(['type'=>'button','label'=>$text['button-download'],'icon'=>$_SESSION['theme']['button_icon_download'],'style'=>'margin-right: 15px;','link'=>'download.php?id='.urlencode($row['conference_session_uuid'])]);
+					echo button::create(['type'=>'button','label'=>$text['button-download'],'icon'=>$settings->get('theme', 'button_icon_download'),'style'=>'margin-right: 15px;','link'=>'download.php?id='.urlencode($row['conference_session_uuid'])]);
 					echo "</td>\n";
 					if (permission_exists('conference_session_play')) {
 						echo "<td>\n";
@@ -232,9 +232,9 @@
 					echo "</table>\n";
 				}
 				echo "	</td>\n";
-				if ($list_row_edit_button == 'true') {
+				if ($list_row_edit_button) {
 					echo "	<td class='action-button'>\n";
-					echo button::create(['type'=>'button','title'=>$text['button-view'],'icon'=>$_SESSION['theme']['button_icon_view'],'link'=>$list_row_url]);
+					echo button::create(['type'=>'button','title'=>$text['button-view'],'icon'=>$settings->get('theme', 'button_icon_view'),'link'=>$list_row_url]);
 					echo "	</td>\n";
 				}
 				echo "</tr>\n";
@@ -245,6 +245,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br />\n";
 	echo "<div align='center'>".$paging_controls."</div>\n";
 	echo "<input type='hidden' name='".$token['name']."' value='".$token['hash']."'>\n";

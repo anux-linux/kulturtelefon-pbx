@@ -148,19 +148,19 @@
 
 //show the content
 	echo "<form method='post' name='frm' id='frm'>\n";
-
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['header-destination_export']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'destinations.php']);
-	echo button::create(['type'=>'submit','label'=>$text['button-export'],'icon'=>$_SESSION['theme']['button_icon_export'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'destinations.php']);
+	echo button::create(['type'=>'submit','label'=>$text['button-export'],'icon'=>$settings->get('theme', 'button_icon_export'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
-	
+
 	echo $text['description-destination_export'];
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
 	echo "	<th class='checkbox'>\n";
@@ -184,6 +184,7 @@
 	}
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br />\n";
 	echo "<input type='hidden' name='".$token['name']."' value='".$token['hash']."'>\n";
 	echo "</form>\n";

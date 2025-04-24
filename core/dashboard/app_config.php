@@ -78,6 +78,11 @@
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Enter the dashboard icon.';
 		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'dashboard_icon_color';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Enter the dashboard icon color.';
+		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'dashboard_url';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
@@ -156,6 +161,11 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Enter the number text color hover.';
+		$z++;
+		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'dashboard_number_background_color';
+		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
+		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
+		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'Enter the number background color.';
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'dashboard_background_color';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
@@ -292,7 +302,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "dashboard_chart_border_color";
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "#fff";
+		$apps[$x]['default_settings'][$y]['default_setting_value'] = "#ffffff";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
 		$y++;

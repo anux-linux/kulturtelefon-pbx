@@ -27,13 +27,22 @@
 if ($domains_processed == 1) {
 
 	//set the directory
+<<<<<<< HEAD
 		if (!empty($setting->get('switch','conf'))) {
 			$xml_dir = $setting->get('switch','conf').'/autoload_configs';
+=======
+		if (!empty($settings->get('switch','conf'))) {
+			$xml_dir = $settings->get('switch','conf').'/autoload_configs';
+>>>>>>> develop
 			$xml_file = $xml_dir."/local_stream.conf";
 		}
 
 	//rename the file
+<<<<<<< HEAD
 		if (!empty($setting->get('switch','conf'))) {
+=======
+		if (!empty($settings->get('switch','conf'))) {
+>>>>>>> develop
 			if (file_exists($xml_dir.'/local_stream.conf.xml')) {
 				rename($xml_dir.'/local_stream.conf', $xml_dir.'/'.$xml_file);
 			}
@@ -43,7 +52,11 @@ if ($domains_processed == 1) {
 		}
 
 	//add the music_on_hold list to the database
+<<<<<<< HEAD
 		if (!empty($setting->get('switch','conf'))) {
+=======
+		if (!empty($settings->get('switch','conf'))) {
+>>>>>>> develop
 			$sql = "select count(music_on_hold_uuid) from v_music_on_hold; ";
 			$num_rows = $database->select($sql, null, 'column');
 			unset($sql);
@@ -93,7 +106,7 @@ if ($domains_processed == 1) {
 							$array['music_on_hold'][0]['music_on_hold_chime_max'] = isset($chime_max) ? $chime_max : null;
 							$array['music_on_hold'][0]['music_on_hold_path'] = $stream_path;
 
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('music_on_hold_add', 'temp');
 
 							$database->app_name = 'app_name';

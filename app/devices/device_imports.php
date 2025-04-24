@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2018-2023
+	Portions created by the Initial Developer are Copyright (C) 2018-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -105,7 +105,7 @@
 				}
 
 				//filter for specific tables and build the schema array
-				if ($table_name == "devices" || $table_name == "device_lines" || 
+				if ($table_name == "devices" || $table_name == "device_lines" ||
 					$table_name == "device_keys" || $table_name == "device_settings") {
 					$schema[$i]['table'] = $table_name;
 					$schema[$i]['parent'] = $parent_name;
@@ -155,8 +155,8 @@
 			echo "<div class='action_bar' id='action_bar'>\n";
 			echo "	<div class='heading'><b>".$text['header-device_import']."</b></div>\n";
 			echo "	<div class='actions'>\n";
-			echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'device_imports.php']);
-			echo button::create(['type'=>'submit','label'=>$text['button-import'],'icon'=>$_SESSION['theme']['button_icon_import'],'id'=>'btn_save']);
+			echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'device_imports.php']);
+			echo button::create(['type'=>'submit','label'=>$text['button-import'],'icon'=>$settings->get('theme', 'button_icon_import'),'id'=>'btn_save']);
 			echo "	</div>\n";
 			echo "	<div style='clear: both;'></div>\n";
 			echo "</div>\n";
@@ -164,6 +164,7 @@
 			echo $text['description-import']."\n";
 			echo "<br /><br />\n";
 
+			echo "<div class='card'>\n";
 			echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 			//loop through user columns
@@ -200,6 +201,7 @@
 			}
 
 			echo "</table>\n";
+			echo "</div>\n";
 			echo "<br /><br />\n";
 
 			echo "<input name='action' type='hidden' value='import'>\n";
@@ -247,7 +249,7 @@
 
 		//user selected fields
 			$fields = $_POST['fields'];
-			
+
 		//set the domain_uuid
 			$domain_uuid = $_SESSION['domain_uuid'];
 
@@ -285,7 +287,7 @@
 									//echo "value: $value<br />\n";
 									//echo "table_name: $table_name<br />\n";
 									//echo "field_name: $field_name<br />\n";
-									
+
 									//get the parent table name
 									$parent = get_parent($schema, $table_name);
 
@@ -445,7 +447,7 @@
 						//$message = $database->message;
 						//view_array($message);
 					}
-				
+
 					if (!empty($_SESSION['provision']['path']['text'])) {
 						$prov = new provision;
 						$prov->domain_uuid = $domain_uuid;
@@ -472,8 +474,8 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['header-device_import']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'devices.php']);
-	echo button::create(['type'=>'submit','label'=>$text['button-continue'],'icon'=>$_SESSION['theme']['button_icon_upload'],'id'=>'btn_save']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'devices.php']);
+	echo button::create(['type'=>'submit','label'=>$text['button-continue'],'icon'=>$settings->get('theme', 'button_icon_upload'),'id'=>'btn_save']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -481,6 +483,7 @@
 	echo $text['description-import']."\n";
 	echo "<br /><br />\n";
 
+	echo "<div class='card'>\n";
 	echo "<table border='0' cellpadding='0' cellspacing='0' width='100%'>\n";
 
 	echo "<tr>\n";
@@ -552,6 +555,7 @@
 	echo "</tr>\n";
 
 	echo "</table>\n";
+	echo "</div>\n";
 	echo "<br><br>";
 
 	echo "<input name='type' type='hidden' value='csv'>\n";

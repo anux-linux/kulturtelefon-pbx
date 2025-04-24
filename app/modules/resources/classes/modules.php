@@ -25,7 +25,6 @@
 */
 
 //define the modules class
-if (!class_exists('modules')) {
 	class modules {
 
 		/**
@@ -743,7 +742,7 @@ if (!class_exists('modules')) {
 					}
 					if (!empty($array) && is_array($array) && @sizeof($array) != 0) {
 						//grant temporary permissions
-							$p = new permissions;
+							$p = permissions::new();
 							$p->add('module_add', 'temp');
 						//execute insert
 							$database = new database;
@@ -1101,10 +1100,8 @@ if (!class_exists('modules')) {
 
 
 	} //class
-}
 
 /*
-require_once "resources/classes/modules.php";
 $mod = new modules;
 $mod->dir = $_SESSION['switch']['mod']['dir'];
 echo $mod->dir."\n";
@@ -1138,5 +1135,3 @@ echo $mod->dir."\n";
 	//print_r($result);
 	//echo "</pre>\n";
 */
-
-?>

@@ -147,12 +147,21 @@
 			$device_address = substr($_SERVER['HTTP_USER_AGENT'],-14);
 			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
 		}
+<<<<<<< HEAD
     
 		//Snom: $userAgent = "Mozilla/4.0 (compatible; snomD785-SIP 10.1.169.16 2010.12-00001-gd311851f1 (Feb 25 2019 - 14:19:43) 00041396D9B4 SXM:0 UXM:0 UXMC:0)"
 		if (substr($_SERVER['HTTP_USER_AGENT'],25,4) == "snom") {
 			$snom_ua = explode(" ", $_SERVER['HTTP_USER_AGENT']);
 		        $device_address = $snom_ua[10];
 		        $device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+=======
+
+		//Snom: $userAgent = "Mozilla/4.0 (compatible; snomD785-SIP 10.1.169.16 2010.12-00001-gd311851f1 (Feb 25 2019 - 14:19:43) 00041396D9B4 SXM:0 UXM:0 UXMC:0)"
+		if (substr($_SERVER['HTTP_USER_AGENT'],25,4) == "snom") {
+			$snom_ua = explode(" ", $_SERVER['HTTP_USER_AGENT']);
+			$device_address = $snom_ua[10];
+			$device_address = preg_replace("#[^a-fA-F0-9./]#", "", $device_address);
+>>>>>>> develop
 		}
 
 		//Yealink: 17 digit mac appended to the user agent, so check for a space exactly 17 digits before the end.
@@ -179,7 +188,11 @@
 	}
 
 //get http_domain_filter from global settings only (can't be used per domain)
+<<<<<<< HEAD
 	$domain_filter = (new settings(['database' => $database]))->get('provision', 'http_domain_filter', 'true') == 'true' ? true : false;
+=======
+	$domain_filter = (new settings(['database' => $database]))->get('provision', 'http_domain_filter', true);
+>>>>>>> develop
 
 //get the domain_uuid, domain_name, device_name and device_vendor
 	$sql = "select d.device_uuid, d.domain_uuid, d.device_vendor, n.domain_name ";
@@ -210,7 +223,7 @@
 
 		//get the domain_uuid
 			$sql = "select domain_uuid from v_domains ";
-			$sql .= "where domain_name = :domain_name ";
+			$sql .= "where lower(domain_name) = lower(:domain_name) ";
 			$parameters['domain_name'] = $domain_name;
 			$domain_uuid = $database->select($sql, $parameters, 'column');
 			unset($sql, $parameters);
@@ -239,9 +252,23 @@
 	$settings = new settings(['database' => $database, 'domain_uuid' => $domain_uuid]);
 
 //check if provisioning has been enabled
+<<<<<<< HEAD
 	if ($settings->get('provision', 'enabled', 'false') !== "true") {
 		syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt but provisioning is not enabled for ".escape($_REQUEST['mac']));
 		http_error('404');
+=======
+	if (!$settings->get('provision', 'enabled', false)) {
+		syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempt but provisioning is ".__line__." not enabled for ".escape($_REQUEST['mac']));
+		http_error('404');
+	}
+
+//get all provision settings
+	$provision = $settings->get('provision', null, []);
+
+//check for a valid match
+	if (empty($device_uuid) && $settings->get('provision', 'auto_insert_enabled', false)) {
+		http_error(403);
+>>>>>>> develop
 	}
 
 //get all provision settings
@@ -264,7 +291,7 @@
 
 //http authentication - digest
 	if (!empty($provision["http_auth_username"]) && empty($provision["http_auth_type"])) { $provision["http_auth_type"] = "digest"; }
-	if (!empty($provision["http_auth_username"]) && $provision["http_auth_type"] === "digest" && !empty($provision["http_auth_enabled"]) && $provision["http_auth_enabled"] === "true") {
+	if (!empty($provision["http_auth_username"]) && $provision["http_auth_type"] === "digest" && !empty($provision["http_auth_enabled"]) && $provision["http_auth_enabled"]) {
 		//function to parse the http auth header
 			function http_digest_parse($txt) {
 				//protect against missing data
@@ -336,7 +363,7 @@
 	}
 
 //http authentication - basic
-	if (!empty($provision["http_auth_username"]) && $provision["http_auth_type"] === "basic" && $provision["http_auth_enabled"] === "true") {
+	if (!empty($provision["http_auth_username"]) && $provision["http_auth_type"] === "basic" && $provision["http_auth_enabled"]) {
 		if (!isset($_SERVER['PHP_AUTH_USER'])) {
 			header('WWW-Authenticate: Basic realm="'.$domain_name.'"');
 			header('HTTP/1.0 401 Authorization Required');

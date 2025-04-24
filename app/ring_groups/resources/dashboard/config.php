@@ -5,8 +5,14 @@ $array['dashboard'][$x]['dashboard_uuid'] = 'b5da1d72-2cc7-422e-b05c-f07659aed41
 $array['dashboard'][$x]['dashboard_name'] = 'Ring Group Forward';
 $array['dashboard'][$x]['dashboard_path'] = 'ring_groups/ring_group_forward';
 $array['dashboard'][$x]['dashboard_icon'] = '';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_url'] = '';
 $array['dashboard'][$x]['dashboard_target'] = 'self';
+=======
+$array['dashboard'][$x]['dashboard_icon_color'] = '';
+$array['dashboard'][$x]['dashboard_url'] = '';
+$array['dashboard'][$x]['dashboard_target'] = '';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_width'] = '';
 $array['dashboard'][$x]['dashboard_height'] = '';
 $array['dashboard'][$x]['dashboard_content'] = '';
@@ -14,6 +20,7 @@ $array['dashboard'][$x]['dashboard_content_text_align'] = '';
 $array['dashboard'][$x]['dashboard_content_details'] = '';
 $array['dashboard'][$x]['dashboard_chart_type'] = '';
 $array['dashboard'][$x]['dashboard_label_enabled'] = 'true';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_label_text_color'] = '';
 $array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color'] = '';
@@ -22,11 +29,25 @@ $array['dashboard'][$x]['dashboard_number_background_color'] = '';
 $array['dashboard'][$x]['dashboard_number_text_color'] = '';
 $array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_background_color'] ='';
+=======
+$array['dashboard'][$x]['dashboard_label_text_color'] = '#444444';
+$array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
+$array['dashboard'][$x]['dashboard_label_background_color'] = '';
+$array['dashboard'][$x]['dashboard_label_background_color_hover'] = '';
+$array['dashboard'][$x]['dashboard_number_text_color'] = '';
+$array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
+$array['dashboard'][$x]['dashboard_number_background_color'] = '';
+$array['dashboard'][$x]['dashboard_background_color'] = '#ffffff';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_detail_background_color'] = '';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
 $array['dashboard'][$x]['dashboard_row_span'] = '2';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_details_state'] = 'expanded';
+=======
+$array['dashboard'][$x]['dashboard_details_state'] = 'hidden';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_order'] = '140';
 $array['dashboard'][$x]['dashboard_enabled'] = 'true';
 $array['dashboard'][$x]['dashboard_description'] = 'Used for updating ring group call forward.';
@@ -58,14 +79,22 @@ $array['dashboard'][$x]['dashboard_content_text_align'] = '';
 $array['dashboard'][$x]['dashboard_content_details'] = '';
 $array['dashboard'][$x]['dashboard_chart_type'] = '';
 $array['dashboard'][$x]['dashboard_label_enabled'] = 'true';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_label_text_color'] = '';
+=======
+$array['dashboard'][$x]['dashboard_label_text_color'] = '#444444';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_number_background_color'] = '';
 $array['dashboard'][$x]['dashboard_number_text_color'] = '#0292ff';
 $array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
+<<<<<<< HEAD
 $array['dashboard'][$x]['dashboard_background_color'] ='';
+=======
+$array['dashboard'][$x]['dashboard_background_color'] = '#ffffff';
+>>>>>>> develop
 $array['dashboard'][$x]['dashboard_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_detail_background_color'] = '';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';

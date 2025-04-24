@@ -43,17 +43,29 @@
 
 //add the settings object
 	$settings = new settings(["domain_uuid" => $_SESSION['domain_uuid'], "user_uuid" => $_SESSION['user_uuid']]);
+<<<<<<< HEAD
 	$speech_enabled = $settings->get('speech', 'enabled', 'false');
 	$speech_engine = $settings->get('speech', 'engine', '');
 	$transcribe_enabled = $settings->get('transcribe', 'enabled', 'false');
 	$transcribe_engine = $settings->get('transcribe', 'engine', '');
+=======
+	$speech_enabled = $settings->get('speech', 'enabled', false);
+	$speech_engine = $settings->get('speech', 'engine', '');
+	$transcribe_enabled = $settings->get('transcribe', 'enabled', false);
+	$transcribe_engine = $settings->get('transcribe', 'engine', '');
+	$storage_type = $settings->get('voicemail', 'storage_type', '');
+>>>>>>> develop
 
 //set defaults
 	$translate_enabled = false;
 	$language_enabled = false;
 
 //add the speech object and get the voices and languages arrays
+<<<<<<< HEAD
 	if ($speech_enabled == 'true' && !empty($speech_engine)) {
+=======
+	if ($speech_enabled && !empty($speech_engine)) {
+>>>>>>> develop
 		$speech = new speech($settings);
 		$voices = $speech->get_voices();
 		//$speech_models = $speech->get_models();
@@ -63,7 +75,11 @@
 	}
 
 //add the transcribe object and get the languages arrays
+<<<<<<< HEAD
 	if ($transcribe_enabled == 'true' && !empty($transcribe_engine)) {
+=======
+	if ($transcribe_enabled && !empty($transcribe_engine)) {
+>>>>>>> develop
 		$transcribe = new transcribe($settings);
 		//$transcribe_models = $transcribe->get_models();
 		//$translate_enabled = $transcribe->get_translate_enabled();
@@ -183,7 +199,11 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 			$greeting_filename = 'greeting_'.$greeting_id.'.'.$greeting_format;
 
 			//text to audio - make a new audio file from the message
+<<<<<<< HEAD
 			if ($speech_enabled == 'true' && !empty($greeting_voice) && !empty($greeting_message)) {
+=======
+			if ($speech_enabled && !empty($greeting_voice) && !empty($greeting_message)) {
+>>>>>>> develop
 				$speech->audio_path = $greeting_path;
 				$speech->audio_filename = $greeting_filename;
 				$speech->audio_format = $greeting_format;
@@ -206,11 +226,16 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 			}
 
 			//audio to text - get the transcription from the audio file
+<<<<<<< HEAD
 			if ($transcribe_enabled == 'true' && empty($greeting_voice) && empty($greeting_message)) {
+=======
+			if ($transcribe_enabled && empty($greeting_voice) && empty($greeting_message)) {
+>>>>>>> develop
 				$transcribe->audio_path = $greeting_path;
 				$transcribe->audio_filename = $greeting_filename;
 				$greeting_message = $transcribe->transcribe();
 			}
+<<<<<<< HEAD
 			//build data array
 				$array['voicemail_greetings'][0]['voicemail_greeting_uuid'] = $voicemail_greeting_uuid;
 				$array['voicemail_greetings'][0]['domain_uuid'] = $_SESSION['domain_uuid'];
@@ -230,6 +255,34 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 
 			//set message
 				message::add($text['message-'.($action == 'add' ? 'greeting_created' : 'update')]);
+=======
+
+			//if base64 is enabled base64
+			if ($storage_type == 'base64' && file_exists($greeting_path.'/'.$greeting_filename)) {
+				$greeting_base64 = base64_encode(file_get_contents($greeting_path.'/'.$greeting_filename));
+			}
+
+			//build data array
+			$array['voicemail_greetings'][0]['voicemail_greeting_uuid'] = $voicemail_greeting_uuid;
+			$array['voicemail_greetings'][0]['domain_uuid'] = $_SESSION['domain_uuid'];
+			$array['voicemail_greetings'][0]['voicemail_id'] = $voicemail_id;
+			$array['voicemail_greetings'][0]['greeting_id'] = $greeting_id;
+			$array['voicemail_greetings'][0]['greeting_name'] = $greeting_name;
+			$array['voicemail_greetings'][0]['greeting_message'] = $greeting_message;
+			$array['voicemail_greetings'][0]['greeting_filename'] = $greeting_filename;
+			$array['voicemail_greetings'][0]['greeting_base64'] = $greeting_base64;
+			$array['voicemail_greetings'][0]['greeting_description'] = $greeting_description;
+
+			//execute query
+			$database = new database;
+			$database->app_name = 'voicemail_greetings';
+			$database->app_uuid = 'e4b4fbee-9e4d-8e46-3810-91ba663db0c2';
+			$database->save($array);
+			unset($array);
+
+			//set message
+			message::add($text['message-'.($action == 'add' ? 'greeting_created' : 'update')]);
+>>>>>>> develop
 
 		}
 
@@ -275,11 +328,17 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['label-'.($action == 'update' ? 'edit' : 'add')]."</b></div>\n";
 	echo "	<div class='actions'>\n";
+<<<<<<< HEAD
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','collapse'=>'hide-xs','link'=>'voicemail_greetings.php?id='.urlencode($voicemail_id)]);
  	if (permission_exists('voicemail_greeting_delete') && $action == 'update') {
 		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','collapse'=>'hide-xs','style'=>'margin-right: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+=======
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','collapse'=>'hide-xs','link'=>'voicemail_greetings.php?id='.urlencode($voicemail_id)]);
+ 	if (permission_exists('voicemail_greeting_delete') && $action == 'update') {
+		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'name'=>'btn_delete','collapse'=>'hide-xs','style'=>'margin-right: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+>>>>>>> develop
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','collapse'=>'hide-xs']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','collapse'=>'hide-xs']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -288,6 +347,7 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 		echo modal::create(['id'=>'modal-delete','type'=>'delete','actions'=>button::create(['type'=>'submit','label'=>$text['button-continue'],'icon'=>'check','id'=>'btn_delete','style'=>'float: right; margin-left: 15px;','collapse'=>'never','name'=>'action','value'=>'delete','onclick'=>"modal_close();"])]);
 	}
 
+	echo "<div class='card'>\n";
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
@@ -301,7 +361,11 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+<<<<<<< HEAD
 	if ($speech_enabled == 'true' || $transcribe_enabled == 'true') {
+=======
+	if ($speech_enabled || $transcribe_enabled) {
+>>>>>>> develop
 		//models
 		if (!empty($models) && is_array($models)) {
 			echo "<tr>\n";
@@ -419,6 +483,7 @@ if (!empty($_POST) && empty($_POST["persistformvar"])) {
 	echo "</tr>\n";
 
 	echo "</table>";
+	echo "</div>\n";
 	echo "<br /><br />";
 
 	if ($action == 'update' && !empty($voicemail_greeting_uuid) && is_uuid($voicemail_greeting_uuid)) {

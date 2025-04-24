@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2022
+	Portions created by the Initial Developer are Copyright (C) 2008-2024
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -27,6 +27,12 @@
 //includes files
 	require_once __DIR__ . "/require.php";
 
+//database and settings
+	$domain_uuid = $_SESSION['domain_uuid'] ?? '';
+	$user_uuid = $_SESSION['user_uuid'] ?? '';
+	$database = database::new();
+	$settings = new settings(['database' => $database, 'domain_uuid' => $domain_uuid, 'user_uuid' => $user_uuid]);
+
 //set variables if not set
 	//if (!isset($_SESSION["template_content"])) { $_SESSION["template_content"] = null; }
 	if (!isset($document)) { $document = null; }
@@ -34,12 +40,18 @@
 	if (!isset($_SESSION["menu"])) { $_SESSION["menu"] = null; }
 	if (!isset($_SESSION["username"])) { $_SESSION["username"] = null; }
 
+//save the session domains array to a variable of type array
+	$domains = $_SESSION['domains'] ?? [];
+
+//count the number of domains
+	$domain_count = count($domains);
+
 //get the output from the buffer
 	$body = ($content_from_db ?? '').ob_get_contents();
 	ob_end_clean(); //clean the buffer
 
 //clear the template
-	//if (isset($_SESSION['theme']['cache']['boolean']) && $_SESSION['theme']['cache']['boolean'] == "false") {
+	//if (!filter_var($_SESSION['theme']['cache']['boolean'] ?? false, FILTER_VALIDATE_BOOL)) {
 	//	$_SESSION["template_content"] = '';
 	//}
 
@@ -142,27 +154,36 @@
 				}
 
 			//pre-process some settings
-				$settings['theme']['favicon'] = $settings['theme']['favicon'] != '' ? $settings['theme']['favicon'] : PROJECT_PATH.'/themes/default/favicon.ico';
-				$settings['theme']['font_loader_version'] = $settings['theme']['font_loader_version'] != '' ? urlencode($settings['theme']['font_loader_version']) : '1';
-				$settings['theme']['message_delay'] = is_numeric($settings['theme']['message_delay']) ? 1000 * (float) $settings['theme']['message_delay'] : 3000;
-				$settings['theme']['menu_side_width_contracted'] = is_numeric($settings['theme']['menu_side_width_contracted']) ? $settings['theme']['menu_side_width_contracted'] : '60';
-				$settings['theme']['menu_side_width_expanded'] = is_numeric($settings['theme']['menu_side_width_expanded']) ? $settings['theme']['menu_side_width_expanded'] : '225';
-				$settings['theme']['menu_style'] = $settings['theme']['menu_style'] != '' ? $settings['theme']['menu_style'] : 'fixed';
-				$settings['theme']['menu_position'] = $settings['theme']['menu_position'] != '' ? $settings['theme']['menu_position'] : 'top';
-				$settings['theme']['footer'] = $settings['theme']['footer'] != '' ? $settings['theme']['footer'] : '&copy; '.$text['theme-label-copyright'].' 2020 - '.date('Y')."<a href='https://www.gottesdienst-telefon.de' class='footer' target='_blank'>Gottesdienst Telefon</a> Powerd By <a href='http://www.fusionpbx.com' class='footer' target='_blank'>fusionpbx.com</a> ".$text['theme-label-all_rights_reserved'];
-			$view->assign('settings', $settings);
+				$settings_array['theme']['favicon'] = !empty($settings_array['theme']['favicon']) ? $settings_array['theme']['favicon'] : PROJECT_PATH.'/themes/default/favicon.ico';
+				$settings_array['theme']['font_loader_version'] = !empty($settings_array['theme']['font_loader_version']) ? urlencode($settings_array['theme']['font_loader_version']) : '1';
+				$settings_array['theme']['message_delay'] = isset($settings_array['theme']['message_delay']) ? 1000 * (float) $settings_array['theme']['message_delay'] : 3000;
+				$settings_array['theme']['menu_side_width_contracted'] = isset($settings_array['theme']['menu_side_width_contracted']) ? $settings_array['theme']['menu_side_width_contracted'] : '60';
+				$settings_array['theme']['menu_side_width_expanded'] = isset($settings_array['theme']['menu_side_width_expanded']) ? $settings_array['theme']['menu_side_width_expanded'] : '225';
+				$settings_array['theme']['menu_side_toggle_hover_delay_expand'] = isset($settings_array['theme']['menu_side_toggle_hover_delay_expand']) ? $settings_array['theme']['menu_side_toggle_hover_delay_expand'] : '300';
+				$settings_array['theme']['menu_side_toggle_hover_delay_contract'] = isset($settings_array['theme']['menu_side_toggle_hover_delay_contract']) ? $settings_array['theme']['menu_side_toggle_hover_delay_contract'] : '1000';
+				$settings_array['theme']['menu_style'] = !empty($settings_array['theme']['menu_style']) ? $settings_array['theme']['menu_style'] : 'fixed';
+				$settings_array['theme']['menu_position'] = isset($settings_array['theme']['menu_position']) ? $settings_array['theme']['menu_position'] : 'top';
+				$settings_array['theme']['footer'] = isset($settings_array['theme']['footer']) ? $settings_array['theme']['footer'] : '&copy; '.$text['theme-label-copyright'].' 2008 - '.date('Y')." <a href='http://www.fusionpbx.com' class='footer' target='_blank'>fusionpbx.com</a> ".$text['theme-label-all_rights_reserved'];
+				$settings_array['theme']['menu_side_item_main_sub_icon_contract'] = !empty($settings_array['theme']['menu_side_item_main_sub_icon_contract']) ? explode(' ', $settings_array['theme']['menu_side_item_main_sub_icon_contract'])[1] : null;
+				$settings_array['theme']['menu_side_item_main_sub_icon_expand'] = !empty($settings_array['theme']['menu_side_item_main_sub_icon_expand']) ? explode(' ', $settings_array['theme']['menu_side_item_main_sub_icon_expand'])[1] : null;
+				$settings_array['theme']['menu_brand_type'] = $settings->get('theme', 'menu_brand_type', '');
+			//assign the setings
+				$view->assign('settings', $settings_array);
+		}
+	//background video
+		if (!empty($_SESSION['theme']['background_video']) && is_array($_SESSION['theme']['background_video'])) {
+			$view->assign('background_video', $_SESSION['theme']['background_video'][0]);
 		}
 	//document title
 		if (isset($_SESSION['theme']['title']['text']) && $_SESSION['theme']['title']['text'] != '') {
 			$document_title = $_SESSION['theme']['title']['text'];
 		}
-		else if (isset($_SESSION['software_name'])) {
-			$document_title = $_SESSION['software_name'];
-		}
-		$document_title = (!empty($document['title']) ? 'Gottesdienst Telefon - '.$document['title'] : null).$document_title;
+
+		$document_title = (!empty($document['title']) ? 'Gottesdienst Telefon - '.$document['title'] : null).($document_title ?? '');
+
 		$view->assign('document_title', $document_title);
 	//domain selector control
-		$domain_selector_enabled = permission_exists('domain_select') && count($_SESSION['domains']) > 1 ? true : false;
+		$domain_selector_enabled = permission_exists('domain_select') && $domain_count > 1 ? true : false;
 		$view->assign('domain_selector_enabled', $domain_selector_enabled);
 	//browser name
 		$user_agent = http_user_agent();
@@ -175,15 +196,15 @@
 	//domains application path
 		$view->assign('domains_app_path', PROJECT_PATH.(file_exists($_SERVER['DOCUMENT_ROOT'].'/app/domains/domains.php') ? '/app/domains/domains.php' : '/core/domains/domains.php'));
 	//domain count
-		$view->assign('domain_count', is_array($_SESSION['domains']) ? sizeof($_SESSION['domains']) : 0);
+		$view->assign('domain_count', $domain_count);
 	//domain selector row background colors
 		$view->assign('domain_selector_background_color_1', !empty($_SESSION['theme']['domain_inactive_background_color'][0]) != '' ? $_SESSION['theme']['domain_inactive_background_color'][0] : '#eaedf2');
 		$view->assign('domain_selector_background_color_2', !empty($_SESSION['theme']['domain_inactive_background_color'][1]) != '' ? $_SESSION['theme']['domain_inactive_background_color'][1] : '#ffffff');
 		$view->assign('domain_active_background_color', !empty($_SESSION['theme']['domain_active_background_color']['text']) ? $_SESSION['theme']['domain_active_background_color']['text'] : '#eeffee');
 	//domain list
-		$view->assign('domains', $_SESSION['domains']);
+		$view->assign('domains', $domains);
 	//domain uuid
-		$view->assign('domain_uuid', $_SESSION['domain_uuid']);
+		$view->assign('domain_uuid', $domain_uuid);
 	//menu container
 		//load menu array into the session
 			if (!isset($_SESSION['menu']['array'])) {
@@ -199,7 +220,7 @@
 					if ($_SESSION['theme']['menu_side_state']['text'] != 'hidden') {
 						$menu_side_toggle = $_SESSION['theme']['menu_side_toggle']['text'] == 'hover' ? " onmouseenter=\"clearTimeout(menu_side_contract_timer); if ($('#menu_side_container').width() < 100) { menu_side_expand_start(); }\" onmouseleave=\"clearTimeout(menu_side_expand_timer); if ($('#menu_side_container').width() > 100 && $('#menu_side_state_current').val() != 'expanded') { menu_side_contract_start(); }\"" : null;
 					}
-					$container_open = "<div id='menu_side_container' ".($_SESSION['theme']['menu_side_state']['text'] == 'hidden' ? "style='display: none;'" : "class='hide-xs'").$menu_side_toggle." >\n";
+					$container_open = "<div id='menu_side_container' style='width: ".(in_array($_SESSION['theme']['menu_side_state']['text'], ['expanded','hidden']) ? ($_SESSION['theme']['menu_side_width_expanded']['text'] ?? 225) : ($_SESSION['theme']['menu_side_width_contracted']['text'] ?? 60))."px; ".($_SESSION['theme']['menu_side_state']['text'] == 'hidden' ? "display: none;'" : "' class='hide-xs'").$menu_side_toggle." >\n";
 					$menu = new menu;
 					$menu->text = $text;
 					$menu_html = $menu->menu_vertical($_SESSION['menu']['array']);
@@ -272,7 +293,7 @@
 		if (
 			$authenticated &&
 			file_exists($_SERVER['DOCUMENT_ROOT'].PROJECT_PATH.'/app/session_timer/session_timer.php') &&
-			$_SESSION['security']['session_timer_enabled']['boolean'] == 'true'
+			filter_var($_SESSION['security']['session_timer_enabled']['boolean'] ?? false, FILTER_VALIDATE_BOOL)
 			) {
 			include_once PROJECT_PATH.'app/session_timer/session_timer.php';
 			$view->assign('session_timer', $session_timer);
