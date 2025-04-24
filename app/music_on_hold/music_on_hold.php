@@ -572,11 +572,7 @@
 								case "ogg" : $stream_file_type = "audio/ogg"; break;
 							}
 							//playback progress bar
-<<<<<<< HEAD
 								echo "<tr class='list-row' id='recording_progress_bar_".$row_uuid."' style='display: none;' onclick=\"recording_play('".escape($row_uuid)."','".urlencode($stream_file)."')\"><td id='playback_progress_bar_background_".escape($row_uuid)."' class='playback_progress_bar_background' colspan='5'><span class='playback_progress_bar' id='recording_progress_".$row_uuid."'></span></td></tr>\n";
-=======
-								echo "<tr class='list-row' id='recording_progress_bar_".$row_uuid."' style='display: none;' onclick=\"recording_seek(event,'".escape($row_uuid)."')\"><td id='playback_progress_bar_background_".escape($row_uuid)."' class='playback_progress_bar_background' colspan='5'><span class='playback_progress_bar' id='recording_progress_".$row_uuid."'></span></td></tr>\n";
->>>>>>> develop
 								echo "<tr class='list-row' style='display: none;'><td></td></tr>\n"; // dummy row to maintain alternating background color
 							$list_row_link = "javascript:recording_play('".$row_uuid."','".urlencode($stream_file)."');";
 							echo "<tr class='list-row' href=\"".$list_row_link."\">\n";
@@ -598,13 +594,8 @@
 							echo "	<td class='overflow'>".escape($stream_file)."</td>\n";
 							echo "	<td class='button center no-link no-wrap'>";
 							echo 		"<audio id='recording_audio_".$row_uuid."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".$row_uuid."')\" onended=\"recording_reset('".$row_uuid."');\" src='music_on_hold.php?action=download&id=".escape($row['music_on_hold_uuid'])."&file=".urlencode($stream_file)."' type='".$stream_file_type."'></audio>";
-<<<<<<< HEAD
-							echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$_SESSION['theme']['button_icon_play'],'id'=>'recording_button_'.$row_uuid,'onclick'=>"recording_play('".$row_uuid."','".urlencode($stream_file)."');"]);
-							echo button::create(['type'=>'button','title'=>$text['label-download'],'icon'=>$_SESSION['theme']['button_icon_download'],'link'=>"?action=download&id=".urlencode($row['music_on_hold_uuid'])."&file=".urlencode($stream_file)]);
-=======
 							echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$settings->get('theme', 'button_icon_play'),'id'=>'recording_button_'.$row_uuid,'onclick'=>"recording_play('".$row_uuid."','".urlencode($stream_file)."');"]);
 							echo button::create(['type'=>'button','title'=>$text['label-download'],'icon'=>$settings->get('theme', 'button_icon_download'),'link'=>"?action=download&id=".urlencode($row['music_on_hold_uuid'])."&file=".urlencode($stream_file)]);
->>>>>>> develop
 							echo "	</td>\n";
 							echo "	<td class='right no-wrap hide-xs'>".escape($stream_file_size)."</td>\n";
 							echo "	<td class='right no-wrap hide-sm-dn'>".escape($stream_file_date)."</td>\n";
