@@ -408,9 +408,15 @@ $text['label-transaction_type']['ko-kr'] = "유형";
 $text['description-transaction_type']['en-us'] = "Type: add, update, delete";
 $text['description-transaction_type']['en-gb'] = "Type: add, update, delete";
 $text['description-transaction_type']['ar-eg'] = "النوع: إضافة، تحديث، حذف";
+<<<<<<< HEAD
+$text['description-transaction_type']['de-at'] = "Typ: add, update, delete";
+$text['description-transaction_type']['de-ch'] = "Typ: add, update, delete";
+$text['description-transaction_type']['de-de'] = "Typ: add, update, delete";
+=======
 $text['description-transaction_type']['de-at'] = "Typ: hinzufügen, aktualisieren, löschen";
 $text['description-transaction_type']['de-ch'] = "Typ: hinzufügen, aktualisieren, löschen";
 $text['description-transaction_type']['de-de'] = "Typ: hinzufügen, aktualisieren, löschen";
+>>>>>>> develop
 $text['description-transaction_type']['el-gr'] = "Τύπος: προσθήκη, ενημέρωση, διαγραφή";
 $text['description-transaction_type']['es-cl'] = "Tipo: añadir, actualizar, eliminar";
 $text['description-transaction_type']['es-mx'] = "Tipo: añadir, actualizar, eliminar";

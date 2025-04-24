@@ -39,9 +39,21 @@
 	$language = new text;
 	$text = $language->get();
 
+<<<<<<< HEAD
 //add the settings object
 	$settings = new settings(["domain_uuid" => $_SESSION['domain_uuid'], "user_uuid" => $_SESSION['user_uuid']]);
 
+=======
+//connect to the database
+	$database = database::new();
+
+//add the settings object
+	$settings = new settings(["domain_uuid" => $_SESSION['domain_uuid'], "user_uuid" => $_SESSION['user_uuid']]);
+
+//setup the event socket connection
+	$event_socket = event_socket::create();
+
+>>>>>>> develop
 //set from session variables
 	$button_icon_back = $settings->get('theme', 'button_icon_back', '');
 	$button_icon_copy = $settings->get('theme', 'button_icon_copy', '');
@@ -66,7 +78,15 @@
 		$fifo_extension = $_POST["fifo_extension"];
 		$fifo_agent_status = $_POST["fifo_agent_status"];
 		$fifo_agent_queue = $_POST["fifo_agent_queue"];
+<<<<<<< HEAD
 		$fifo_members = $_POST["fifo_members"];
+=======
+		$fifo_strategy = $_POST["fifo_strategy"];
+		$fifo_members = $_POST["fifo_members"];
+		$fifo_timeout_seconds = $_POST["fifo_timeout_seconds"];
+		$fifo_exit_key = $_POST["fifo_exit_key"];
+		$fifo_exit_action = $_POST["fifo_exit_action"];
+>>>>>>> develop
 		$fifo_music = $_POST["fifo_music"];
 		$domain_uuid = $_POST["domain_uuid"];
 		$fifo_order = $_POST["fifo_order"];
@@ -104,20 +124,32 @@
 				switch ($_POST['action']) {
 					case 'copy':
 						if (permission_exists('fifo_add')) {
+<<<<<<< HEAD
 							$obj = new database;
 							$obj->copy($array);
+=======
+							$database->copy($array);
+>>>>>>> develop
 						}
 						break;
 					case 'delete':
 						if (permission_exists('fifo_delete')) {
+<<<<<<< HEAD
 							$obj = new database;
 							$obj->delete($array);
+=======
+							$database->delete($array);
+>>>>>>> develop
 						}
 						break;
 					case 'toggle':
 						if (permission_exists('fifo_update')) {
+<<<<<<< HEAD
 							$obj = new database;
 							$obj->toggle($array);
+=======
+							$database->toggle($array);
+>>>>>>> develop
 						}
 						break;
 				}
@@ -129,13 +161,45 @@
 				}
 			}
 
+<<<<<<< HEAD
+=======
+		//validate the data
+			$fifo_extension = preg_replace('#[^a-zA-Z0-9.\-\*]#', '', $fifo_extension ?? '');
+			$fifo_order = preg_replace('#[^0-9]#', '', $fifo_order ?? '');
+			$fifo_exit_key = preg_replace('#[^0-9]#', '', $fifo_exit_key ?? '');
+			$fifo_timeout_seconds = preg_replace('#[^0-9]#', '', $fifo_timeout_seconds ?? '');
+			$fifo_agent_status = preg_replace('#[^a-zA-Z0-9.\-\*]#', '', $fifo_agent_status ?? '');
+			$fifo_agent_queue = preg_replace('#[^a-zA-Z0-9.\-\*]#', '', $fifo_agent_queue ?? '');
+			if (!empty($fifo_uuid) && !is_uuid($fifo_uuid)) { throw new Exception("invalid uuid"); }
+			if (!empty($dialplan_uuid) && !is_uuid($dialplan_uuid)) { throw new Exception("invalid uuid"); }
+
+			if (is_array($fifo_members)) {
+				$i = 0;
+				foreach ($fifo_members as $row) {
+					$fifo_members[$i]['member_contact'] = preg_replace('#[^a-zA-Z0-9/@.\-\*]#', '', $row["member_contact"] ?? '');
+					$fifo_members[$i]['member_call_timeout'] = preg_replace('#[^0-9]#', '', $row["member_call_timeout"] ?? '20');
+					$fifo_members[$i]['member_wrap_up_time'] = preg_replace('#[^0-9]#', '', $row["member_wrap_up_time"] ?? '10');
+					$fifo_members[$i]['member_enabled'] = $row["member_enabled"] ?? 'false';
+					$i++;
+				}
+			}
+			
+>>>>>>> develop
 		//check for all required data
 			$msg = '';
 			if (strlen($fifo_name) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_name']."<br>\n"; }
 			if (strlen($fifo_extension) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_extension']."<br>\n"; }
 			//if (strlen($fifo_agent_status) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_agent_status']."<br>\n"; }
 			//if (strlen($fifo_agent_queue) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_agent_queue']."<br>\n"; }
+<<<<<<< HEAD
 			//if (strlen($fifo_members) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_members']."<br>\n"; }
+=======
+			if (strlen($fifo_strategy) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_strategy']."<br>\n"; }
+			//if (strlen($fifo_members) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_members']."<br>\n"; }
+			//if (strlen($fifo_timeout_seconds) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_timeout_seconds']."<br>\n"; }
+			//if (strlen($fifo_exit_key) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_exit_key']."<br>\n"; }
+			//if (strlen($fifo_exit_action) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_exit_action']."<br>\n"; }
+>>>>>>> develop
 			//if (strlen($fifo_music) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_music']."<br>\n"; }
 			if (strlen($domain_uuid) == 0) { $msg .= $text['message-required']." ".$text['label-domain_uuid']."<br>\n"; }
 			if (strlen($fifo_order) == 0) { $msg .= $text['message-required']." ".$text['label-fifo_order']."<br>\n"; }
@@ -177,32 +241,82 @@
 			$array['fifo'][0]['fifo_extension'] = $fifo_extension;
 			$array['fifo'][0]['fifo_agent_status'] = $fifo_agent_status;
 			$array['fifo'][0]['fifo_agent_queue'] = $fifo_agent_queue;
+<<<<<<< HEAD
+=======
+			$array['fifo'][0]['fifo_strategy'] = $fifo_strategy;
+			$array['fifo'][0]['fifo_timeout_seconds'] = $fifo_timeout_seconds;
+			$array['fifo'][0]['fifo_exit_key'] = $fifo_exit_key;
+			$array['fifo'][0]['fifo_exit_action'] = $fifo_exit_action;
+>>>>>>> develop
 			$array['fifo'][0]['fifo_music'] = $fifo_music;
 			$array['fifo'][0]['fifo_order'] = $fifo_order;
 			$array['fifo'][0]['fifo_enabled'] = $fifo_enabled;
 			$array['fifo'][0]['fifo_description'] = $fifo_description;
+<<<<<<< HEAD
 			$y = 0;
 			if (is_array($fifo_members)) {
+=======
+			if (is_array($fifo_members)) {
+				$y = 0;
+>>>>>>> develop
 				foreach ($fifo_members as $row) {
 					if (!empty($row['member_contact']) && strlen($row['member_contact']) > 0) {
 						$array['fifo'][0]['fifo_members'][$y]['fifo_member_uuid'] = $row["fifo_member_uuid"];
 						$array['fifo'][0]['fifo_members'][$y]['domain_uuid'] = $_SESSION['domain_uuid'];
 						$array['fifo'][0]['fifo_members'][$y]['member_contact'] = $row["member_contact"];
+<<<<<<< HEAD
 						$array['fifo'][0]['fifo_members'][$y]['member_call_timeout'] = $row["member_call_timeout"];
 						//$array['fifo'][0]['fifo_members'][$y]['member_simultaneous'] = $row["member_simultaneous"];
 						$array['fifo'][0]['fifo_members'][$y]['member_wrap_up_time'] = $row["member_wrap_up_time"];
+=======
+						$array['fifo'][0]['fifo_members'][$y]['member_call_timeout'] = $row["member_call_timeout"] ?? '20';
+						//$array['fifo'][0]['fifo_members'][$y]['member_simultaneous'] = $row["member_simultaneous"];
+						$array['fifo'][0]['fifo_members'][$y]['member_wrap_up_time'] = $row["member_wrap_up_time"] ?? '10';
+>>>>>>> develop
 						$array['fifo'][0]['fifo_members'][$y]['member_enabled'] = $row["member_enabled"] ?? 'false';
 						$y++;
 					}
 				}
 			}
 
+<<<<<<< HEAD
+=======
+		//send commands for agent login or agent logout
+			if (is_array($fifo_members)) {
+				foreach ($fifo_members as $row) {
+					//empty row skip iteration
+					if (empty($row["member_contact"])) {
+						continue;
+					}
+
+					//build the command to add or remove the agent from the FIFO queue
+					if ($row["member_enabled"] == 'true') {
+						$command = "fifo_member add ".$fifo_extension."@".$_SESSION['domain_name']." {fifo_member_wait=nowait}".$row["member_contact"]." 5 ".$row['member_call_timeout']." ".$row['member_wrap_up_time'];
+					}
+					else {
+						$command = "fifo_member del ".$fifo_extension."@".$_SESSION['domain_name']." {fifo_member_wait=nowait}".$row["member_contact"];
+					}
+
+					if ($event_socket->is_connected()) {
+						$response = $event_socket->command('api '.$command);
+					}
+				}
+			}
+
+		//get the action destination number
+			if (!empty($fifo_exit_action)) {
+				$fifo_exit_destination = explode(':', $fifo_exit_action)[1];
+				$fifo_exit_destination = explode(' ', $fifo_exit_destination)[0];
+			}
+
+>>>>>>> develop
 		//add the fifo dialplan
 			if (!empty($fifo_extension)) {
 				//escape the * symbol
 				$fifo_agent_status_xml = str_replace("*", "\*", $fifo_agent_status);
 				$fifo_agent_queue_xml = str_replace("*", "\*", $fifo_agent_queue);
 
+<<<<<<< HEAD
 				//build the xml dialplan
 				$dialplan_xml = "<extension name=\"".xml::sanitize($fifo_name)."\" continue=\"false\" uuid=\"".xml::sanitize($dialplan_uuid)."\">\n";
 				$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".xml::sanitize($fifo_extension)."\$\" break=\"on-true\">\n";
@@ -214,15 +328,67 @@
 				$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".$fifo_agent_status_xml."\$\" break=\"on-true\">\n";
 				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_uuid=".$fifo_uuid."\" inline=\"true\"/>\n";
 				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_name=$queue_name\" inline=\"true\"/>\n";
+=======
+				//prepare the fifo orbit extension
+				if (!empty($fifo_exit_destination) && $fifo_timeout_seconds == 0) {
+					$fifo_orbit_exten = $fifo_exit_destination;
+				}
+				else {
+					$fifo_orbit_exten = $fifo_exit_destination.":".$fifo_timeout_seconds;
+				}
+
+				//build the xml dialplan
+				$dialplan_xml = "<extension name=\"".xml::sanitize($fifo_name)."\" continue=\"false\" uuid=\"".xml::sanitize($dialplan_uuid)."\">\n";
+				$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".xml::sanitize($fifo_extension)."\$\" break=\"on-true\">\n";
+				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_uuid=".xml::sanitize($fifo_uuid)."\" inline=\"true\"/>\n";
+				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_music=".xml::sanitize($fifo_music)."\" inline=\"true\"/>\n";
+				if ($fifo_strategy == 'longest_idle_agent') {
+					$dialplan_xml .= "		<action application=\"set\" data=\"fifo_strategy=waiting_longer\" inline=\"true\"/>\n";
+				}
+				if ($fifo_strategy == 'simultaneous') {
+					$dialplan_xml .= "		<action application=\"set\" data=\"fifo_strategy=more_ppl\" inline=\"true\"/>\n";
+				}
+			/*
+			<action application="set" data="fifo_orbit_dialplan=XML"/>
+			<action application="set" data="fifo_orbit_context=default"/>
+			<action application="set" data="fifo_orbit_announce=digits/6.wav"/>
+			<action application="set" data="fifo_caller_exit_key=2"/>
+			<action application="set" data="fifo_caller_exit_to_orbit=true"/>
+			*/
+				if (!empty($fifo_exit_key)) {
+					$dialplan_xml .= "		<action application=\"set\" data=\"fifo_caller_exit_key=".xml::sanitize($fifo_exit_key)."\"/>\n";
+					$dialplan_xml .= "		<action application=\"set\" data=\"fifo_orbit_dialplan=XML\"/>\n";
+					$dialplan_xml .= "		<action application=\"set\" data=\"fifo_orbit_context=".xml::sanitize($_SESSION['domain_name'])."\"/>\n";
+					$dialplan_xml .= "		<action application=\"set\" data=\"fifo_caller_exit_to_orbit=true\"/>\n";
+
+				}
+				if (!empty($fifo_orbit_exten)) {
+					$dialplan_xml .= "		<action application=\"set\" data=\"fifo_orbit_exten=".xml::sanitize($fifo_orbit_exten)."\"/>\n";
+				}
+				$dialplan_xml .= "		<action application=\"answer\" data=\"\"/>\n";
+				$dialplan_xml .= "		<action application=\"fifo\" data=\"".xml::sanitize($queue_name)." in\"/>\n";
+				$dialplan_xml .= "	</condition>\n";
+				$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".xml::sanitize($fifo_agent_status_xml)."\$\" break=\"on-true\">\n";
+				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_uuid=".xml::sanitize($fifo_uuid)."\" inline=\"true\"/>\n";
+				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_name=".xml::sanitize($queue_name)."\" inline=\"true\"/>\n";
+>>>>>>> develop
 				$dialplan_xml .= "		<action application=\"set\" data=\"user_name=\${caller_id_number}@\${domain_name}\" inline=\"true\"/>\n";
 				$dialplan_xml .= "		<action application=\"set\" data=\"pin_number=\" inline=\"true\"/>\n";
 				$dialplan_xml .= "		<action application=\"lua\" data=\"app/fifo/resources/scripts/member.lua\"/>\n";
 				$dialplan_xml .= "	</condition>\n";
+<<<<<<< HEAD
 				$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".$fifo_agent_queue_xml."\$\" break=\"on-true\">\n";
 				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_uuid=".$fifo_uuid."\" inline=\"true\"/>\n";
 				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_music=".$fifo_music."\" inline=\"true\"/>\n";
 				$dialplan_xml .= "		<action application=\"answer\" data=\"\"/>\n";
 				$dialplan_xml .= "		<action application=\"fifo\" data=\"$queue_name out wait\"/>\n";
+=======
+				$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".xml::sanitize($fifo_agent_queue_xml)."\$\" break=\"on-true\">\n";
+				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_uuid=".xml::sanitize($fifo_uuid)."\" inline=\"true\"/>\n";
+				$dialplan_xml .= "		<action application=\"set\" data=\"fifo_music=".xml::sanitize($fifo_music)."\" inline=\"true\"/>\n";
+				$dialplan_xml .= "		<action application=\"answer\" data=\"\"/>\n";
+				$dialplan_xml .= "		<action application=\"fifo\" data=\"".xml::sanitize($queue_name)." out wait\"/>\n";
+>>>>>>> develop
 				$dialplan_xml .= "	</condition>\n";
 				$dialplan_xml .= "</extension>\n";
 
@@ -242,12 +408,19 @@
 			}
 
 		//add the dialplan permission
+<<<<<<< HEAD
+			$p = new permissions;
+=======
 			$p = permissions::new();
+>>>>>>> develop
 			$p->add("dialplan_add", "temp");
 			$p->add("dialplan_edit", "temp");
 
 		//save the data
+<<<<<<< HEAD
 			$database = new database;
+=======
+>>>>>>> develop
 			$database->app_name = 'fifo';
 			$database->app_uuid = '16589224-c876-aeb3-f59f-523a1c0801f7';
 			$result = $database->save($array);
@@ -296,6 +469,13 @@
 		$sql .= " fifo_extension, ";
 		$sql .= " fifo_agent_status, ";
 		$sql .= " fifo_agent_queue, ";
+<<<<<<< HEAD
+=======
+		$sql .= " fifo_strategy, ";
+		$sql .= " fifo_timeout_seconds, ";
+		$sql .= " fifo_exit_key, ";
+		$sql .= " fifo_exit_action, ";
+>>>>>>> develop
 		$sql .= " fifo_music, ";
 		$sql .= " domain_uuid, ";
 		$sql .= " fifo_order, ";
@@ -306,7 +486,10 @@
 		//$sql .= "and domain_uuid = :domain_uuid ";
 		//$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 		$parameters['fifo_uuid'] = $fifo_uuid;
+<<<<<<< HEAD
 		$database = new database;
+=======
+>>>>>>> develop
 		$row = $database->select($sql, $parameters, 'row');
 		if (is_array($row) && @sizeof($row) != 0) {
 			$dialplan_uuid = $row["dialplan_uuid"];
@@ -314,6 +497,13 @@
 			$fifo_extension = $row["fifo_extension"];
 			$fifo_agent_status = $row["fifo_agent_status"];
 			$fifo_agent_queue = $row["fifo_agent_queue"];
+<<<<<<< HEAD
+=======
+			$fifo_strategy = $row["fifo_strategy"];
+			$fifo_timeout_seconds = $row["fifo_timeout_seconds"];
+			$fifo_exit_key = $row["fifo_exit_key"];
+			$fifo_exit_action = $row["fifo_exit_action"];
+>>>>>>> develop
 			$fifo_music = $row["fifo_music"];
 			$domain_uuid = $row["domain_uuid"];
 			$fifo_order = $row["fifo_order"];
@@ -339,7 +529,10 @@
 		//$sql .= "and domain_uuid = '".$domain_uuid."' ";
 		//$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 		$parameters['fifo_uuid'] = $fifo_uuid;
+<<<<<<< HEAD
 		$database = new database;
+=======
+>>>>>>> develop
 		$fifo_members = $database->select($sql, $parameters, 'all');
 		unset ($sql, $parameters);
 	}
@@ -358,6 +551,7 @@
 		$fifo_member_uuid = uuid();
 	}
 
+<<<<<<< HEAD
 //add an empty row
 	$x = isset($fifo_members) && is_array($fifo_members) ? sizeof($fifo_members) : 0;
 	$fifo_members[$x]['domain_uuid'] = $_SESSION['domain_uuid'];
@@ -368,6 +562,30 @@
 	//$fifo_members[$x]['member_simultaneous'] = '';
 	$fifo_members[$x]['member_wrap_up_time'] = '';
 	$fifo_members[$x]['member_enabled'] = '';
+=======
+//add an empty row to the members array
+	if (count($fifo_members) == 0) {
+		$rows = $settings->get('fifo', 'option_add_rows', '5');
+		$id = 0;
+		$show_option_delete = false;
+	}
+	if (count($fifo_members) > 0) {
+		$rows = $settings->get('fifo', 'option_edit_rows', '1');
+		$id = count($fifo_members)+1;
+		$show_option_delete = true;
+	}
+	for ($x = 0; $x < $rows; $x++) {
+		$fifo_members[$id]['domain_uuid'] = $_SESSION['domain_uuid'];
+		$fifo_members[$id]['fifo_uuid'] = $fifo_uuid;
+		$fifo_members[$id]['fifo_member_uuid'] = uuid();
+		$fifo_members[$id]['member_contact'] = '';
+		$fifo_members[$id]['member_call_timeout'] = '';
+		//$fifo_members[$id]['member_simultaneous'] = '';
+		$fifo_members[$id]['member_wrap_up_time'] = '';
+		$fifo_members[$id]['member_enabled'] = '';
+		$id++;
+	}
+>>>>>>> develop
 
 //create token
 	$object = new token;
@@ -377,11 +595,22 @@
 	$destination = new destinations;
 
 //set the defaults
+<<<<<<< HEAD
 	if (empty($fifo_order)) {
 		$fifo_order = 50;
 	}
 	if (!isset($fifo_enabled)) {
 	//	$fifo_enabled = true;
+=======
+	if (empty($fifo_timeout_seconds)) {
+		$fifo_timeout_seconds = 0;
+	}
+	if (empty($fifo_order)) {
+		$fifo_order = 50;
+	}
+	if (empty($fifo_enabled)) {
+		$fifo_enabled = true;
+>>>>>>> develop
 	}
 
 //show the header
@@ -396,6 +625,7 @@
 	echo "	<div class='heading'><b>".$text['title-fifo']."</b></div>\n";
 	echo "	<div class='actions'>\n";
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$button_icon_back,'id'=>'btn_back','collapse'=>'hide-xs','style'=>'margin-right: 15px;','link'=>'fifo.php']);
+<<<<<<< HEAD
 // 	if ($action == 'update') {
 // 		if (permission_exists('fifo_member_add')) {
 // 			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$button_icon_copy,'id'=>'btn_copy','name'=>'btn_copy','style'=>'display: none;','onclick'=>"modal_open('modal-copy','btn_copy');"]);
@@ -404,6 +634,13 @@
 // 			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$button_icon_delete,'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none; margin-right: 15px;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
 // 		}
 // 	}
+=======
+ 	if ($action == 'update') {
+ 		if (permission_exists('fifo_member_delete')) {
+ 			echo button::create(['type'=>'submit','label'=>$text['button-delete'],'icon'=>$button_icon_delete,'id'=>'btn_delete','name'=>'action','value'=>'delete','style'=>'display: none; margin-right: 15px;']);
+ 		}
+ 	}
+>>>>>>> develop
 	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$button_icon_save,'id'=>'btn_save','collapse'=>'hide-xs']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
@@ -421,11 +658,18 @@
 // 		}
 // 	}
 
-	echo "<div class='card'>\n";
+<<<<<<< HEAD
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
 	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
+=======
+	echo "<div class='card'>\n";
+	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+
+	echo "<tr>\n";
+	echo "<td width='30%' class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
+>>>>>>> develop
 	echo "	".$text['label-fifo_name']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' style='position: relative;' align='left'>\n";
@@ -469,6 +713,23 @@
 	echo "</tr>\n";
 
 	echo "<tr>\n";
+<<<<<<< HEAD
+=======
+	echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-strategy']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' align='left'>\n";
+	echo "	<select class='formfld' name='fifo_strategy' onchange=\"getElementById('destination_delayorder').innerHTML = (this.selectedIndex == 1 || this.selectedIndex == 3) ? '".$text['label-destination_order']."' : '".$text['label-destination_delay']."';\">\n";
+	echo "		<option value='longest_idle_agent' ".(($fifo_strategy == "'option-longest_idle_agent") ? "selected='selected'" : null).">".$text['option-longest_idle_agent']."</option>\n";
+	echo "		<option value='simultaneous' ".(($fifo_strategy == "simultaneous") ? "selected='selected'" : null).">".$text['option-simultaneous']."</option>\n";
+	echo "	</select>\n";
+	echo "<br />\n";
+	echo $text['description-strategy']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+>>>>>>> develop
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-fifo_members']."\n";
 	echo "</td>\n";
@@ -480,9 +741,15 @@
 	//echo "			<th class='vtablereq'>".$text['label-member_simultaneous']."</th>\n";
 	echo "			<th class='vtablereq'>".$text['label-member_wrap_up_time']."</th>\n";
 	echo "			<th class='vtablereq'>".$text['label-member_enabled']."</th>\n";
+<<<<<<< HEAD
 	if (is_array($fifo_members) && @sizeof($fifo_members) > 1 && permission_exists('fifo_member_delete')) {
 		echo "			<td class='vtable edit_delete_checkbox_all' onmouseover=\"swap_display('delete_label_details', 'delete_toggle_details');\" onmouseout=\"swap_display('delete_label_details', 'delete_toggle_details');\">\n";
 		echo "				<span id='delete_label_details'>".$text['label-action']."</span>\n";
+=======
+	if ($show_option_delete && is_array($fifo_members) && @sizeof($fifo_members) > 1 && permission_exists('fifo_member_delete')) {
+		echo "			<td class='vtable edit_delete_checkbox_all' onmouseover=\"swap_display('delete_label_details', 'delete_toggle_details');\" onmouseout=\"swap_display('delete_label_details', 'delete_toggle_details');\">\n";
+		echo "				<span id='delete_label_details'>".$text['label-delete']."</span>\n";
+>>>>>>> develop
 		echo "				<span id='delete_toggle_details'><input type='checkbox' id='checkbox_all_details' name='checkbox_all' onclick=\"edit_all_toggle('details'); checkbox_on_change(this);\"></span>\n";
 		echo "			</td>\n";
 	}
@@ -497,9 +764,15 @@
 			if (empty($row["member_wrap_up_time"])) { $row["member_wrap_up_time"] = '10'; }
 
 			echo "			<tr>\n";
+<<<<<<< HEAD
 			echo "			<input type='hidden' name='fifo_members[$x][domain_uuid]' value=\"".escape($row["domain_uuid"])."\">\n";
 			echo "			<input type='hidden' name='fifo_members[$x][fifo_uuid]' value=\"".escape($row["fifo_uuid"])."\">\n";
 			echo "			<input type='hidden' name='fifo_members[$x][fifo_member_uuid]' value=\"".escape($row["fifo_member_uuid"])."\">\n";
+=======
+			echo "				<input type='hidden' name='fifo_members[$x][domain_uuid]' value=\"".escape($row["domain_uuid"])."\">\n";
+			echo "				<input type='hidden' name='fifo_members[$x][fifo_uuid]' value=\"".escape($row["fifo_uuid"])."\">\n";
+			echo "				<input type='hidden' name='fifo_members[$x][fifo_member_uuid]' value=\"".escape($row["fifo_member_uuid"])."\">\n";
+>>>>>>> develop
 			echo "				<td class='formfld'>\n";
 			echo "					$member_contact\n";
 			echo "			</td>\n";
@@ -526,7 +799,11 @@
 				echo "	</select>\n";
 			}
 			echo "			</td>\n";
+<<<<<<< HEAD
 			if (is_array($fifo_members) && @sizeof($fifo_members) > 1 && permission_exists('fifo_member_delete')) {
+=======
+			if ($show_option_delete && is_array($fifo_members) && @sizeof($fifo_members) > 1 && permission_exists('fifo_member_delete')) {
+>>>>>>> develop
 				if (is_uuid($row['fifo_member_uuid'])) {
 					echo "		<td class='vtable' style='text-align: center; padding-bottom: 3px;'>\n";
 					echo "			<input type='checkbox' name='fifo_members[".$x."][checked]' value='true' class='chk_delete checkbox_details' onclick=\"checkbox_on_change(this);\">\n";
@@ -548,6 +825,7 @@
 
 	echo "<tr>\n";
 	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+<<<<<<< HEAD
 	echo "	".$text['label-fifo_music']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' style='position: relative;' align='left'>\n";
@@ -556,6 +834,47 @@
 	$ringbacks = new ringbacks;
 	echo $ringbacks->select('fifo_music', $fifo_music ?? null);
 
+=======
+	echo "	".$text['label-fifo_timeout_seconds']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' style='position: relative;' align='left'>\n";
+	echo "  <input class='formfld' type='text' name='fifo_timeout_seconds' maxlength='255' value='".escape($fifo_timeout_seconds)."'>\n";
+	echo "<br />\n";
+	echo $text['description-fifo_timeout_seconds']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-fifo_exit_key']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' style='position: relative;' align='left'>\n";
+	echo "  <input class='formfld' type='text' name='fifo_exit_key' maxlength='255' value='".escape($fifo_exit_key)."'>\n";
+	echo "<br />\n";
+	echo $text['description-fifo_exit_key']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-fifo_exit_action']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' style='position: relative;' align='left'>\n";
+	$destination = new destinations;
+	echo $destination->select('dialplan', 'fifo_exit_action', $fifo_exit_action);
+	echo "<br />\n";
+	echo $text['description-fifo_exit_action']."\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "	".$text['label-fifo_music']."\n";
+	echo "</td>\n";
+	echo "<td class='vtable' style='position: relative;' align='left'>\n";
+	$ringbacks = new ringbacks;
+	echo $ringbacks->select('fifo_music', $fifo_music ?? null);
+>>>>>>> develop
 	echo "<br />\n";
 	echo $text['description-fifo_music']."\n";
 	echo "</td>\n";
@@ -647,7 +966,10 @@
 	echo "</tr>\n";
 
 	echo "</table>";
+<<<<<<< HEAD
+=======
 	echo "</div>\n";
+>>>>>>> develop
 	echo "<br /><br />";
 
 	echo "<input type='hidden' name='".$token['name']."' value='".$token['hash']."'>\n";
@@ -658,4 +980,8 @@
 //include the footer
 	require_once "resources/footer.php";
 
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> develop

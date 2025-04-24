@@ -2,11 +2,12 @@
 
 /**
  * access controls class
- *
- * @method null download
  */
+<<<<<<< HEAD
 if (!class_exists('access_controls')) {
 
+=======
+>>>>>>> develop
 	class access_controls {
 
 		/**
@@ -69,7 +70,11 @@ if (!class_exists('access_controls')) {
 					if (is_array($array) && @sizeof($array) != 0) {
 
 						//grant temporary permissions
+<<<<<<< HEAD
+						$p = new permissions;
+=======
 						$p = permissions::new();
+>>>>>>> develop
 						$p->add('access_control_node_delete', 'temp');
 
 						//execute delete
@@ -236,7 +241,11 @@ if (!class_exists('access_controls')) {
 					if (is_array($array) && @sizeof($array) != 0) {
 
 						//grant temporary permissions
+<<<<<<< HEAD
+						$p = new permissions;
+=======
 						$p = permissions::new();
+>>>>>>> develop
 						$p->add('access_control_node_add', 'temp');
 
 						//save the array
@@ -264,6 +273,9 @@ if (!class_exists('access_controls')) {
 			}
 		}
 	}
+<<<<<<< HEAD
 
 }
 ?>
+=======
+>>>>>>> develop

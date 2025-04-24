@@ -25,9 +25,15 @@
 */
 
 //if the recordings directory doesn't exist then create it
+<<<<<<< HEAD
 	if (!empty($setting->get('switch','recordings')) && !empty($domain_name)) {
 		if (!is_readable($setting->get('switch','recordings')."/".$domain_name)) {
 			mkdir($setting->get('switch','recordings')."/".$domain_name."/archive", 0770, true);
+=======
+	if (!empty($settings->get('switch','recordings')) && !empty($domain_name)) {
+		if (!is_readable($settings->get('switch','recordings')."/".$domain_name)) {
+			mkdir($settings->get('switch','recordings')."/".$domain_name."/archive", 0770, true);
+>>>>>>> develop
 		}
 	}
 
@@ -35,7 +41,11 @@
 	if ($domains_processed == 1) {
 
 		//if base64, populate from existing recording files, then remove
+<<<<<<< HEAD
 			if (!empty($setting->get('recordings','storage_type')) && $setting->get('recordings','storage_type') == 'base64') {
+=======
+			if (!empty($settings->get('recordings','storage_type')) && $settings->get('recordings','storage_type') == 'base64') {
+>>>>>>> develop
 				//get recordings without base64 in db
 					$sql = "select recording_uuid, domain_uuid, recording_filename ";
 					$sql .= "from v_recordings ";
@@ -50,7 +60,11 @@
 								$recording_filename = $row['recording_filename'];
 
 							//set recording directory
+<<<<<<< HEAD
 								$recording_directory = $setting->get('switch','recordings').'/'.$domain_name;
+=======
+								$recording_directory = $settings->get('switch','recordings').'/'.$domain_name;
+>>>>>>> develop
 
 							//encode recording file (if exists)
 								if (file_exists($recording_directory.'/'.$recording_filename)) {
@@ -77,7 +91,11 @@
 					unset($sql, $result, $row);
 			}
 		//if not base64, decode to local files, remove base64 data from db
+<<<<<<< HEAD
 			else if (!empty($setting->get('recordings','storage_type')) && $setting->get('recordings','storage_type') != 'base64') {
+=======
+			else if (!empty($settings->get('recordings','storage_type')) && $settings->get('recordings','storage_type') != 'base64') {
+>>>>>>> develop
 				//get recordings with base64 in db
 					$sql = "select recording_uuid, domain_uuid, recording_filename, recording_base64 ";
 					$sql .= "from v_recordings ";
@@ -92,7 +110,11 @@
 								$recording_base64 = $row['recording_base64'];
 
 							//set recording directory
+<<<<<<< HEAD
 								$recording_directory = $setting->get('switch','recordings').'/'.$domain_name;
+=======
+								$recording_directory = $settings->get('switch','recordings').'/'.$domain_name;
+>>>>>>> develop
 
 							//remove local file, if any
 								if (file_exists($recording_directory.'/'.$recording_filename)) {

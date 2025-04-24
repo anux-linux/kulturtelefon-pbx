@@ -2367,6 +2367,7 @@ $text['label-call_forward']['zh-cn'] = "呼叫转移";
 $text['label-call_forward']['ja-jp'] = "電話転送";
 $text['label-call_forward']['ko-kr'] = "착신 전환";
 
+<<<<<<< HEAD
 $text['label-call_forward_noanswer']['en-us'] = "Call Forward N/A";
 $text['label-call_forward_noanswer']['en-gb'] = "Call Forward N/A";
 $text['label-call_forward_noanswer']['ar-eg'] = "";
@@ -2418,6 +2419,59 @@ $text['label-call_forward_busy']['uk-ua'] = "";
 $text['label-call_forward_busy']['zh-cn'] = "";
 $text['label-call_forward_busy']['ja-jp'] = "";
 $text['label-call_forward_busy']['ko-kr'] = "";
+=======
+$text['label-call_forward_noanswer']['en-us'] = "Call Forward No Answer";
+$text['label-call_forward_noanswer']['en-gb'] = "Call Forward No Answer";
+$text['label-call_forward_noanswer']['ar-eg'] = "إعادة توجيه المكالمة عند عدم الرد";
+$text['label-call_forward_noanswer']['de-at'] = "Rufweiterleitung bei Nichtannahme";
+$text['label-call_forward_noanswer']['de-ch'] = "Rufweiterleitung bei Nichtannahme";
+$text['label-call_forward_noanswer']['de-de'] = "Rufweiterleitung bei Nichtannahme";
+$text['label-call_forward_noanswer']['el-gr'] = "Ανακατεύθυνση κλήσεων σε περίπτωση μη απάντησης";
+$text['label-call_forward_noanswer']['es-cl'] = "Reenvío de llamada si no se responde";
+$text['label-call_forward_noanswer']['es-mx'] = "Reenvío de llamada si no se responde";
+$text['label-call_forward_noanswer']['fr-ca'] = "Réacheminement de l'appel en cas de non-réponse";
+$text['label-call_forward_noanswer']['fr-fr'] = "Réacheminement de l'appel en cas de non-réponse";
+$text['label-call_forward_noanswer']['he-il'] = "הפנייה מחדש בשinspaceי תשובה";
+$text['label-call_forward_noanswer']['it-it'] = "Inoltro chiamata senza risposta";
+$text['label-call_forward_noanswer']['ka-ge'] = "ზარის გადამისამართება არ დაიპასუხება";
+$text['label-call_forward_noanswer']['nl-nl'] = "Oproep doorverbinden bij geen opname";
+$text['label-call_forward_noanswer']['pl-pl'] = "Przekierowanie połączenia w przypadku braku odpowiedzi";
+$text['label-call_forward_noanswer']['pt-br'] = "Encaminhamento de chamada sem resposta";
+$text['label-call_forward_noanswer']['pt-pt'] = "Encaminhar chamada se não for respondida";
+$text['label-call_forward_noanswer']['ro-ro'] = "Redirecționare apel fără răspuns";
+$text['label-call_forward_noanswer']['ru-ru'] = "Переадресация вызова при отсутствии ответа";
+$text['label-call_forward_noanswer']['sv-se'] = "Omdirigera samtal vid ingen svar";
+$text['label-call_forward_noanswer']['uk-ua'] = "Перенаправлення дзвінка без відповіді";
+$text['label-call_forward_noanswer']['zh-cn'] = "无应答时呼叫转移";
+$text['label-call_forward_noanswer']['ja-jp'] = "応答しない場合のコール転送";
+$text['label-call_forward_noanswer']['ko-kr'] = "응답하지 않을 때 콜 전환";
+
+$text['label-call_forward_busy']['en-us'] = "Call Forward Busy";
+$text['label-call_forward_busy']['en-gb'] = "Call Forward Busy";
+$text['label-call_forward_busy']['ar-eg'] = "إعادة توجيه الاتصال عند التأخير";
+$text['label-call_forward_busy']['de-at'] = "Anrufweiterleitung bei Belegenheit";
+$text['label-call_forward_busy']['de-ch'] = "Anrufweiterleitung bei Belegenheit";
+$text['label-call_forward_busy']['de-de'] = "Anrufweiterleitung bei Belegenheit";
+$text['label-call_forward_busy']['el-gr'] = "Ανακατεύθυνση κλήσεων σε περίοδο απασχόλησης";
+$text['label-call_forward_busy']['es-cl'] = "Desvío de llamadas ocupado";
+$text['label-call_forward_busy']['es-mx'] = "Reenvío de llamada ocupado";
+$text['label-call_forward_busy']['fr-ca'] = "Transfert d'appel occupé";
+$text['label-call_forward_busy']['fr-fr'] = "Transfert d'appel occupé";
+$text['label-call_forward_busy']['he-il'] = "הפנייה קלה כאשר המספר תפוס";
+$text['label-call_forward_busy']['it-it'] = "Inoltro chiamata occupato";
+$text['label-call_forward_busy']['ka-ge'] = "ზარის გადამისამართება დაკავებულია";
+$text['label-call_forward_busy']['nl-nl'] = "Gesprek doorverbinden wanneer bezig is";
+$text['label-call_forward_busy']['pl-pl'] = "Przekierowanie połączeń przy zajętości";
+$text['label-call_forward_busy']['pt-br'] = "Encaminhamento de chamada ocupado";
+$text['label-call_forward_busy']['pt-pt'] = "Encaminhar Chamadas Ocupado";
+$text['label-call_forward_busy']['ro-ro'] = "Redirecționare apel ocupat";
+$text['label-call_forward_busy']['ru-ru'] = "Переадресация при занятости";
+$text['label-call_forward_busy']['sv-se'] = "Anropsförväxling vid upptaget";
+$text['label-call_forward_busy']['uk-ua'] = "Перенаправлення виклику при зайнятості";
+$text['label-call_forward_busy']['zh-cn'] = "忙碌时呼叫转移";
+$text['label-call_forward_busy']['ja-jp'] = "忙しいときに転送";
+$text['label-call_forward_busy']['ko-kr'] = "통화 중일 때 전환";
+>>>>>>> develop
 
 $text['label-conf']['en-us'] = "Conf";
 $text['label-conf']['en-gb'] = "Conf";
@@ -3197,6 +3251,32 @@ $text['label-device_location']['uk-ua'] = "Введіть розташуванн
 $text['label-device_location']['zh-cn'] = "地点";
 $text['label-device_location']['ja-jp'] = "位置";
 $text['label-device_location']['ko-kr'] = "위치";
+
+$text['label-device_serial_number']['en-us'] = "Serial Number";
+$text['label-device_serial_number']['en-gb'] = "Serial Number";
+$text['label-device_serial_number']['ar-eg'] = "الرقم التسلسلي";
+$text['label-device_serial_number']['de-at'] = "Seriennummer";
+$text['label-device_serial_number']['de-ch'] = "Seriennummer";
+$text['label-device_serial_number']['de-de'] = "Seriennummer";
+$text['label-device_serial_number']['el-gr'] = "Αριθμός Σειράς";
+$text['label-device_serial_number']['es-cl'] = "Número de serie";
+$text['label-device_serial_number']['es-mx'] = "Número de serie";
+$text['label-device_serial_number']['fr-ca'] = "Numéro de série";
+$text['label-device_serial_number']['fr-fr'] = "Numéro de série";
+$text['label-device_serial_number']['he-il'] = "מספר סידורי";
+$text['label-device_serial_number']['it-it'] = "Numero di serie";
+$text['label-device_serial_number']['ka-ge'] = "სერიალური ნომერი";
+$text['label-device_serial_number']['nl-nl'] = "Serienummer";
+$text['label-device_serial_number']['pl-pl'] = "Numer seryjny";
+$text['label-device_serial_number']['pt-br'] = "Número de Série";
+$text['label-device_serial_number']['pt-pt'] = "Número de Série";
+$text['label-device_serial_number']['ro-ro'] = "Număr de serie";
+$text['label-device_serial_number']['ru-ru'] = "Серийный номер";
+$text['label-device_serial_number']['sv-se'] = "Serienummer";
+$text['label-device_serial_number']['uk-ua'] = "Серійний номер";
+$text['label-device_serial_number']['zh-cn'] = "序列号";
+$text['label-device_serial_number']['ja-jp'] = "シリアル番号";
+$text['label-device_serial_number']['ko-kr'] = "시리얼 번호";
 
 $text['label-device_key_vendor']['en-us'] = "Vendor";
 $text['label-device_key_vendor']['en-gb'] = "Vendor";
@@ -5852,6 +5932,7 @@ $text['label-fields']['ko-kr'] = "필드";
 
 $text['label-logout']['en-us'] = "Logout";
 $text['label-logout']['en-gb'] = "Logout";
+<<<<<<< HEAD
 $text['label-logout']['ar-eg'] = "";
 $text['label-logout']['de-at'] = "";
 $text['label-logout']['de-ch'] = "";
@@ -5927,6 +6008,83 @@ $text['label-recents']['uk-ua'] = "";
 $text['label-recents']['zh-cn'] = "";
 $text['label-recents']['ja-jp'] = "";
 $text['label-recents']['ko-kr'] = "";
+=======
+$text['label-logout']['ar-eg'] = "تسجيل الخروج";
+$text['label-logout']['de-at'] = "Abmelden";
+$text['label-logout']['de-ch'] = "Abmelden";
+$text['label-logout']['de-de'] = "Abmelden";
+$text['label-logout']['el-gr'] = "Αποσύνδεση";
+$text['label-logout']['es-cl'] = "Cerrar sesión";
+$text['label-logout']['es-mx'] = "Cerrar sesión";
+$text['label-logout']['fr-ca'] = "Déconnexion";
+$text['label-logout']['fr-fr'] = "Déconnexion";
+$text['label-logout']['he-il'] = "התנתקות";
+$text['label-logout']['it-it'] = "Disconnetti";
+$text['label-logout']['ka-ge'] = "გასვლა";
+$text['label-logout']['nl-nl'] = "Uitloggen";
+$text['label-logout']['pl-pl'] = "Wyloguj";
+$text['label-logout']['pt-br'] = "Sair";
+$text['label-logout']['pt-pt'] = "Sair";
+$text['label-logout']['ro-ro'] = "Deconectare";
+$text['label-logout']['ru-ru'] = "Выйти";
+$text['label-logout']['sv-se'] = "Logga ut";
+$text['label-logout']['uk-ua'] = "Вийти";
+$text['label-logout']['zh-cn'] = "退出";
+$text['label-logout']['ja-jp'] = "ログアウト";
+$text['label-logout']['ko-kr'] = "로그아웃";
+
+$text['label-screensaver']['en-us'] = "Screensaver";
+$text['label-screensaver']['en-gb'] = "Screensaver";
+$text['label-screensaver']['ar-eg'] = "شاشة استرخاء";
+$text['label-screensaver']['de-at'] = "Bildschirmschoner";
+$text['label-screensaver']['de-ch'] = "Bildschirmschoner";
+$text['label-screensaver']['de-de'] = "Bildschirmschoner";
+$text['label-screensaver']['el-gr'] = "Απορρυθμιστής οθόνης";
+$text['label-screensaver']['es-cl'] = "Protector de pantalla";
+$text['label-screensaver']['es-mx'] = "Protector de pantalla";
+$text['label-screensaver']['fr-ca'] = "Sauvegarde d'écran";
+$text['label-screensaver']['fr-fr'] = "Écran de veille";
+$text['label-screensaver']['he-il'] = "محافظ מסך";
+$text['label-screensaver']['it-it'] = "Salvaschermo";
+$text['label-screensaver']['ka-ge'] = "ეკრანის შემნახველი";
+$text['label-screensaver']['nl-nl'] = "Schermbeveiliging";
+$text['label-screensaver']['pl-pl'] = "Ochrona ekranu";
+$text['label-screensaver']['pt-br'] = "Protetor de tela";
+$text['label-screensaver']['pt-pt'] = "Protector de ecrã";
+$text['label-screensaver']['ro-ro'] = "Economisitor de ecran";
+$text['label-screensaver']['ru-ru'] = "Экранная заставка";
+$text['label-screensaver']['sv-se'] = "Skärmsparare";
+$text['label-screensaver']['uk-ua'] = "Захис екрану";
+$text['label-screensaver']['zh-cn'] = "屏幕保护程序";
+$text['label-screensaver']['ja-jp'] = "スクリーンセーバー";
+$text['label-screensaver']['ko-kr'] = "스크린 세이버";
+
+$text['label-screensaver']['en-us'] = "Screensaver";
+$text['label-screensaver']['en-gb'] = "Screensaver";
+$text['label-screensaver']['ar-eg'] = "شاشة مأهولة";
+$text['label-screensaver']['de-at'] = "Bildschirmschoner";
+$text['label-screensaver']['de-ch'] = "Bildschirmschoner";
+$text['label-screensaver']['de-de'] = "Bildschirmschoner";
+$text['label-screensaver']['el-gr'] = "Απορρυθμίζων οθόνη";
+$text['label-screensaver']['es-cl'] = "Protector de pantalla";
+$text['label-screensaver']['es-mx'] = "Protector de pantalla";
+$text['label-screensaver']['fr-ca'] = "Économiseur d'écran";
+$text['label-screensaver']['fr-fr'] = "Économiseur d'écran";
+$text['label-screensaver']['he-il'] = "محافظ מסך";
+$text['label-screensaver']['it-it'] = "Salvaschermo";
+$text['label-screensaver']['ka-ge'] = "ეკრანის შემნახველი";
+$text['label-screensaver']['nl-nl'] = "Schermbeveiliging";
+$text['label-screensaver']['pl-pl'] = "Ochrona ekranu";
+$text['label-screensaver']['pt-br'] = "Protetor de tela";
+$text['label-screensaver']['pt-pt'] = "Protetor de ecrã";
+$text['label-screensaver']['ro-ro'] = "Economizator de ecran";
+$text['label-screensaver']['ru-ru'] = "Экранная заставка";
+$text['label-screensaver']['sv-se'] = "Skärmsläckare";
+$text['label-screensaver']['uk-ua'] = "Захищаючий екран";
+$text['label-screensaver']['zh-cn'] = "屏幕保护程序";
+$text['label-screensaver']['ja-jp'] = "スクリーンセーバー";
+$text['label-screensaver']['ko-kr'] = "스크린세이버";
+>>>>>>> develop
 
 $text['header-device_import']['en-us'] = "Device Import";
 $text['header-device_import']['en-gb'] = "Device Import";
@@ -6633,6 +6791,32 @@ $text['description-device_location']['uk-ua'] = "Введіть розташув
 $text['description-device_location']['zh-cn'] = "输入设备位置。";
 $text['description-device_location']['ja-jp'] = "デバイスの場所を入力します。";
 $text['description-device_location']['ko-kr'] = "장치 위치를 입력합니다.";
+
+$text['description-device_serial_number']['en-us'] = "Enter the device serial number.";
+$text['description-device_serial_number']['en-gb'] = "Enter the device serial number.";
+$text['description-device_serial_number']['ar-eg'] = "أدخل رقم سري الجهاز.";
+$text['description-device_serial_number']['de-at'] = "Geben Sie die Seriennummer des Geräts ein.";
+$text['description-device_serial_number']['de-ch'] = "Geben Sie die Seriennummer des Geräts ein.";
+$text['description-device_serial_number']['de-de'] = "Geben Sie die Seriennummer des Geräts ein.";
+$text['description-device_serial_number']['el-gr'] = "Εισάγετε τον αριθμό σειράς του συσκευής.";
+$text['description-device_serial_number']['es-cl'] = "Ingrese el número de serie del dispositivo.";
+$text['description-device_serial_number']['es-mx'] = "Ingrese el número de serie del dispositivo.";
+$text['description-device_serial_number']['fr-ca'] = "Entrez le numéro de série du périphérique.";
+$text['description-device_serial_number']['fr-fr'] = "Entrez le numéro de série du périphérique.";
+$text['description-device_serial_number']['he-il'] = "הזן את מספרerie של המכשיר.";
+$text['description-device_serial_number']['it-it'] = "Inserisci il numero di serie del dispositivo.";
+$text['description-device_serial_number']['ka-ge'] = "შეიყვანეთ მოწყობილობის სერიული ნомерი.";
+$text['description-device_serial_number']['nl-nl'] = "Voer het serienummer van het apparaat in.";
+$text['description-device_serial_number']['pl-pl'] = "Wprowadź numer seryjny urządzenia.";
+$text['description-device_serial_number']['pt-br'] = "Digite o número de série do dispositivo.";
+$text['description-device_serial_number']['pt-pt'] = "Introduza o número de série do dispositivo.";
+$text['description-device_serial_number']['ro-ro'] = "Introduceți numărul serial al dispozitivului.";
+$text['description-device_serial_number']['ru-ru'] = "Введите серийный номер устройства.";
+$text['description-device_serial_number']['sv-se'] = "Ange enhetens serienummer.";
+$text['description-device_serial_number']['uk-ua'] = "Введіть серійний номер пристрою.";
+$text['description-device_serial_number']['zh-cn'] = "请输入设备的序列号。";
+$text['description-device_serial_number']['ja-jp'] = "デバイスのシリアル番号を入力してください。";
+$text['description-device_serial_number']['ko-kr'] = "기기의 일련 번호를 입력하세요.";
 
 $text['description-device_time_zone']['en-us'] = "Enter the time zone.";
 $text['description-device_time_zone']['en-gb'] = "Enter the time zone.";
@@ -7362,5 +7546,9 @@ $text['label-required']['tr-tr'] = "Gerekli";
 $text['label-required']['zh-cn'] = "必需的";
 $text['label-required']['ja-jp'] = "必要";
 $text['label-required']['ko-kr'] = "필수의";
+<<<<<<< HEAD
 
 ?>
+
+=======
+>>>>>>> develop

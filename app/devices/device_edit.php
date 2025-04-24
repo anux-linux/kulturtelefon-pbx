@@ -17,7 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-	Portions created by the Initial Developer are Copyright (C) 2008-2024
+	Portions created by the Initial Developer are Copyright (C) 2008-2025
 	the Initial Developer. All Rights Reserved.
 
 */
@@ -44,9 +44,14 @@
 	$device_firmware_version = '';
 	$device_template ='';
 
+<<<<<<< HEAD
+//get the domain uuid
+	$domain_uuid = $_SESSION['domain_uuid'] ?? '';
+=======
 //get the domain values
 	$domain_uuid = $_SESSION['domain_uuid'] ?? '';
 	$domain_name = $_SESSION['domain_name'] ?? '';
+>>>>>>> develop
 
 //initialize the database object
 	$database = database::new();
@@ -67,7 +72,11 @@
 	if ($action == 'add') {
 		if (!empty($settings->get('limit', 'devices', ''))) {
 			$sql = "select count(*) from v_devices where domain_uuid = :domain_uuid ";
+<<<<<<< HEAD
+			$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
+=======
 			$parameters['domain_uuid'] = $domain_uuid;
+>>>>>>> develop
 			$total_devices = $database->select($sql, $parameters, 'column');
 			if ($total_devices >= $settings->get('limit', 'devices', '')) {
 				message::add($text['message-maximum_devices'].' '.$settings->get('limit', 'devices', ''), 'negative');
@@ -119,12 +128,12 @@
 			//$device_provisioned_ip = $_POST["device_provisioned_ip"];
 			$domain_uuid = $_POST["domain_uuid"];
 			$device_label = $_POST["device_label"];
-			$device_label = $_POST["device_label"];
 			$device_user_uuid = $_POST["device_user_uuid"];
 			$device_username = $_POST["device_username"];
 			$device_password = $_POST["device_password"];
 			$device_vendor = $_POST["device_vendor"];
 			$device_location = $_POST["device_location"];
+			$device_serial_number = $_POST["device_serial_number"];
 			$device_uuid_alternate = $_POST["device_uuid_alternate"] ?? null;
 			$device_model = $_POST["device_model"] ?? null;
 			$device_firmware_version = $_POST["device_firmware_version"] ?? null;
@@ -229,9 +238,15 @@
 					$sql .= " and d1.device_uuid <> :device_uuid ";
 				}
 				$parameters['device_address'] = $device_address;
+<<<<<<< HEAD
+				$domain_name = $database->select($sql, $parameters, 'column');
+				if ($domain_name != '') {
+					$message = $text['message-duplicate'].(if_group("superadmin") && $_SESSION["domain_name"] != $domain_name ? ": ".$domain_name : null);
+=======
 				$device_domain_name = $database->select($sql, $parameters, 'column');
 				if ($device_domain_name != '') {
 					$message = $text['message-duplicate'].($device_domain_name != $domain_name ? ": ".$device_domain_name : null);
+>>>>>>> develop
 					message::add($message,'negative');
 					header('Location: devices.php');
 					exit;
@@ -269,6 +284,9 @@
 					}
 					if (permission_exists('device_location')) {
 						$array['devices'][0]['device_location'] = $device_location;
+					}
+					if (permission_exists('device_serial_number')) {
+						$array['devices'][0]['device_serial_number'] = $device_serial_number;
 					}
 					if (permission_exists('device_alternate')) {
 						$array['devices'][0]['device_uuid_alternate'] = is_uuid($device_uuid_alternate) ? $device_uuid_alternate : null;
@@ -482,7 +500,11 @@
 					}
 
 				//write the provision files
+<<<<<<< HEAD
+					if (!empty($_SESSION['provision']['path']['text'])) {
+=======
 					if (!empty($settings->get('provision', 'path'))) {
+>>>>>>> develop
 						$prov = new provision(['settings' => $settings]);
 						$prov->domain_uuid = $domain_uuid;
 						$response = $prov->write();
@@ -511,18 +533,22 @@
 		$sql = "select * from v_devices ";
 		$sql .= "where device_uuid = :device_uuid ";
 		$parameters['device_uuid'] = $device_uuid;
+<<<<<<< HEAD
+		
+=======
+>>>>>>> develop
 		$row = $database->select($sql, $parameters, 'row');
 		if (is_array($row) && @sizeof($row) != 0) {
 			$device_address = $row["device_address"];
 			$device_provisioned_ip = $row["device_provisioned_ip"];
 			$domain_uuid = $row["domain_uuid"];
 			$device_label = $row["device_label"];
-			$device_label = $row["device_label"];
 			$device_user_uuid = $row["device_user_uuid"];
 			$device_username = $row["device_username"];
 			$device_password = $row["device_password"];
 			$device_vendor = $row["device_vendor"];
 			$device_location = $row["device_location"];
+			$device_serial_number = $row["device_serial_number"];
 			$device_uuid_alternate = $row["device_uuid_alternate"];
 			$device_model = $row["device_model"];
 			$device_firmware_version = $row["device_firmware_version"];
@@ -537,7 +563,6 @@
 //get device lines
 	$sql = "select * ";
 	$sql .= "from v_domains ";
-	$sql .= "where domain_enabled = true ";
 	$sql .= "order by domain_name asc ";
 	$domains = $database->select($sql, null, 'all');
 	unset($sql, $parameters);
@@ -578,6 +603,10 @@
 	$sql .= "and l.domain_uuid = d.domain_uuid ";
 	$sql .= "order by cast(line_number as int) asc ";
 	$parameters['device_uuid'] = $device_uuid ?? null;
+<<<<<<< HEAD
+	
+=======
+>>>>>>> develop
 	$device_lines = $database->select($sql, $parameters, 'all');
 	unset($sql, $parameters);
 
@@ -623,11 +652,19 @@
 
 //add empty device key row(s)
 	if (!is_uuid($device_uuid)) {
+<<<<<<< HEAD
+		$rows = $_SESSION['devices']['key_add_rows']['numeric'] ?? 1;
+		$id = 0;
+	}
+	else {
+		$rows = $_SESSION['devices']['key_edit_rows']['numeric'] ?? 1;
+=======
 		$rows = $settings->get('devices', 'key_add_rows', '10');
 		$id = 0;
 	}
 	else {
 		$rows = $settings->get('devices', 'key_edit_rows', '3');
+>>>>>>> develop
 		$id = count($device_keys) + 1;
 	}
 	for ($x = 0; $x < $rows; $x++) {
@@ -649,6 +686,10 @@
 	$sql .= "from v_device_vendors ";
 	$sql .= "where enabled = 'true' ";
 	$sql .= "order by name asc ";
+<<<<<<< HEAD
+	
+=======
+>>>>>>> develop
 	$device_vendors = $database->select($sql, null, 'all');
 	unset($sql);
 
@@ -672,11 +713,19 @@
 
 //add empty device setting row(s)
 	if (!is_uuid($device_uuid)) {
+<<<<<<< HEAD
+		$rows = $_SESSION['devices']['setting_add_rows']['numeric'] ?? 1;
+		$id = 0;
+	}
+	else {
+		$rows = $_SESSION['devices']['setting_edit_rows']['numeric'] ?? 1;
+=======
 		$rows = $settings->get('devices', 'key_add_rows', '10');
 		$id = 0;
 	}
 	else {
 		$rows = $settings->get('devices', 'key_edit_rows', '3');
+>>>>>>> develop
 		$id = count($device_settings) + 1;
 	}
 	for ($x = 0; $x < $rows; $x++) {
@@ -704,7 +753,16 @@
 
 //get the first device line info (found on the local server) for the provision button
 	foreach ($device_lines as $row) {
+<<<<<<< HEAD
+		if (
+			array_key_exists($row['domain_uuid'], $_SESSION['domains']) &&
+			$row['server_address'] == $_SESSION['domains'][$row['domain_uuid']]['domain_name'] &&
+			!empty($row['user_id']) &&
+			!empty($row['server_address'])
+			) {
+=======
 		if ($row['server_address'] == $row['domain_name'] && !empty($row['user_id']) && !empty($row['server_address'])) {
+>>>>>>> develop
 			$user_id = $row['user_id'];
 			$server_address = $row['server_address'];
 			break;
@@ -884,7 +942,11 @@
 				//get the provision settings
 					$provision = new settings(["category" => "provision"]);
 					$acrobits_code = $provision->get('provision', 'acrobits_code');
+<<<<<<< HEAD
+				
+=======
 
+>>>>>>> develop
 				if (!empty($template) && isset($acrobits_code)) {
 					$template = str_replace('{$server_address}', $row['server_address'], $template);
 					$template = str_replace('{$user_id}', urlencode($row['user_id']), $template);
@@ -1032,7 +1094,11 @@
 				$template_dir = $prov->template_dir;
 				$files = glob($template_dir.'/'.$device_template.'/*');
 			//add file buttons and the file list
+<<<<<<< HEAD
+				echo button::create(['type'=>'button','id'=>'button_files','label'=>$text['button-files'],'icon'=>$_SESSION['theme']['button_icon_download'],'style'=>($button_margin ?? ''),'onclick'=>'show_files()']);
+=======
 				echo button::create(['type'=>'button','id'=>'button_files','label'=>$text['button-files'],'icon'=>$settings->get('theme', 'button_icon_download', ''),'style'=>($button_margin ?? ''),'onclick'=>'show_files()']);
+>>>>>>> develop
 				echo 		"<select class='formfld' style='display: none; width: auto;' name='target_file' id='target_file' onchange='download(this.value)'>\n";
 				echo "			<option value=''>".$text['label-download']."</option>\n";
 				foreach ($files as $file) {
@@ -1048,7 +1114,11 @@
 				unset($button_margin);
 		}
 		if (permission_exists('device_add')) {
+<<<<<<< HEAD
+			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'style'=>($button_margin ?? ''),'name'=>'btn_copy','onclick'=>"modal_open('modal-copy','new_address');"]);
+=======
 			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$settings->get('theme', 'button_icon_copy', ''),'style'=>($button_margin ?? ''),'name'=>'btn_copy','onclick'=>"modal_open('modal-copy','new_address');"]);
+>>>>>>> develop
 			unset($button_margin);
 		}
 		if (
@@ -1057,7 +1127,11 @@
 			permission_exists('device_key_delete') ||
 			permission_exists('device_setting_delete')
 			) {
+<<<<<<< HEAD
+			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'style'=>($button_margin ?? ''),'name'=>'btn_delete','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+=======
 			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete', ''),'style'=>($button_margin ?? ''),'name'=>'btn_delete','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+>>>>>>> develop
 			unset($button_margin);
 		}
 	}
@@ -1099,7 +1173,7 @@
 	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
 
 	echo "<tr>\n";
-	echo "<td class='vncell' width='30%' valign='top' align='left' nowrap='nowrap'>\n";
+	echo "<td class='vncellreq' width='30%' valign='top' align='left' nowrap='nowrap'>\n";
 	echo "	".$text['label-device_address']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' width='70%' align='left'>\n";
@@ -1283,11 +1357,19 @@
 
 			//set the defaults
 				if (!permission_exists('device_line_server_address')) {
+<<<<<<< HEAD
+					if (empty($row['server_address'])) { $row['server_address'] = $_SESSION['domain_name']; }
+				}
+				if (empty($row['sip_transport'])) { $row['sip_transport'] = $_SESSION['provision']['line_sip_transport']['text']; }
+				if (!isset($row['sip_port'])) { $row['sip_port'] = $_SESSION['provision']['line_sip_port']['numeric']; } //used !isset to support a value of 0 as empty the empty function considers a value of 0 as empty.
+				if (empty($row['register_expires'])) { $row['register_expires'] = $_SESSION['provision']['line_register_expires']['numeric']; }
+=======
 					if (empty($row['server_address'])) { $row['server_address'] = $domain_name; }
 				}
 				if (empty($row['sip_transport'])) { $row['sip_transport'] = $settings->get('provision', 'line_sip_transport', 'tcp'); }
 				if (!isset($row['sip_port'])) { $row['sip_port'] = $settings->get('provision', 'line_sip_port', '5060'); } //used !isset to support a value of 0 as empty the empty function considers a value of 0 as empty.
 				if (empty($row['register_expires'])) { $row['register_expires'] = $settings->get('provision', 'line_register_expires', '120'); }
+>>>>>>> develop
 
 			//add the primary key uuid
 				if (!empty($row['device_line_uuid']) && is_uuid($row['device_line_uuid'])) {
@@ -1317,10 +1399,11 @@
 
 				if (permission_exists('device_line_server_address_primary')) {
 					echo "			<td valign='top' align='left' nowrap='nowrap'>\n";
-					if (!empty($settings->get('provision', 'server_address_primary', ''))) {
+					$provision_server_address_primary = $settings->get('provision', 'server_address_primary');
+					if (!empty($provision_server_address_primary) && is_array($provision_server_address_primary)) {
 						echo "				<select class='formfld' style='width: 75px;' name='device_lines[".$x."][server_address_primary]'>\n";
 						echo "					<option value=''></option>\n";
-						foreach($settings->get('provision', 'server_address_primary', '') as $field) {
+						foreach($provision_server_address_primary as $field) {
 							echo "					<option value='".$field."' ".(($row['server_address_primary'] == $field) ? "selected" : null).">".$field."</option>\n";
 						}
 						echo "				</select>\n";
@@ -1333,10 +1416,11 @@
 
 				if (permission_exists('device_line_server_address_secondary')) {
 					echo "			<td valign='top' align='left' nowrap='nowrap'>\n";
-					if (!empty($settings->get('provision', 'server_address_secondary', ''))) {
+					$provision_server_address_secondary = $settings->get('provision', 'server_address_secondary');
+					if (!empty($provision_server_address_secondary) && is_array($provision_server_address_secondary)) {
 						echo "				<select class='formfld' style='width: 75px;' name='device_lines[".$x."][server_address_secondary]'>\n";
 						echo "					<option value=''></option>\n";
-						foreach($settings->get('provision', 'server_address_secondary', '') as $field) {
+						foreach($provision_server_address_secondary as $field) {
 							echo "					<option value='".$field."' ".(($row['server_address_secondary'] == $field) ? "selected" : null).">".$field."</option>\n";
 						}
 						echo "				</select>\n";
@@ -1349,10 +1433,11 @@
 
 				if (permission_exists('device_line_outbound_proxy_primary')) {
 					echo "			<td align='left'>\n";
-					if (!empty($settings->get('provision', 'outbound_proxy_primary', ''))) {
+					$provision_outbound_proxy_primary = $settings->get('provision', 'outbound_proxy_primary');
+					if (!empty($provision_outbound_proxy_primary) && is_array($provision_outbound_proxy_primary)) {
 						echo "				<select class='formfld' style='width: 75px;' name='device_lines[".$x."][outbound_proxy_primary]'>\n";
 						echo "					<option value=''></option>\n";
-						foreach($settings->get('provision', 'outbound_proxy_primary', '') as $field) {
+						foreach($provision_outbound_proxy_primary as $field) {
 							echo "					<option value='".$field."' ".(($row['outbound_proxy_primary'] == $field) ? "selected" : null).">".$field."</option>\n";
 						}
 						echo "				</select>\n";
@@ -1365,10 +1450,11 @@
 
 				if (permission_exists('device_line_outbound_proxy_secondary')) {
 					echo "			<td align='left'>\n";
-					if (!empty($settings->get('provision', 'outbound_proxy_secondary', ''))) {
+					$provision_outbound_proxy_secondary = $settings->get('provision', 'outbound_proxy_secondary');
+					if (!empty($provision_outbound_proxy_secondary) && is_array($provision_outbound_proxy_secondary)) {
 						echo "				<select class='formfld' style='width: 75px;' name='device_lines[".$x."][outbound_proxy_secondary]'>\n";
 						echo "					<option value=''></option>\n";
-						foreach($settings->get('provision', 'outbound_proxy_secondary', '') as $field) {
+						foreach($provision_outbound_proxy_secondary as $field) {
 							echo "					<option value='".$field."' ".(($row['outbound_proxy_secondary'] == $field) ? "selected" : null).">".$field."</option>\n";
 						}
 						echo "				</select>\n";
@@ -1403,7 +1489,7 @@
 				if (permission_exists('device_line_password')) {
 					echo "			<td align='left'>\n";
 					echo "				<input type='password' style='display: none;' disabled='disabled'>"; //help defeat browser auto-fill
-					echo "				<input class='formfld' style='min-width: 75px; width: 100%;' type='password' name='device_lines[".$x."][password]' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" autocomplete=\"off\" maxlength='255' value=\"".escape($row['password'])."\"/>\n";
+					echo "				<input class='formfld password' style='min-width: 75px; width: 100%;' type='password' name='device_lines[".$x."][password]' onmouseover=\"this.type='text';\" onfocus=\"this.type='text';\" onmouseout=\"if (!$(this).is(':focus')) { this.type='password'; }\" onblur=\"this.type='password';\" autocomplete=\"off\" maxlength='255' value=\"".escape($row['password'])."\"/>\n";
 					echo "			</td>\n";
 				}
 
@@ -1489,7 +1575,11 @@
 				foreach($device_profiles as $row) {
 					echo "			<option value='".escape($row['device_profile_uuid'])."' ".(!empty($device_profile_uuid) && $row['device_profile_uuid'] == $device_profile_uuid ? "selected='selected'" : null).">".escape($row['device_profile_name'])." ".(($row['domain_uuid'] == '') ? "&nbsp;&nbsp;(".$text['select-global'].")" : null)."</option>\n";
 				}
+<<<<<<< HEAD
+				echo "                  </select>\n";
+=======
 				echo "			</select>\n";
+>>>>>>> develop
 			}
 			else {
 				foreach($device_profiles as $row) {
@@ -1918,6 +2008,19 @@
 		echo "</tr>\n";
 	}
 
+	if (permission_exists('device_serial_number')) {
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	".$text['label-device_serial_number']."\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<input class='formfld' type='text' name='device_serial_number' maxlength='255' value=\"".escape($device_serial_number ?? '')."\"/>\n";
+		echo "<br />\n";
+		echo $text['description-device_serial_number']."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
 	if (permission_exists('device_model')) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
@@ -1977,7 +2080,7 @@
 
 	if (permission_exists('device_enable')) {
 		echo "<tr>\n";
-		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "<td class='vncellreq' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "	".$text['label-device_enabled']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";

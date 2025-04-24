@@ -195,6 +195,8 @@
 		end
 	end
 
+<<<<<<< HEAD
+=======
 --bittel
 	if (vendor == "bittel") then
 		if (command == "reboot") then
@@ -205,6 +207,7 @@
 		end
 	end
 
+>>>>>>> develop
 --send the event
 	event:fire();
 

@@ -14,7 +14,11 @@
 	$apps[$x]['menu'][$y]['title']['fr-fr'] = "Enregistrements SIP";
 	$apps[$x]['menu'][$y]['title']['he-il'] = "רישומים";
 	$apps[$x]['menu'][$y]['title']['it-it'] = "Registrazioni SIP";
+<<<<<<< HEAD
+	$apps[$x]['menu'][$y]['title']['it-it'] = "რეგისტრაციები";
+=======
 	$apps[$x]['menu'][$y]['title']['ka-ge'] = "რეგისტრაციები";
+>>>>>>> develop
 	$apps[$x]['menu'][$y]['title']['nl-nl'] = "Registraties";
 	$apps[$x]['menu'][$y]['title']['pl-pl'] = "Rejestracje";
 	$apps[$x]['menu'][$y]['title']['pt-br'] = "Registros";

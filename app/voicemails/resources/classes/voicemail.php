@@ -313,7 +313,12 @@
 
 			//update the array with additional information
 				if (is_array($result)) {
+<<<<<<< HEAD
+					$i = 0;
+					foreach ($result as $row) {
+=======
 					foreach ($result as $i => $row) {
+>>>>>>> develop
 						//set the greeting directory
 						$path = $this->settings->get('switch', 'voicemail', '/var/lib/freeswitch/storage').'/default/'.$_SESSION['domain_name'].'/'.$row['voicemail_id'];
 						if (file_exists($path.'/msg_'.$row['voicemail_message_uuid'].'.wav')) {
@@ -322,16 +327,28 @@
 						if (file_exists($path.'/msg_'.$row['voicemail_message_uuid'].'.mp3')) {
 							$result[$i]['file_path'] = $path.'/msg_'.$row['voicemail_message_uuid'].'.mp3';
 						}
+<<<<<<< HEAD
+						$result[$i]['file_size'] = filesize($row['file_path'] ?? '');
+						$result[$i]['file_size_label'] = byte_convert($row['file_size'] ?? 0);
+						$result[$i]['file_ext'] = substr($row['file_path'] ?? '', -3);
+=======
 						$result[$i]['file_size'] = filesize($result[$i]['file_path'] ?? '');
 						$result[$i]['file_size_label'] = byte_convert($result[$i]['file_size'] ?? 0);
 						$result[$i]['file_ext'] = substr($result[$i]['file_path'] ?? '', -3);
+>>>>>>> develop
 
 						$message_minutes = floor($row['message_length'] / 60);
 						$message_seconds = $row['message_length'] % 60;
 
 						//use International System of Units (SI) - Source: https://en.wikipedia.org/wiki/International_System_of_Units
+<<<<<<< HEAD
+						$result[$i]['message_length_label'] = ($message_minutes > 0 ? $message_minutes.' min' : null).($message_seconds > 0 ? ' '.$message_seconds.' s' : null);
+						$result[$i]['created_date'] = date("j M Y g:i a",$row['created_epoch']);
+						$i;
+=======
 						$result[$i]['message_length_label'] = ($message_minutes > 0 ? $message_minutes.' min' : '').($message_seconds > 0 ? ' '.$message_seconds.' s' : '');
 						$result[$i]['created_date'] = date("j M Y g:i a",$row['created_epoch']);
+>>>>>>> develop
 					}
 				}
 				else {
@@ -987,7 +1004,11 @@
 			}
 
 			//grant temporary permissions
+<<<<<<< HEAD
+			$p = new permissions;
+=======
 			$p = permissions::new();
+>>>>>>> develop
 			$p->add('email_queue_add', 'temp');
 			$p->add('email_queue_attachment_add', 'temp');
 
@@ -1026,12 +1047,20 @@
 
 			//add the settings object
 			$settings = new settings(["domain_uuid" => $this->domain_uuid, "user_uuid" => $this->user_uuid]);
+<<<<<<< HEAD
+			$transcribe_enabled = $settings->get('transcribe', 'enabled', 'false');
+=======
 			$transcribe_enabled = $settings->get('transcribe', 'enabled', false);
+>>>>>>> develop
 			$transcribe_engine = $settings->get('transcribe', 'engine', '');
 			$switch_voicemail = $settings->get('switch', 'voicemail', '/var/lib/freeswitch/storage/voicemail');
 
 			//transcribe multiple recordings
+<<<<<<< HEAD
+			if ($transcribe_enabled == 'true' && !empty($transcribe_engine)) {
+=======
 			if ($transcribe_enabled && !empty($transcribe_engine)) {
+>>>>>>> develop
 
 				//get voicemail message base64
 				$sql = "select message_base64 from v_voicemail_messages where voicemail_message_uuid = :voicemail_message_uuid ";
@@ -1092,7 +1121,11 @@
 				if (is_array($array) && @sizeof($array) != 0) {
 
 					//grant temporary permissions
+<<<<<<< HEAD
+					$p = new permissions;
+=======
 					$p = permissions::new();
+>>>>>>> develop
 					$p->add('voicemail_message_edit', 'temp');
 
 					//execute update
@@ -1581,7 +1614,6 @@
 	}
 
 //example voicemail messages
-	//require_once "app/voicemails/resources/classes/voicemail.php";
 	//$voicemail = new voicemail;
 	//$voicemail->voicemail_uuid = $voicemail_uuid;
 	//$voicemail->order_by = $order_by;

@@ -48,6 +48,21 @@
 	$database = database::new();
 	$settings = new settings(['database' => $database, 'domain_uuid' => $domain_uuid, 'user_uuid' => $user_uuid]);
 
+<<<<<<< HEAD
+//set all permissions
+	$has_device_import = permission_exists('device_import');
+	$has_device_edit = permission_exists('device_edit');
+	$has_device_all = permission_exists('device_all');
+	$has_device_delete = permission_exists('device_delete');
+	$has_device_domain_all = permission_exists('device_domain_all');
+	$has_device_export = permission_exists('device_export');
+	$has_device_vendor_view = permission_exists('device_vendor_view');
+	$has_device_profile_view = permission_exists('device_profile_view');
+	$has_device_add = permission_exists('device_add');
+	$has_show_all = &$has_device_domain_all;
+
+=======
+>>>>>>> develop
 //add multi-lingual support
 	$language = new text;
 	$text = $language->get();
@@ -66,13 +81,13 @@
 	if (!empty($action) && !empty($devices) && is_array($devices) && @sizeof($devices) != 0) {
 		switch ($action) {
 			case 'toggle':
-				if (permission_exists('device_edit')) {
+				if ($has_device_edit) {
 					$obj = new device;
 					$obj->toggle($devices);
 				}
 				break;
 			case 'delete':
-				if (permission_exists('device_delete')) {
+				if ($has_device_delete) {
 					$obj = new device;
 					$obj->delete($devices);
 				}
@@ -93,13 +108,19 @@
 //get total devices count from the database
 	$sql = "select count(*) from v_devices ";
 	$sql .= "where domain_uuid = :domain_uuid ";
-	if (!permission_exists('device_all') && !permission_exists('device_domain_all')) {
+	if (!$has_device_all && !$has_device_domain_all) {
 		$sql .= "and device_user_uuid = :user_uuid ";
 		$parameters['user_uuid'] = $user_uuid;
 	}
 	$parameters['domain_uuid'] = $domain_uuid;
 	$total_devices = $database->select($sql, $parameters, 'column');
 	unset($sql, $parameters);
+
+//update the has_device_add permission if the total device count is greater then set limit
+	$device_limit = $settings->get('limit', 'devices', null);
+	if ($has_device_add && $device_limit !== null) {
+		$has_device_add = $total_devices > $device_limit;
+	}
 
 //get the domains if user has permission for show all
 	$domains = [];
@@ -124,7 +145,7 @@
 
 //prepare to page the results
 	$sql = "select count(*) from v_devices as d ";
-	if (isset($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
+	if (isset($_GET['show']) && $_GET['show'] == "all" && $has_device_all) {
 		if (!empty($search)) {
 			$sql .= "where ";
 		}
@@ -132,7 +153,7 @@
 	else {
 		$sql .= "where (";
 		$sql .= "	d.domain_uuid = :domain_uuid ";
-		if (permission_exists('device_all')) {
+		if ($has_device_all) {
 			$sql .= "	or d.domain_uuid is null ";
 		}
 		$sql .= ") ";
@@ -187,7 +208,7 @@
 		$param = "&search=".$search;
 		$param .= "&fields=".$fields;
 	}
-	if (!empty($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
+	if (!empty($_GET['show']) && $_GET['show'] == "all" && $has_device_all) {
 		$param .= "&show=all";
 	}
 	$page = $_GET['page'] ?? 0;
@@ -196,11 +217,15 @@
 	$offset = $rows_per_page * $page;
 
 //get the list
-	$sql = "select d.*, d2.device_label as alternate_label, ";
+	$sql = "select ";
+	if (isset($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
+		$sql .= "d3.domain_name, ";
+	}
+	$sql .="d.*, d2.device_label as alternate_label, ";
 	$sql .= "to_char(timezone(:time_zone, d.device_provisioned_date), 'DD Mon YYYY') as provisioned_date_formatted, \n";
 	$sql .= "to_char(timezone(:time_zone, d.device_provisioned_date), 'HH12:MI:SS am') as provisioned_time_formatted \n";
 	$sql .= "from v_devices as d, v_devices as d2 ";
-	if (isset($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
+	if (isset($_GET['show']) && $_GET['show'] == "all" && $has_device_all) {
 		$sql .= ", v_domains as d3 ";
 	}
 	$sql .= "where ( ";
@@ -210,19 +235,19 @@
 	$sql .= "		d.device_uuid = d2.device_uuid ";
 	$sql .= "	) ";
 	$sql .= ") ";
-	if (isset($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
+	if (isset($_GET['show']) && $_GET['show'] == "all" && $has_device_all) {
 		$sql .= " and d.domain_uuid = d3.domain_uuid ";
 	}
 	else {
 		$sql .= "and (";
 		$sql .= "	d.domain_uuid = :domain_uuid ";
-		if (permission_exists('device_all')) {
+		if ($has_device_all) {
 			$sql .= "	or d.domain_uuid is null ";
 		}
 		$sql .= ") ";
 		$parameters['domain_uuid'] = $domain_uuid;
 	}
-	if (!permission_exists('device_all') && !permission_exists('device_domain_all')) {
+	if (!$has_device_all && !$has_device_domain_all) {
 		$sql .= "and d.device_user_uuid = :user_uuid ";
 		$parameters['user_uuid'] = $user_uuid;
 	}
@@ -296,18 +321,37 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['header-devices']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 	echo "	<div class='actions'>\n";
+<<<<<<< HEAD
+	if ($has_device_import) {
+		echo button::create(['type'=>'button','label'=>$text['button-import'],'icon'=>$settings->get('theme', 'button_icon_import'),'link'=>'device_imports.php']);
+	}
+	if ($has_device_export) {
+=======
 	if (permission_exists('device_import')) {
 		echo button::create(['type'=>'button','label'=>$text['button-import'],'icon'=>$settings->get('theme', 'button_icon_import'),'link'=>'device_imports.php']);
 	}
 	if (permission_exists('device_export')) {
+>>>>>>> develop
 		echo button::create(['type'=>'button','label'=>$text['button-export'],'icon'=>$settings->get('theme', 'button_icon_export'),'link'=>'device_download.php']);
 	}
-	if (permission_exists('device_vendor_view')) {
+	if ($has_device_vendor_view) {
 		echo button::create(['type'=>'button','label'=>$text['button-vendors'],'icon'=>'fax','link'=>'device_vendors.php']);
 	}
-	if (permission_exists('device_profile_view')) {
+	if ($has_device_profile_view) {
 		echo button::create(['type'=>'button','label'=>$text['button-profiles'],'icon'=>'clone','link'=>'device_profiles.php']);
 	}
+<<<<<<< HEAD
+	$margin_left = $has_device_import || $has_device_export || $has_device_vendor_view || $has_device_profile_view ? "margin-left: 15px;" : null;
+	if ($has_device_add) {
+		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','style'=>$margin_left,'link'=>'device_edit.php']);
+		unset($margin_left);
+	}
+	if ($has_device_edit && $devices) {
+		echo button::create(['type'=>'button','label'=>$text['button-toggle'],'icon'=>$settings->get('theme', 'button_icon_toggle'),'id'=>'btn_toggle','name'=>'btn_toggle','style'=>'display: none; '.($margin_left ?? null),'onclick'=>"modal_open('modal-toggle','btn_toggle');"]);
+		unset($margin_left);
+	}
+	if ($has_device_delete && $devices) {
+=======
 	$margin_left = permission_exists('device_import') || permission_exists('device_export') || permission_exists('device_vendor_view') || permission_exists('device_profile_view') ? "margin-left: 15px;" : null;
 	if (permission_exists('device_add') && (empty($_SESSION['limit']['devices']['numeric']) || ($total_devices < $_SESSION['limit']['devices']['numeric']))) {
 		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','style'=>$margin_left,'link'=>'device_edit.php']);
@@ -318,11 +362,12 @@
 		unset($margin_left);
 	}
 	if (permission_exists('device_delete') && $devices) {
+>>>>>>> develop
 		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none; '.($margin_left ?? null),'onclick'=>"modal_open('modal-delete','btn_delete');"]);
 		unset($margin_left);
 	}
 	echo 		"<form id='form_search' class='inline' method='get'>\n";
-	if (permission_exists('device_all')) {
+	if ($has_device_all) {
 		if (!empty($_GET['show']) && $_GET['show'] == 'all') {
 			echo "		<input type='hidden' name='show' value='all'>";
 		}
@@ -351,10 +396,10 @@
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
 
-	if (permission_exists('device_edit') && $devices) {
+	if ($has_device_edit && $devices) {
 		echo modal::create(['id'=>'modal-toggle','type'=>'toggle','actions'=>button::create(['type'=>'button','label'=>$text['button-continue'],'icon'=>'check','id'=>'btn_toggle','style'=>'float: right; margin-left: 15px;','collapse'=>'never','onclick'=>"modal_close(); list_action_set('toggle'); list_form_submit('form_list');"])]);
 	}
-	if (permission_exists('device_delete') && $devices) {
+	if ($has_device_delete && $devices) {
 		echo modal::create(['id'=>'modal-delete','type'=>'delete','actions'=>button::create(['type'=>'button','label'=>$text['button-continue'],'icon'=>'check','id'=>'btn_delete','style'=>'float: right; margin-left: 15px;','collapse'=>'never','onclick'=>"modal_close(); list_action_set('delete'); list_form_submit('form_list');"])]);
 	}
 
@@ -369,12 +414,12 @@
 	echo "<div class='card'>\n";
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
-	if (permission_exists('device_edit') || permission_exists('device_delete')) {
+	if ($has_device_edit || $has_device_delete) {
 		echo "	<th class='checkbox'>\n";
 		echo "		<input type='checkbox' id='checkbox_all' name='checkbox_all' onclick='list_all_toggle(); checkbox_on_change(this);' ".(empty($devices) ? "style='visibility: hidden;'" : null).">\n";
 		echo "	</th>\n";
 	}
-	if (!empty($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
+	if (!empty($_GET['show']) && $_GET['show'] == "all" && $has_device_all) {
 		echo th_order_by('domain_name', $text['label-domain'], $order_by, $order, null, null, $param);
 	}
 	echo th_order_by('device_address', $text['label-device_address'], $order_by, $order, null, null, $param ?? null);
@@ -388,7 +433,11 @@
 	echo th_order_by('device_enabled', $text['label-device_enabled'], $order_by, $order, null, "class='center'", $param ?? null);
 	echo th_order_by('device_provisioned_date', $text['label-device_status'], $order_by, $order, null, null, $param ?? null);
 	echo th_order_by('device_description', $text['label-device_description'], $order_by, $order, null, "class='hide-sm-dn'", $param ?? null);
+<<<<<<< HEAD
+	if ($has_device_edit && $settings->get('theme', 'list_row_edit_button', 'false') === 'true') {
+=======
 	if (permission_exists('device_edit') && $settings->get('theme', 'list_row_edit_button', false)) {
+>>>>>>> develop
 		echo "	<td class='action-button'>&nbsp;</td>\n";
 	}
 	echo "</tr>\n";
@@ -404,8 +453,16 @@
 				}
 			}
 
+<<<<<<< HEAD
+			if ($has_device_edit) {
+=======
+			$list_row_url = '';
 			if (permission_exists('device_edit')) {
+>>>>>>> develop
 				$list_row_url = "device_edit.php?id=".urlencode($row['device_uuid']);
+				if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
+					$list_row_url .= '&domain_uuid='.urlencode($row['domain_uuid']).'&domain_change=true';
+				}
 			}
 
 			$device_provisioned_method = '';
@@ -419,17 +476,22 @@
 			}
 
 			echo "<tr class='list-row' href='".$list_row_url."'>\n";
-			if (permission_exists('device_edit') || permission_exists('device_delete')) {
+			if ($has_device_edit || $has_device_delete) {
 				echo "	<td class='checkbox'>\n";
 				echo "		<input type='checkbox' name='devices[$x][checked]' id='checkbox_".$x."' value='true' onclick=\"checkbox_on_change(this); if (!this.checked) { document.getElementById('checkbox_all').checked = false; }\">\n";
 				echo "		<input type='hidden' name='devices[$x][uuid]' value='".escape($row['device_uuid'])."' />\n";
 				echo "	</td>\n";
 			}
-			if (!empty($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
+<<<<<<< HEAD
+			if (!empty($_GET['show']) && $_GET['show'] == "all" && $has_device_all) {
 				echo "	<td>".escape($domains[$row['domain_uuid']])."</td>\n";
+=======
+			if (!empty($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
+				echo "	<td>".escape($row['domain_name'])."</td>\n";
+>>>>>>> develop
 			}
 			echo "	<td class='no-wrap'>";
-			echo permission_exists('device_edit') ? "<a href='".$list_row_url."'>".escape(format_device_address($row['device_address']))."</a>" : escape(format_device_address($row['device_address']));
+			echo $has_device_edit ? "<a href='".$list_row_url."'>".escape(format_device_address($row['device_address']))."</a>" : escape(format_device_address($row['device_address']));
 			echo "	</td>\n";
 			echo "	<td>".escape($row['device_label'])."&nbsp;</td>\n";
 			if ($device_alternate) {
@@ -445,7 +507,7 @@
 			echo "	<td>".escape($row['device_vendor'])."&nbsp;</td>\n";
 			echo "	<td>".escape($row['device_template'])."&nbsp;</td>\n";
 			echo "	<td>".escape($device_profile_name)."&nbsp;</td>\n";
-			if (permission_exists('device_edit')) {
+			if ($has_device_edit) {
 				echo "	<td class='no-link center'>";
 				echo button::create(['type'=>'submit','class'=>'link','label'=>$text['label-'.$row['device_enabled']],'title'=>$text['button-toggle'],'onclick'=>"list_self_check('checkbox_".$x."'); list_action_set('toggle'); list_form_submit('form_list')"]);
 			}
@@ -456,7 +518,11 @@
 			echo "	</td>\n";
 			echo "	<td class='no-link'><a title='".escape($row['device_provisioned_agent'])."' href='javascript:void(0)'>".escape($row['provisioned_date_formatted'])." ".escape($row['provisioned_time_formatted'])."</a> &nbsp; ".escape($device_provisioned_method)." &nbsp; <a href='".escape($device_provisioned_method)."://".escape($row['device_provisioned_ip'])."' target='_blank'>".escape($row['device_provisioned_ip'])."</a>&nbsp;</td>\n";
 			echo "	<td class='description overflow hide-sm-dn'>".escape($row['device_description'])."&nbsp;</td>\n";
+<<<<<<< HEAD
+			if ($has_device_edit && $settings->get('theme', 'list_row_edit_button', 'false') === 'true') {
+=======
 			if (permission_exists('device_edit')  && $settings->get('theme', 'list_row_edit_button', false)) {
+>>>>>>> develop
 				echo "	<td class='action-button'>";
 				echo button::create(['type'=>'button','title'=>$text['button-edit'],'icon'=>$settings->get('theme','button_icon_edit'),'link'=>$list_row_url]);
 				echo "	</td>\n";
@@ -480,3 +546,7 @@
 	require_once "resources/footer.php";
 
 ?>
+<<<<<<< HEAD
+=======
+
+>>>>>>> develop

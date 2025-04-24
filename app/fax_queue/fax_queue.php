@@ -108,11 +108,19 @@
 	$sql = "select count(fax_queue_uuid) ";
 	$sql .= "from v_fax_queue as q ";
 	$sql .= "LEFT JOIN v_users AS u ON q.insert_user = u.user_uuid ";
+<<<<<<< HEAD
+	if (!empty($_GET['show']) && $_GET['show'] == "all" && permission_exists('fax_queue_all')) {
+		// show faxes for all domains
+		$sql .= "WHERE true ";
+	}
+	elseif (permission_exists('fax_queue_domain')) {
+=======
 	if (!empty($_GET['show']) && $_GET['show'] == "all" && $permission['fax_queue_all']) {
 		// show faxes for all domains
 		$sql .= "WHERE true ";
 	}
 	elseif ($permission['fax_queue_domain']) {
+>>>>>>> develop
 		// show faxes for one domain
 		$sql .= "WHERE q.domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $domain_uuid;
@@ -187,11 +195,19 @@
 	$sql .= "LEFT JOIN v_users AS u ON q.insert_user = u.user_uuid ";
 	$sql .= "JOIN v_domains AS d ON q.domain_uuid = d.domain_uuid ";
 
+<<<<<<< HEAD
+	if (!empty($_GET['show']) && $_GET['show'] == "all" && permission_exists('fax_queue_all')) {
+		// show faxes for all domains
+		$sql .= "WHERE true ";
+	}
+	elseif (permission_exists('fax_queue_domain')) {
+=======
 	if (!empty($_GET['show']) && $_GET['show'] == "all" && $permission['fax_queue_all']) {
 		// show faxes for all domains
 		$sql .= "WHERE true ";
 	}
 	elseif ($permission['fax_queue_domain']) {
+>>>>>>> develop
 		// show faxes for one domain
 		$sql .= "WHERE q.domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $domain_uuid;
@@ -275,7 +291,11 @@
 	echo "			<option value='failed' ".(!empty($_GET["fax_status"]) && $_GET["fax_status"] == "failed" ? "selected='selected'" : null).">".ucwords($text['label-failed'])."</option>\n";
 	echo "		</select>\n";
 	echo			"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search ?? '')."\" placeholder=\"".$text['label-search']."\" />";
+<<<<<<< HEAD
+	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search']);
+=======
 	echo button::create(['label'=>$text['button-search'],'icon'=>$settings->get('theme', 'button_icon_search'),'type'=>'submit','id'=>'btn_search']);
+>>>>>>> develop
 	if (!empty($paging_controls_mini)) {
 		echo		"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>\n";
 	}
@@ -332,8 +352,12 @@
 	if (!empty($fax_queue)) {
 		$x = 0;
 		foreach ($fax_queue as $row) {
+			$list_row_url = '';
 			if ($permission['fax_queue_edit']) {
 				$list_row_url = "fax_queue_edit.php?id=".urlencode($row['fax_queue_uuid']);
+				if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
+					$list_row_url .= '&domain_uuid='.urlencode($row['domain_uuid']).'&domain_change=true';
+				}
 			}
 			echo "<tr class='list-row' href='".$list_row_url."'>\n";
 			if ($permission['fax_queue_add'] || $permission['fax_queue_edit'] || $permission['fax_queue_delete']) {

@@ -48,6 +48,7 @@
 	require "resources.functions.explode";
 	require "resources.functions.count";
 	require "resources.functions.send_mail";
+	require "resources.functions.file_exists";
 
 --check if windows
 	local IS_WINDOWS = (package.config:sub(1,1) == '\\')
@@ -322,6 +323,7 @@
 	dbh:query(sql, params);
 
 --add the fax files
+<<<<<<< HEAD
 	if (fax_success ~= nil) then
 		if (fax_success =="1") then
 			if (storage_type == "base64") then
@@ -399,7 +401,167 @@
 			else
 				result = dbh:query(sql, params);
 			end
+=======
+	if (file_exists(fax_file)) then
+		if (storage_type == "base64") then
+			--include the file io
+			local file = require "resources.functions.file"
+
+			--read file content as base64 string
+			fax_base64 = assert(file.read_base64(fax_file));
+>>>>>>> develop
 		end
+
+		local sql = {}
+		table.insert(sql, "insert into v_fax_files ");
+		table.insert(sql, "(");
+		table.insert(sql, "fax_file_uuid, ");
+		table.insert(sql, "fax_uuid, ");
+		table.insert(sql, "fax_mode, ");
+		table.insert(sql, "fax_file_type, ");
+		table.insert(sql, "fax_file_path, ");
+		if (caller_id_name ~= nil) then
+			table.insert(sql, "fax_caller_id_name, ");
+		end
+		if (caller_id_number ~= nil) then
+			table.insert(sql, "fax_caller_id_number, ");
+		end
+		table.insert(sql, "fax_date, ");
+		table.insert(sql, "fax_epoch, ");
+		if (storage_type == "base64") then
+			table.insert(sql, "fax_base64, ");
+		end
+		table.insert(sql, "domain_uuid");
+		table.insert(sql, ") ");
+		table.insert(sql, "values ");
+		table.insert(sql, "(");
+		table.insert(sql, ":uuid, ");
+		table.insert(sql, ":fax_uuid, ");
+		table.insert(sql, "'rx', ");
+		table.insert(sql, "'tif', ");
+		table.insert(sql, ":fax_file, ");
+		if (caller_id_name ~= nil) then
+			table.insert(sql, ":caller_id_name, ");
+		end
+		if (caller_id_number ~= nil) then
+			table.insert(sql, ":caller_id_number, ");
+		end
+		if (database["type"] == "sqlite") then
+			table.insert(sql, ":fax_date, ");
+		else
+			table.insert(sql, "now(), ");
+		end
+		table.insert(sql, ":fax_time, ");
+		if (storage_type == "base64") then
+			table.insert(sql, ":fax_base64, ");
+		end
+		table.insert(sql, ":domain_uuid");
+		table.insert(sql, ")");
+		sql = table.concat(sql, "\n");
+		local params = {
+			uuid = uuid;
+			domain_uuid = domain_uuid;
+			fax_uuid = fax_uuid;
+			fax_file = fax_file;
+			caller_id_name = caller_id_name;
+			caller_id_number = caller_id_number;
+			fax_base64 = fax_base64;
+			fax_date = os.date("%Y-%m-%d %X");
+			fax_time = os.time();
+		};
+		if (debug["sql"]) then
+			freeswitch.consoleLog("notice", "[fax] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
+		end
+		if (storage_type == "base64") then
+			local dbh = Database.new('system', 'base64');
+			dbh:query(sql, params);
+			dbh:release();
+		else
+			result = dbh:query(sql, params);
+		end
+	end
+
+--fax to email
+	cmd = quote(shell_esc(php_dir).."/"..shell_esc(php_bin)).." "..quote(shell_esc(document_root).."/secure/fax_to_email.php").." ";
+	cmd = cmd .. "email="..quote(shell_esc(fax_email)).." ";
+	cmd = cmd .. "extension="..quote(shell_esc(fax_extension)).." ";
+	cmd = cmd .. "name="..quote(shell_esc(fax_file)).." ";
+	cmd = cmd .. "messages=" .. quote("Result: "..shell_esc(fax_result_text)..", Sender: "..shell_esc(fax_remote_station_id)..", Pages:"..shell_esc(fax_document_total_pages)).." ";
+	cmd = cmd .. "domain="..quote(shell_esc(domain_name)).." ";
+	cmd = cmd .. "caller_id_name=" .. quote(shell_esc(caller_id_name) or '') .. " ";
+	cmd = cmd .. "caller_id_number=" .. quote(shell_esc(caller_id_number) or '') .. " ";
+	cmd = cmd .. "fax_file_uuid=" .. quote(shell_esc(uuid)) .. " ";
+	if #fax_forward_number > 0 then
+		cmd = cmd .. "fax_relay=true ";
+	else
+		cmd = cmd .. "fax_relay=false ";
+	end
+	if #fax_prefix > 0 then
+		cmd = cmd .. "fax_prefix=true ";
+	else
+		cmd = cmd .. "fax_prefix=false ";
+	end
+	freeswitch.consoleLog("notice", "[fax] command: " .. cmd .. "\n");
+	os.execute(cmd);
+
+--add to the fax queue when the fax_forward_number is set
+	if (fax_forward_number ~= nil) then
+		sql = "insert into v_fax_queue ";
+		sql = sql .. "(";
+		sql = sql .. "fax_queue_uuid, ";
+		sql = sql .. "domain_uuid, ";
+		if (fax_uuid ~= nil) then
+			sql = sql .. "fax_uuid, ";
+		end
+		sql = sql .. "fax_date, ";
+		sql = sql .. "hostname, ";
+		sql = sql .. "fax_caller_id_name, ";
+		sql = sql .. "fax_caller_id_number, ";
+		sql = sql .. "fax_number, ";
+		sql = sql .. "fax_prefix, ";
+		sql = sql .. "fax_email_address, ";
+		sql = sql .. "fax_file, ";
+		sql = sql .. "fax_status, ";
+		sql = sql .. "fax_retry_count, ";
+		sql = sql .. "fax_accountcode, ";
+		sql = sql .. "fax_command ";
+		sql = sql .. ") ";
+		sql = sql .. "values ";
+		sql = sql .. "(";
+		sql = sql .. ":uuid, ";
+		sql = sql .. ":domain_uuid, ";
+		if (fax_uuid ~= nil) then
+			sql = sql .. ":fax_uuid, ";
+		end
+		sql = sql .. "now(), ";
+		sql = sql .. ":hostname, ";
+		sql = sql .. ":fax_caller_id_name, ";
+		sql = sql .. ":fax_caller_id_number, ";
+		sql = sql .. ":fax_number, ";
+		sql = sql .. ":fax_prefix, ";
+		sql = sql .. ":fax_email_address, ";
+		sql = sql .. ":fax_file, ";
+		sql = sql .. ":fax_status, ";
+		sql = sql .. ":fax_retry_count, ";
+		sql = sql .. ":fax_accountcode, ";
+		sql = sql .. ":fax_command ";
+		sql = sql .. ")";
+		local params = {
+			uuid = uuid;
+			domain_uuid = domain_uuid;
+			fax_uuid = fax_uuid;
+			hostname = hostname;
+			fax_caller_id_name = fax_caller_id_name;
+			fax_caller_id_number = fax_caller_id_number;
+			fax_number = fax_forward_number;
+			fax_prefix = fax_prefix;
+			fax_email_address = fax_email;
+			fax_file = fax_file;
+			fax_status = 'waiting';
+			fax_retry_count = '0';
+			fax_accountcode = fax_accountcode;
+			fax_command = '';
+		};
 	end
 
 --fax to email

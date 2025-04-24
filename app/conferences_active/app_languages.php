@@ -60,7 +60,11 @@ $text['message-connection']['ar-eg'] = "فشل الاتصال بمقبس الح�
 $text['message-connection']['de-at'] = "Verbindung zum Event Socket fehlgeschlagen.";
 $text['message-connection']['de-ch'] = "Verbindung zum Event Socket fehlgeschlagen.";
 $text['message-connection']['de-de'] = "Verbindung zum Event Socket fehlgeschlagen.";
+<<<<<<< HEAD
+$text['message-connection']['el-gr'] = "Η σύνδεση στο Event Socket απέτυχε.";
+=======
 $text['message-connection']['el-gr'] = "Η σύνδεση με την υποδοχή συμβάντος απέτυχε.";
+>>>>>>> develop
 $text['message-connection']['es-cl'] = "Conexión a Socket de Evento fallida.";
 $text['message-connection']['es-mx'] = "Conexión a Socket de Evento fallida.";
 $text['message-connection']['fr-ca'] = "Connexion à l'Event Socket en echec.";
@@ -1310,7 +1314,11 @@ $text['button-start-rec']['fr-fr'] = "Commencer l'Enregistrement";
 $text['button-start-rec']['he-il'] = "התחל להקליט";
 $text['button-start-rec']['it-it'] = "Avvia Registrazione";
 $text['button-start-rec']['ka-ge'] = "ჩაწერის დაწყება";
+<<<<<<< HEAD
+$text['button-start-rec']['nl-nl'] = "Start opname";
+=======
 $text['button-start-rec']['nl-nl'] = "Startrecord";
+>>>>>>> develop
 $text['button-start-rec']['pl-pl'] = "Początek nagrywania";
 $text['button-start-rec']['pt-br'] = "Iniciar gravação";
 $text['button-start-rec']['pt-pt'] = "Começar gravação";

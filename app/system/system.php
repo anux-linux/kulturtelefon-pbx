@@ -49,9 +49,15 @@
 	if (permission_exists("system_view_support")) {
 		$setting_size = !empty($_SESSION["editor"]["font_size"]["text"]) ? $_SESSION["editor"]["font_size"]["text"] : '12px';
 		$setting_theme = !empty($_SESSION["editor"]["theme"]["text"]) ? $_SESSION["editor"]["theme"]["text"] : 'cobalt';
+<<<<<<< HEAD
 		$setting_invisibles = !empty($_SESSION["editor"]["invisibles"]["boolean"]) ? $_SESSION["editor"]["invisibles"]["boolean"] : 'false';
 		$setting_indenting = !empty($_SESSION["editor"]["indent_guides"]["boolean"]) ? $_SESSION["editor"]["indent_guides"]["boolean"] : 'false';
 		$setting_numbering = !empty($_SESSION["editor"]["line_numbers"]["boolean"]) ? $_SESSION["editor"]["line_numbers"]["boolean"] : 'true';
+=======
+		$setting_invisibles = isset($_SESSION['editor']['invisibles']['text']) ? $_SESSION['editor']['invisibles']["text"] : 'false';
+		$setting_indenting = isset($_SESSION['editor']['indent_guides']['text']) ? $_SESSION['editor']['indent_guides']["text"]: 'false';
+		$setting_numbering = isset($_SESSION['editor']['line_numbers']['text']) ? $_SESSION['editor']['line_numbers']["text"] : 'true';
+>>>>>>> develop
 	}
 
 //additional includes
@@ -138,8 +144,13 @@
 		echo "</tr>\n";
 
 		$git_path = $system_information['git']['path'];
+<<<<<<< HEAD
+		if(file_exists($git_path)){
+			if($system_information['git']['status'] === 'unknown'){
+=======
 		if (file_exists($git_path)){
 			if ($system_information['git']['status'] === 'unknown') {
+>>>>>>> develop
 				echo "<tr>\n";
 				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 				echo "		".$text['label-git_info']."\n";
@@ -148,8 +159,12 @@
 				echo "		".$text['label-git_corrupted']."\n";
 				echo "	</td>\n";
 				echo "</tr>\n";
+<<<<<<< HEAD
+			}else{
+=======
 			}
 			else {
+>>>>>>> develop
 				echo "<tr>\n";
 				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 				echo "		".$text['label-git_info']."\n";
@@ -180,7 +195,11 @@
 			echo "	</td>\n";
 			echo "	<td class=\"row_style1\">{$system_information['switch']['version']} ({$system_information['switch']['bits']})</td>\n";
 			echo "</tr>\n";
+<<<<<<< HEAD
+			if($system_information['switch']['git']['info'] !== 'connection failed'){
+=======
 			if ($system_information['switch']['git']['info'] !== 'connection failed') {
+>>>>>>> develop
 				echo "<tr>\n";
 				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 				echo "		".$text['label-switch']." ".$text['label-git_info']."\n";
@@ -263,7 +282,10 @@
 //memory information
 	if (permission_exists('system_view_ram')) {
 		if ($system_information['os']['mem'] !== 'unknown' && $system_information['os']['mem'] !== 'permission denied') {
+<<<<<<< HEAD
+=======
 			echo "<div class='card'>\n";
+>>>>>>> develop
 			echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
 			echo "<tr>\n";
 			echo "	<th colspan='2' align='left' valign='top'>".$text['title-mem']."</th>\n";
@@ -279,14 +301,21 @@
 			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
+<<<<<<< HEAD
+			echo "<br /><br />";
+=======
 			echo "</div>\n";
+>>>>>>> develop
 		}
 	}
 
 //cpu information
 	if (permission_exists('system_view_cpu')) {
 		if ($system_information['os']['cpu'] !== 'unknown' && $system_information['os']['cpu'] !== 'permission denied') {
+<<<<<<< HEAD
+=======
 			echo "<div class='card'>\n";
+>>>>>>> develop
 			echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
 			echo "<tr>\n";
 			echo "	<th class='th' colspan='2' align='left' valign='top'>".$text['title-cpu']."</th>\n";
@@ -302,14 +331,23 @@
 			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
+<<<<<<< HEAD
+			echo "<br /><br />";
+=======
 			echo "</div>\n";
+>>>>>>> develop
 		}
 	}
 
 //drive space
 	if (permission_exists('system_view_hdd')) {
 		if (stristr(PHP_OS, 'Linux') || stristr(PHP_OS, 'FreeBSD')) {
+<<<<<<< HEAD
+			echo "<!--\n";
+			echo "-->\n";
+=======
 			echo "<div class='card'>\n";
+>>>>>>> develop
 			echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
 			echo "<tr>\n";
 			echo "	<th class='th' colspan='2' align='left'>".$text['title-drive']."</th>\n";
@@ -460,6 +498,128 @@
 		echo "	<td colspan='2' style='padding: 0;'>\n";
 		echo "		<textarea class='formfld' id='system_information' name='system_information' style='display: none;'>".json_encode($system_information, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."</textarea>\n";
 		echo "		<div id='editor' style='border-radius: 4px;'></div>\n";
+		echo "		<table cellpadding='0' cellspacing='0' border='0' style='float: right; padding-top: 5px;'>\n";
+		echo "			<tr>\n";
+		echo "				<td valign='middle' style='padding-left: 6px;'><i class='fas fa-list-ul fa-lg ace_control' title=\"".$text['label-toggle_line_numbers']."\" onclick=\"toggle_option('numbering');\"></i></td>\n";
+		echo "				<td valign='middle' style='padding-left: 6px;'><i class='fas fa-eye-slash fa-lg ace_control' title=\"".$text['label-toggle_invisibles']."\" onclick=\"toggle_option('invisibles');\"></i></td>\n";
+		echo "				<td valign='middle' style='padding-left: 6px;'><i class='fas fa-indent fa-lg ace_control' title=\"".$text['label-toggle_indent_guides']."\" onclick=\"toggle_option('indenting');\"></i></td>\n";
+		echo "				<td valign='middle' style='padding-left: 6px;'><i class='fas fa-search fa-lg ace_control' title=\"".$text['label-find_replace']."\" onclick=\"editor.execCommand('replace');\"></i></td>\n";
+		echo "				<td valign='middle' style='padding-left: 6px;'><i class='fas fa-chevron-down fa-lg ace_control' title=\"".$text['label-go_to_line']."\" onclick=\"editor.execCommand('gotoline');\"></i></td>\n";
+		echo "				<td valign='middle' style='padding-left: 15px;'>\n";
+		echo "					<select id='size' class='formfld' onchange=\"document.getElementById('editor').style.fontSize = this.options[this.selectedIndex].value; focus_editor();\">\n";
+		$sizes = explode(',','9px,10px,11px,12px,14px,16px,18px,20px');
+		if (!in_array($setting_size, $sizes)) {
+			echo "					<option value='".$setting_size."'>".escape($setting_size)."</option>\n";
+			echo "					<option value='' disabled='disabled'></option>\n";
+		}
+		foreach ($sizes as $size) {
+			$selected = $size == $setting_size ? 'selected' : null;
+			echo "					<option value='".$size."' ".$selected.">".escape($size)."</option>\n";
+		}
+		echo "					</select>\n";
+		echo "				</td>\n";
+		echo "				<td valign='middle' style='padding-left: 4px; padding-right: 0px;'>\n";
+		$themes['Light']['chrome']= 'Chrome';
+		$themes['Light']['clouds']= 'Clouds';
+		$themes['Light']['crimson_editor']= 'Crimson Editor';
+		$themes['Light']['dawn']= 'Dawn';
+		$themes['Light']['dreamweaver']= 'Dreamweaver';
+		$themes['Light']['eclipse']= 'Eclipse';
+		$themes['Light']['github']= 'GitHub';
+		$themes['Light']['iplastic']= 'IPlastic';
+		$themes['Light']['solarized_light']= 'Solarized Light';
+		$themes['Light']['textmate']= 'TextMate';
+		$themes['Light']['tomorrow']= 'Tomorrow';
+		$themes['Light']['xcode']= 'XCode';
+		$themes['Light']['kuroir']= 'Kuroir';
+		$themes['Light']['katzenmilch']= 'KatzenMilch';
+		$themes['Light']['sqlserver']= 'SQL Server';
+		$themes['Dark']['ambiance']= 'Ambiance';
+		$themes['Dark']['chaos']= 'Chaos';
+		$themes['Dark']['clouds_midnight']= 'Clouds Midnight';
+		$themes['Dark']['cobalt']= 'Cobalt';
+		$themes['Dark']['idle_fingers']= 'idle Fingers';
+		$themes['Dark']['kr_theme']= 'krTheme';
+		$themes['Dark']['merbivore']= 'Merbivore';
+		$themes['Dark']['merbivore_soft']= 'Merbivore Soft';
+		$themes['Dark']['mono_industrial']= 'Mono Industrial';
+		$themes['Dark']['monokai']= 'Monokai';
+		$themes['Dark']['pastel_on_dark']= 'Pastel on dark';
+		$themes['Dark']['solarized_dark']= 'Solarized Dark';
+		$themes['Dark']['terminal']= 'Terminal';
+		$themes['Dark']['tomorrow_night']= 'Tomorrow Night';
+		$themes['Dark']['tomorrow_night_blue']= 'Tomorrow Night Blue';
+		$themes['Dark']['tomorrow_night_bright']= 'Tomorrow Night Bright';
+		$themes['Dark']['tomorrow_night_eighties']= 'Tomorrow Night 80s';
+		$themes['Dark']['twilight']= 'Twilight';
+		$themes['Dark']['vibrant_ink']= 'Vibrant Ink';
+		echo "					<select id='theme' class='formfld' onchange=\"editor.setTheme('ace/theme/' + this.options[this.selectedIndex].value); focus_editor();\">\n";
+		foreach ($themes as $optgroup => $theme) {
+			echo "					<optgroup label='".$optgroup."'>\n";
+			foreach ($theme as $value => $label) {
+				$selected = strtolower($label) == strtolower($setting_theme) ? 'selected' : null;
+				echo "					<option value='".$value."' ".$selected.">".escape($label)."</option>\n";
+			}
+			echo "					</optgroup>\n";
+		}
+		echo "					</select>\n";
+		echo "				</td>\n";
+		echo "			</tr>\n";
+		echo "		</table>\n";
+
+		echo "	</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+
+		echo "<script type='text/javascript' src='".PROJECT_PATH."/resources/ace/ace.js' charset='utf-8'></script>\n";
+		echo "<script type='text/javascript'>\n";
+
+		//load editor
+		echo "	var editor = ace.edit('editor');\n";
+		echo "	editor.setOptions({\n";
+		echo "		mode: 'ace/mode/json',\n";
+		echo "		theme: 'ace/theme/'+document.getElementById('theme').options[document.getElementById('theme').selectedIndex].value,\n";
+		echo "		selectionStyle: 'text',\n";
+		echo "		cursorStyle: 'smooth',\n";
+		echo "		showInvisibles: ".$setting_invisibles.",\n";
+		echo "		displayIndentGuides: ".$setting_indenting.",\n";
+		echo "		showLineNumbers: ".$setting_numbering.",\n";
+		echo "		showGutter: true,\n";
+		echo "		scrollPastEnd: true,\n";
+		echo "		fadeFoldWidgets: ".$setting_numbering.",\n";
+		echo "		showPrintMargin: false,\n";
+		echo "		highlightGutterLine: false,\n";
+		echo "		useSoftTabs: false\n";
+		echo "		});\n";
+		echo "	document.getElementById('editor').style.fontSize='".$setting_size."';\n";
+		//echo "focus_editor();\n";
+
+		//load value into editor
+		echo "	load_value();\n";
+
+		//remove certain keyboard shortcuts
+		echo "	editor.commands.bindKey('Ctrl-T', null);\n"; //disable transpose letters - prefer new browser tab
+		echo "	editor.commands.bindKey('Ctrl-F', null);\n"; //disable find - control broken with bootstrap
+		echo "	editor.commands.bindKey('Ctrl-H', null);\n"; //disable replace - control broken with bootstrap
+
+		echo "</script>\n";
+	}
+
+	if (permission_exists("system_view_support")) {
+		echo "<table width='100%' border='0' cellpadding='7' cellspacing='0'>\n";
+		echo "<tr>\n";
+		echo "	<th class='th' align='left'>".$text['label-support']."</th>\n";
+		echo "	<th class='th' style='text-align: right;'>\n";
+		echo "		<button type='button' class='btn btn-default' id='btn_copy' alt=\"".$text['label-copy']."\" title=\"".$text['label-copy']."\" onclick='do_copy();'>".$text['label-copy']."<i class='fas fa-regular fa-clipboard pl-5'></i></button>\n";
+		echo "	</th>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+		echo "	<td width='20%' class='vncell' style='text-align: left;'>\n";
+		echo "		&nbsp;\n";
+		echo "	</td>\n";
+		echo "	<td class='row_style1'>\n";
+		echo "		<textarea class='formfld' id='system_information' name='system_information' style='display: none;'>".json_encode($system_information, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)."</textarea>\n";
+		echo "		<div id='editor'></div>\n";
 		echo "		<table cellpadding='0' cellspacing='0' border='0' style='float: right; padding-top: 5px;'>\n";
 		echo "			<tr>\n";
 		echo "				<td valign='middle' style='padding-left: 6px;'><i class='fas fa-list-ul fa-lg ace_control' title=\"".$text['label-toggle_line_numbers']."\" onclick=\"toggle_option('numbering');\"></i></td>\n";

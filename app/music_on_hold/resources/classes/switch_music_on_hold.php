@@ -27,7 +27,6 @@
 */
 
 //define the switch_music_on_hold class
-if (!class_exists('switch_music_on_hold')) {
 	class switch_music_on_hold {
 
 		/**
@@ -85,7 +84,6 @@ if (!class_exists('switch_music_on_hold')) {
 				}
 			//recordings
 				if (is_dir($_SERVER["PROJECT_ROOT"].'/app/recordings')) {
-					require_once "app/recordings/resources/classes/switch_recordings.php";
 					$recordings_c = new switch_recordings;
 					$recordings = $recordings_c->list_recordings();
 					if (is_array($recordings) && sizeof($recordings) > 0) {
@@ -357,7 +355,7 @@ if (!class_exists('switch_music_on_hold')) {
 
 								//get music on hold details
 									$sql = "select * from v_music_on_hold ";
-									$sql .= "where (domain_uuid = :domain_uuid ".(!permission_exists('music_on_hold_domain') ? "": "or domain_uuid is null ").") ";
+									$sql .= "where (domain_uuid = :domain_uuid ".(!permission_exists('music_on_hold_domain') ? "" : "or domain_uuid is null ").") ";
 									$sql .= "and music_on_hold_uuid in ('".implode("','", array_keys($moh))."') ";
 									$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 									$database = new database;
@@ -447,12 +445,15 @@ if (!class_exists('switch_music_on_hold')) {
 		} //method
 
 	} //class
-}
+
 
 //build and save the XML
-	//require_once "app/music_on_hold/resources/classes/switch_music_on_hold.php";
 	//$moh = new switch_music_on_hold;
 	//$moh->xml();
 	//$moh->save();
 
+<<<<<<< HEAD
 ?>
+
+=======
+>>>>>>> develop

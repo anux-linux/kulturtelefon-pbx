@@ -191,6 +191,8 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Filename of the C520 firmware";
 		$y++;
+<<<<<<< HEAD
+=======
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "6d5e14af-3c69-4bfa-96b0-e39fc9d2ffa4";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "snom_firmware_c620_base";
@@ -207,6 +209,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Filename of the C620 speakerphone firmware";
 		$y++;
+>>>>>>> develop
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "0435781d-19e7-4a37-bcd2-c2e568867863";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "snom_firmware_pa1";

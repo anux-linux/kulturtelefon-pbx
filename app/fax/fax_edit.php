@@ -120,7 +120,10 @@
 		$fax_prefix = $_POST["fax_prefix"];
 		$fax_email = implode(',',array_filter($_POST["fax_email"] ?? []));
 		$fax_file = $_POST["fax_file"];
+<<<<<<< HEAD
+=======
 		$fax_email_confirmation = implode(',',array_filter($_POST["fax_email_confirmation"] ?? []));
+>>>>>>> develop
 		$fax_email_connection_type = $_POST["fax_email_connection_type"];
 		$fax_email_connection_host = $_POST["fax_email_connection_host"];
 		$fax_email_connection_port = $_POST["fax_email_connection_port"];
@@ -339,6 +342,14 @@
 							$array['fax'][0]['fax_email'] = $fax_email;
 							$array['fax'][0]['fax_file'] = $fax_file;
 						}
+<<<<<<< HEAD
+						if (permission_exists('fax_caller_id_name')) {
+							$array['fax'][0]['fax_caller_id_name'] = $fax_caller_id_name;
+						}
+						if (permission_exists('fax_caller_id_number')) {
+							$array['fax'][0]['fax_caller_id_number'] = $fax_caller_id_number;
+						}
+=======
 						if (permission_exists('fax_email_confirmation')) {
 							$array['fax'][0]['fax_email_confirmation'] = $fax_email_confirmation;
 						}
@@ -348,6 +359,7 @@
 						if (permission_exists('fax_caller_id_number')) {
 							$array['fax'][0]['fax_caller_id_number'] = $fax_caller_id_number;
 						}
+>>>>>>> develop
 						if (permission_exists('fax_toll_allow')) {
 							$array['fax'][0]['fax_toll_allow'] = $fax_toll_allow;
 						}
@@ -436,7 +448,10 @@
 			$fax_name = $row["fax_name"];
 			$fax_email = $row["fax_email"];
 			$fax_file = $row["fax_file"];
+<<<<<<< HEAD
+=======
 			$fax_email_confirmation = $row["fax_email_confirmation"];
+>>>>>>> develop
 			$fax_caller_id_name = $row["fax_caller_id_name"];
 			$fax_caller_id_number = $row["fax_caller_id_number"];
 			$fax_toll_allow = $row["fax_toll_allow"];
@@ -509,7 +524,11 @@
 	echo "	<div class='heading'><b>".$text['header-fax_server_settings']."</b></div>\n";
 	echo "	<div class='actions'>\n";
 
+<<<<<<< HEAD
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'fax.php']);
+=======
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'fax.php']);
+>>>>>>> develop
 	if ($action == "update") {
 		$button_margin = 'margin-left: 15px;';
 		if (permission_exists('fax_extension_advanced')) {
@@ -520,16 +539,20 @@
 			unset($button_margin);
 		}
 		if (permission_exists('fax_extension_copy')) {
-			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'name'=>'btn_copy','style'=>($button_margin ?? null),'onclick'=>"modal_open('modal-copy','btn_copy');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$settings->get('theme', 'button_icon_copy'),'name'=>'btn_copy','style'=>($button_margin ?? null),'onclick'=>"modal_open('modal-copy','btn_copy');"]);
 			unset($button_margin);
 		}
 		if (permission_exists('fax_extension_delete')) {
-			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','style'=>($button_margin ?? null),'onclick'=>"modal_open('modal-delete','btn_delete');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'name'=>'btn_delete','style'=>($button_margin ?? null),'onclick'=>"modal_open('modal-delete','btn_delete');"]);
 			unset($button_margin);
 		}
 	}
 
+<<<<<<< HEAD
 	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+=======
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
+>>>>>>> develop
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -617,15 +640,60 @@
 		echo "<td class='vtable' align='left'>\n";
 		$x = 0;
 		foreach ($fax_emails as $email) {
+<<<<<<< HEAD
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "	<input class='formfld' type=\"text\" name=\"fax_email[".$x."]\" maxlength='255' style=\"width: 90%;\"value=\"".escape($email)."\">\n";
+			echo "</td>\n";
+			$x++;
+		}
+		echo "<tr>\n";
+		echo "	<td>\n";
+		echo "		<input class='formfld' type=\"text\" name=\"fax_email[".$x++."]\" maxlength='255' style=\"width: 90%;\"value=\"\">\n";
+		echo "	</td>\n";
+		echo "</table>\n";
+		echo "<br />\n";
+		echo "	".$text['description-email']."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	".$text['label-email_fax_file']."\n";
+		echo "</td>\n";
+		echo "<td class='vtable' align='left'>\n";
+		echo "	<select class='formfld' name='fax_file' id='fax_file'>\n";
+		echo "		<option value='attach' ".(empty($fax_file) || $fax_fax_file == 'attach' ? "selected='selected'" : null).">".$text['option-attachment']."</option>\n";
+		echo "		<option value='link' ".($fax_file == "link" ? "selected='selected'" : null).">".$text['option-download_link']."</option>\n";
+		echo "	</select>\n";
+		echo "<br />\n";
+		echo $text['description-email_fax_file']."\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	if (permission_exists('fax_caller_id_name')) {
+		echo "<tr>\n";
+		echo "<td width='30%' class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
+		echo "	".$text['label-caller-id-name']."\n";
+		echo "</td>\n";
+		echo "<td width='70%' class='vtable' align='left'>\n";
+		echo "	<input class='formfld' type='text' name='fax_caller_id_name' maxlength='40' value=\"".escape($fax_caller_id_name ?? '')."\">\n";
+		echo "<br />\n";
+		echo "".$text['description-caller-id-name']."\n";
+=======
 			echo "	<input class='formfld' type='email' name='fax_email[".$x."]' maxlength='255' value=\"".escape($email)."\"><br>\n";
 			$x++;
 		}
 		echo "	<input class='formfld' type='email' name='fax_email[".$x++."]' maxlength='255' value=''>\n";
 		echo "<br />\n";
 		echo "	".$text['description-email']."\n";
+>>>>>>> develop
 		echo "</td>\n";
 		echo "</tr>\n";
+	}
 
+	if (permission_exists('fax_caller_id_number')) {
 		echo "<tr>\n";
 		echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 		echo "	".$text['label-email_fax_file']."\n";
@@ -718,7 +786,11 @@
 			echo "		<td class='vtable'>";
 
 			if (!empty($fax_users) && is_array($fax_users) && @sizeof($fax_users) != 0) {
+<<<<<<< HEAD
+				echo "		<table style='width: 50%; min-width: 200px; max-width: 450px;'>\n";
+=======
 				echo "		<table style='width: 50%; min-width: 150px; max-width: 450px;'>\n";
+>>>>>>> develop
 				foreach ($fax_users as $field) {
 					echo "		<tr>\n";
 					echo "			<td class='vtable'>".escape($field['username'])."</td>\n";
@@ -738,7 +810,11 @@
 					echo "			<option value='".escape($field['user_uuid'])."'>".escape($field['username'])."</option>\n";
 				}
 				echo "		</select>";
+<<<<<<< HEAD
 				echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add']]);
+=======
+				echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add')]);
+>>>>>>> develop
 				echo "		<br>\n";
 				echo "		".$text['description-user-add']."\n";
 				echo "		<br />\n";

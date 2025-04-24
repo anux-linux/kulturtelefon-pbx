@@ -11,8 +11,13 @@ $text['title-dialplan-outbound-add']['es-cl'] = "Direccionamiento de llamadas de
 $text['title-dialplan-outbound-add']['es-mx'] = "Direccionamiento de llamadas de salida";
 $text['title-dialplan-outbound-add']['fr-ca'] = "Routage d'appel sortant";
 $text['title-dialplan-outbound-add']['fr-fr'] = "Routage d'appel sortant";
+<<<<<<< HEAD
+$text['title-dialplan-outbound-add']['he-il'] = "תגית: Routing";
+$text['title-dialplan-outbound-add']['it-it'] = "Rotte di Uscita";
+=======
 $text['title-dialplan-outbound-add']['he-il'] = "ניתוב שיחות יוצאות";
 $text['title-dialplan-outbound-add']['it-it'] = "Instradamento delle chiamate in uscita";
+>>>>>>> develop
 $text['title-dialplan-outbound-add']['ka-ge'] = "გამავალი ზარების მარშრუტიზაცია";
 $text['title-dialplan-outbound-add']['nl-nl'] = "Uitgaande Oproep routering";
 $text['title-dialplan-outbound-add']['pl-pl'] = "Przesyłanie (routing) rozmów wychodzących.";
@@ -282,7 +287,11 @@ $text['label-north_america_intl']['es-mx'] = "America del Norte Internacional";
 $text['label-north_america_intl']['fr-ca'] = "Amérique du Nord International";
 $text['label-north_america_intl']['fr-fr'] = "Amérique du Nord International";
 $text['label-north_america_intl']['he-il'] = "צפון אמריקה הבינלאומית";
+<<<<<<< HEAD
+$text['label-north_america_intl']['it-it'] = "North America International";
+=======
 $text['label-north_america_intl']['it-it'] = "Nord America Internazionale";
+>>>>>>> develop
 $text['label-north_america_intl']['ka-ge'] = "ჩრდილოეთი ამერიკა (საერთაშორისო)";
 $text['label-north_america_intl']['nl-nl'] = "Noordamerika Internationaal";
 $text['label-north_america_intl']['pl-pl'] = "Ameryka Północna międzynarodowe";
@@ -309,7 +318,11 @@ $text['label-north_america']['es-mx'] = "América del Norte";
 $text['label-north_america']['fr-ca'] = "Amérique du Nord";
 $text['label-north_america']['fr-fr'] = "Amérique du Nord";
 $text['label-north_america']['he-il'] = "צפון אמריקה";
+<<<<<<< HEAD
+$text['label-north_america']['it-it'] = "North America";
+=======
 $text['label-north_america']['it-it'] = "America del Nord";
+>>>>>>> develop
 $text['label-north_america']['ka-ge'] = "ჩრდილოეთ ამერიკა";
 $text['label-north_america']['nl-nl'] = "Noord Amerika";
 $text['label-north_america']['pl-pl'] = "Ameryka Północna";
@@ -336,7 +349,11 @@ $text['label-north_america_islands']['es-mx'] = "América del Norte";
 $text['label-north_america_islands']['fr-ca'] = "Amérique du Nord";
 $text['label-north_america_islands']['fr-fr'] = "Amérique du Nord";
 $text['label-north_america_islands']['he-il'] = "איי צפון אמריקה";
+<<<<<<< HEAD
+$text['label-north_america_islands']['it-it'] = "North America";
+=======
 $text['label-north_america_islands']['it-it'] = "Isole del Nord America";
+>>>>>>> develop
 $text['label-north_america_islands']['ka-ge'] = "ჩრდილოეთ ამერიკა (კუნძულები)";
 $text['label-north_america_islands']['nl-nl'] = "Noord Amerika";
 $text['label-north_america_islands']['pl-pl'] = "Ameryka Północna";
@@ -381,9 +398,15 @@ $text['label-limit']['ko-kr'] = "한계";
 $text['label-intl']['en-us'] = "International";
 $text['label-intl']['en-gb'] = "International";
 $text['label-intl']['ar-eg'] = "الدولية";
+<<<<<<< HEAD
+$text['label-intl']['de-at'] = "International";
+$text['label-intl']['de-ch'] = "International";
+$text['label-intl']['de-de'] = "International";
+=======
 $text['label-intl']['de-at'] = "Internationales";
 $text['label-intl']['de-ch'] = "Internationales";
 $text['label-intl']['de-de'] = "Internationales";
+>>>>>>> develop
 $text['label-intl']['el-gr'] = "Διεθνές";
 $text['label-intl']['es-cl'] = "Internacional";
 $text['label-intl']['es-mx'] = "Internacional";
@@ -443,10 +466,17 @@ $text['label-gateway']['es-cl'] = "Pasarela";
 $text['label-gateway']['es-mx'] = "Pasarela";
 $text['label-gateway']['fr-ca'] = "Passerelle";
 $text['label-gateway']['fr-fr'] = "Passerelle";
+<<<<<<< HEAD
+$text['label-gateway']['he-il'] = "שער Gateway";
+$text['label-gateway']['it-it'] = "Gateway";
+$text['label-gateway']['ka-ge'] = "კარიბჭე";
+$text['label-gateway']['nl-nl'] = "Gateway";
+=======
 $text['label-gateway']['he-il'] = "כְּנִיסָה";
 $text['label-gateway']['it-it'] = "Portale";
 $text['label-gateway']['ka-ge'] = "კარიბჭე";
 $text['label-gateway']['nl-nl'] = "Poort";
+>>>>>>> develop
 $text['label-gateway']['pl-pl'] = "Brama wyjściowa";
 $text['label-gateway']['pt-br'] = "Porta de entrada";
 $text['label-gateway']['pt-pt'] = "Porta de entrada";

@@ -25,7 +25,6 @@
 */
 
 //define the dialplan class
-	if (!class_exists('dialplan')) {
 		class dialplan {
 
 			//variables
@@ -1065,7 +1064,11 @@
 									$array['dialplans'][$x]['dialplan_xml'] = $value;
 
 									//grant temporary permissions
+<<<<<<< HEAD
+									$p = new permissions;
+=======
 									$p = permissions::new();
+>>>>>>> develop
 									$p->add('dialplan_edit', 'temp');
 
 									//execute update
@@ -1580,6 +1583,3 @@
 
 
 		} //class
-	}
-
-?>

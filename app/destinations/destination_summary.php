@@ -127,11 +127,19 @@
 	echo "	<div class='heading'><b>".$text['title-destination_summary']."</b></div>\n";
 	echo "	<div class='actions'>\n";
 	if (permission_exists('destination_summary_all') && $_GET['show'] != 'all') {
+<<<<<<< HEAD
 		echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$_SESSION['theme']['button_icon_all'],'collapse'=>'hide-sm-dn','link'=>'destination_summary.php?show=all']);
 	}
 	echo button::create(['type'=>'button','label'=>$text['button-download_csv'],'icon'=>$_SESSION['theme']['button_icon_download'],'collapse'=>'hide-sm-dn','link'=>'destination_summary.php?'.(!empty($_SERVER["QUERY_STRING"]) ? $_SERVER["QUERY_STRING"].'&' : null).'type=csv']);
 	echo button::create(['type'=>'button','label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'collapse'=>'hide-xs','style'=>'margin-left: 15px;','link'=>'destination_summary.php']);
 	echo button::create(['type'=>'button','label'=>$text['button-update'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','collapse'=>'hide-xs','onclick'=>"document.getElementById('frm').submit();"]);
+=======
+		echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$settings->get('theme', 'button_icon_all'),'collapse'=>'hide-sm-dn','link'=>'destination_summary.php?show=all']);
+	}
+	echo button::create(['type'=>'button','label'=>$text['button-download_csv'],'icon'=>$settings->get('theme', 'button_icon_download'),'collapse'=>'hide-sm-dn','link'=>'destination_summary.php?'.(!empty($_SERVER["QUERY_STRING"]) ? $_SERVER["QUERY_STRING"].'&' : null).'type=csv']);
+	echo button::create(['type'=>'button','label'=>$text['button-reset'],'icon'=>$settings->get('theme', 'button_icon_reset'),'collapse'=>'hide-xs','style'=>'margin-left: 15px;','link'=>'destination_summary.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-update'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','collapse'=>'hide-xs','onclick'=>"document.getElementById('frm').submit();"]);
+>>>>>>> develop
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -139,8 +147,12 @@
 	if (permission_exists('xml_cdr_search')) {
 		echo "<form name='frm' id='frm' method='get'>\n";
 
+<<<<<<< HEAD
+		echo "<div class='form_grid' style='padding-bottom: 35px;'>\n";
+=======
 		echo "<div class='card' style='margin-bottom: 30px;'>\n";
 		echo "<div class='form_grid'>\n";
+>>>>>>> develop
 
 		echo "	<div class='form_set'>\n";
 		echo "		<div class='label'>\n";
@@ -191,7 +203,10 @@
 		echo "	</div>\n";
 
 		echo "</div>\n";
+<<<<<<< HEAD
+=======
 		echo "</div>\n";
+>>>>>>> develop
 
 		if (!empty($_GET['show']) && $_GET['show'] == 'all' && permission_exists('destination_summary_all')) {
 			echo "<input type='hidden' name='show' value='all'>";
@@ -201,7 +216,10 @@
 	}
 
 //show the results
+<<<<<<< HEAD
+=======
 	echo "<div class='card'>\n";
+>>>>>>> develop
 	echo "<table class='list'>\n";
 	echo "	<tr class='list-header'>\n";
 	if (!empty($_GET['show']) && $_GET['show'] === "all" && permission_exists('destination_summary_all')) {
@@ -239,10 +257,17 @@
 	}
 
 	echo "</table>\n";
+<<<<<<< HEAD
+=======
 	echo "</div>\n";
+>>>>>>> develop
 	echo "<br />\n";
 
 //show the footer
 	require_once "resources/footer.php";
 
+<<<<<<< HEAD
 ?>
+=======
+?>
+>>>>>>> develop

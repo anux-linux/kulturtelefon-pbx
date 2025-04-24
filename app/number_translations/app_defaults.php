@@ -37,17 +37,28 @@
 			//number_translation class
 			$number_translation = new number_translations;
 
+<<<<<<< HEAD
+		//process the xml files
+=======
 			//process the xml files
+>>>>>>> develop
 			foreach ($xml_list as $xml_file) {
 				//get and parse the xml
 					$number_translation->xml = file_get_contents($xml_file);
 					$number_translation->import();
 			}
 
-			//check for existing configuration
+<<<<<<< HEAD
+		//check for existing configuration
 			if (!empty($setting->get('switch','conf')) && file_exists($setting->get('switch','conf')."/autoload_configs/translate.conf.xml")) {
 				//import existing data
-				$xml = file_get_contents($setting->get('switch','conf')."/autoload_configs/translate.conf.xml");
+					$xml = file_get_contents($setting->get('switch','conf')."/autoload_configs/translate.conf.xml");
+=======
+			//check for existing configuration
+			if (!empty($settings->get('switch','conf')) && file_exists($settings->get('switch','conf')."/autoload_configs/translate.conf.xml")) {
+				//import existing data
+				$xml = file_get_contents($settings->get('switch','conf')."/autoload_configs/translate.conf.xml");
+>>>>>>> develop
 
 				//convert the xml string to an xml object
 				$xml = simplexml_load_string($xml);
@@ -74,4 +85,3 @@
 	}
 
 ?>
-

@@ -42,9 +42,12 @@
 //connect to database
 	$database = database::new();
 
+<<<<<<< HEAD
+=======
 //create the settings object
 	$settings = new settings(['database' => $database, 'domain_uuid' => $_SESSION['domain_uuid'] ?? '', 'user_uuid' => $_SESSION['user_uuid'] ?? '']);
 
+>>>>>>> develop
 //add multi-lingual support
 	$language = new text;
 	$text = $language->get();
@@ -95,9 +98,13 @@
 			$sql .= "where ring_group_uuid = :ring_group_uuid ";
 			$sql .= "and r.domain_uuid = d.domain_uuid ";
 			$parameters['ring_group_uuid'] = $ring_group_uuid;
+<<<<<<< HEAD
+			$domain_uuid = $database->select($sql, $parameters, 'column');
+=======
 			$row = $database->select($sql, $parameters, 'row');
 			$domain_uuid = $row['domain_uuid'];
 			$domain_name = $row['domain_name'];
+>>>>>>> develop
 			unset($sql, $parameters);
 		}
 	}
@@ -118,7 +125,11 @@
 			$array['ring_group_users'][0]['user_uuid'] = $user_uuid;
 
 			//grant temporary permissions
+<<<<<<< HEAD
+			$p = new permissions;
+=======
 			$p = permissions::new();
+>>>>>>> develop
 			$p->add('ring_group_user_delete', 'temp');
 
 			//execute delete
@@ -139,15 +150,24 @@
 	}
 
 //get total ring group count from the database, check limit, if defined
+<<<<<<< HEAD
+	if ($action == 'add' && $_SESSION['limit']['ring_groups']['numeric'] ?? '') {
+=======
 	if ($action == 'add' && $settings->get('limit', 'ring_groups', '') ?? '') {
+>>>>>>> develop
 		$sql = "select count(*) from v_ring_groups ";
 		$sql .= "where domain_uuid = :domain_uuid ";
 		$parameters['domain_uuid'] = $domain_uuid;
 		$total_ring_groups = $database->select($sql, $parameters, 'column');
 		unset($sql, $parameters);
 
+<<<<<<< HEAD
+		if (is_numeric($_SESSION['limit']['ring_groups']['numeric']) && $total_ring_groups >= $_SESSION['limit']['ring_groups']['numeric']) {
+			message::add($text['message-maximum_ring_groups'].' '.$_SESSION['limit']['ring_groups']['numeric'], 'negative');
+=======
 		if (is_numeric($settings->get('limit', 'ring_groups', '')) && $total_ring_groups >= $settings->get('limit', 'ring_groups', '')) {
 			message::add($text['message-maximum_ring_groups'].' '.$settings->get('limit', 'ring_groups', ''), 'negative');
+>>>>>>> develop
 			header('Location: ring_groups.php');
 			exit;
 		}
@@ -242,6 +262,24 @@
 				unset($sql, $parameters, $row);
 			}
 
+		//if the user doesn't have the correct permission then
+		//override domain_uuid and ring_group_context values
+			if ($action == 'update' && is_uuid($ring_group_uuid)) {
+				$sql = "select * from v_ring_groups ";
+				$sql .= "where  ring_group_uuid = :ring_group_uuid ";
+				$parameters['ring_group_uuid'] = $ring_group_uuid;
+				$row = $database->select($sql, $parameters, 'row');
+				if (!empty($row)) {
+					//if (!permission_exists(‘ring_group_domain')) {
+					//	$domain_uuid = $row["domain_uuid"];
+					//}
+					if (!permission_exists('ring_group_context')) {
+						$ring_group_context = $row["ring_group_context"];
+					}
+				}
+				unset($sql, $parameters, $row);
+			}
+
 	}
 
 //assign the user to the ring group
@@ -256,7 +294,11 @@
 		$array['ring_group_users'][0]['user_uuid'] = $user_uuid;
 
 		//grant temporary permissions
+<<<<<<< HEAD
+		$p = new permissions;
+=======
 		$p = permissions::new();
+>>>>>>> develop
 		$p->add('ring_group_user_add', 'temp');
 
 		//execute delete
@@ -417,7 +459,11 @@
 				else {
 					$ring_group_destination_uuid = uuid();
 				}
+<<<<<<< HEAD
+				if (!empty($row['destination_number']) && $_SESSION['ring_group']['destination_range_enabled']['boolean']) {
+=======
 				if (!empty($row['destination_number']) && $settings->get('ring_group', 'destination_range_enabled', false)) {
+>>>>>>> develop
 					// check the range
 					$output_array = array();
 					preg_match('/[0-9]{1,}-[0-9]{1,}/', $row['destination_number'], $output_array);
@@ -474,7 +520,9 @@
 		//build the xml dialplan
 			$dialplan_xml = "<extension name=\"".xml::sanitize($ring_group_name)."\" continue=\"\" uuid=\"".xml::sanitize($dialplan_uuid)."\">\n";
 			$dialplan_xml .= "	<condition field=\"destination_number\" expression=\"^".xml::sanitize($ring_group_extension)."$\">\n";
-			$dialplan_xml .= "		<action application=\"ring_ready\" data=\"\"/>\n";
+			if ($settings->get('ring_group', 'ring_ready', true)) {
+				$dialplan_xml .= "		<action application=\"ring_ready\" data=\"\"/>\n";
+			}
 			$dialplan_xml .= "		<action application=\"set\" data=\"ring_group_uuid=".xml::sanitize($ring_group_uuid)."\"/>\n";
 			$dialplan_xml .= "		<action application=\"lua\" data=\"app.lua ring_groups\"/>\n";
 			$dialplan_xml .= "	</condition>\n";
@@ -590,8 +638,13 @@
 	}
 
 //set the defaults
+<<<<<<< HEAD
+	$destination_delay_max = $_SESSION['ring_group']['destination_delay_max']['numeric'];
+	$destination_timeout_max = $_SESSION['ring_group']['destination_timeout_max']['numeric'];
+=======
 	$destination_delay_max = $settings->get('ring_group', 'destination_delay_max', '');
 	$destination_timeout_max = $settings->get('ring_group', 'destination_timeout_max', '');;
+>>>>>>> develop
 	if (empty($ring_group_call_timeout)) {
 		$ring_group_call_timeout = '30';
 	}
@@ -753,19 +806,19 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['title-ring_group']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'ring_groups.php']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'ring_groups.php']);
 	if ($action == 'update') {
 		$button_margin = 'margin-left: 15px;';
 		if (permission_exists('ring_group_add') && (empty($settings->get('limit', 'ring_groups', '')) || ($total_ring_groups < $settings->get('limit', 'ring_groups', '')))) {
-			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'name'=>'btn_copy','style'=>$button_margin,'onclick'=>"modal_open('modal-copy','btn_copy');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$settings->get('theme', 'button_icon_copy'),'name'=>'btn_copy','style'=>$button_margin,'onclick'=>"modal_open('modal-copy','btn_copy');"]);
 			unset($button_margin);
 		}
 		if (permission_exists('ring_group_delete') || permission_exists('ring_group_destination_delete')) {
-			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'name'=>'btn_delete','style'=>$button_margin ?? '','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'name'=>'btn_delete','style'=>$button_margin ?? '','onclick'=>"modal_open('modal-delete','btn_delete');"]);
 			unset($button_margin);
 		}
 	}
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save','style'=>'margin-left: 15px;']);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save','style'=>'margin-left: 15px;']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
@@ -801,7 +854,11 @@
 	echo "	".$text['label-extension']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
+<<<<<<< HEAD
+	echo "	<input class='formfld' type='text' name='ring_group_extension' maxlength='255' value=\"".escape($ring_group_extension)."\" required='required' placeholder=\"".($_SESSION['ring_group']['extension_range']['text'] ?? '')."\">\n";
+=======
 	echo "	<input class='formfld' type='text' name='ring_group_extension' maxlength='255' value=\"".escape($ring_group_extension)."\" required='required' placeholder=\"".($settings->get('ring_group', 'extension_range', '') ?? '')."\">\n";
+>>>>>>> develop
 	echo "<br />\n";
 	echo $text['description-extension']."\n";
 	echo "</td>\n";
@@ -828,8 +885,13 @@
 				if ($key == 'recordings') {
 					if (
 						!empty($instance_value) &&
+<<<<<<< HEAD
+						($instance_value == $row["value"] || $instance_value == $_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name'].'/'.$row["value"]) &&
+						file_exists($_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name'].'/'.pathinfo($row["value"], PATHINFO_BASENAME))
+=======
 						($instance_value == $row["value"] || $instance_value == $settings->get('switch', 'recordings', '')."/".$domain_name.'/'.$row["value"]) &&
 						file_exists($settings->get('switch', 'recordings', '')."/".$domain_name.'/'.pathinfo($row["value"], PATHINFO_BASENAME))
+>>>>>>> develop
 						) {
 						$selected = "selected='selected'";
 						$playable = '../recordings/recordings.php?action=download&type=rec&filename='.pathinfo($row["value"], PATHINFO_BASENAME);
@@ -849,6 +911,8 @@
 						unset($selected);
 					}
 				}
+<<<<<<< HEAD
+=======
 				else if ($key == 'phrases') {
 					if (!empty($instance_value) && $instance_value == $row["value"]) {
 						$selected = "selected='selected'";
@@ -859,6 +923,7 @@
 						unset($selected);
 					}
 				}
+>>>>>>> develop
 				else {
 					unset($selected);
 				}
@@ -882,7 +947,11 @@
 			case 'ogg' : $mime_type = 'audio/ogg'; break;
 		}
 		echo "<audio id='recording_audio_".$instance_id."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".$instance_id."')\" onended=\"recording_reset('".$instance_id."');\" src='".($playable ?? '')."' type='".($mime_type ?? '')."'></audio>";
+<<<<<<< HEAD
 		echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$_SESSION['theme']['button_icon_play'],'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'))"]);
+=======
+		echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$settings->get('theme', 'button_icon_play'),'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'))"]);
+>>>>>>> develop
 		unset($playable, $mime_type);
 	}
 	echo "<br />\n";
@@ -1155,7 +1224,7 @@
 		}
 	}
 	echo "			</select>";
-	echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$_SESSION['theme']['button_icon_add'],'collapse'=>'never']);
+	echo button::create(['type'=>'submit','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'collapse'=>'never']);
 	echo "			<br>\n";
 	echo "			".$text['description-user_list']."\n";
 	echo "			<br />\n";

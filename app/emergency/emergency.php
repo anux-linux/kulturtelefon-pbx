@@ -30,6 +30,17 @@ $database = new database;
 $database->app_name = 'emergency_logs';
 $database->app_uuid = 'de63b1ae-7750-11ee-b3a5-005056a27559';
 
+<<<<<<< HEAD
+=======
+//set permissions for CDR details and call recordings
+$permission = array();
+$permission['xml_cdr_hangup_cause'] = permission_exists('xml_cdr_hangup_cause');
+$permission['xml_cdr_status'] = permission_exists('xml_cdr_status');
+$permission['xml_cdr_recording'] = permission_exists('xml_cdr_recording');
+$permission['xml_cdr_recording_play'] = permission_exists('xml_cdr_recording_play');
+$permission['xml_cdr_recording_download'] = permission_exists('xml_cdr_recording_download');
+
+>>>>>>> develop
 //process the http post data by action
 if (!empty($action) && !empty($emergency_logs) && is_array($emergency_logs) && @sizeof($emergency_logs) != 0) {
 
@@ -98,7 +109,11 @@ $num_rows = $database->select($sql, $parameters ?? null, 'column');
 unset($sql, $parameters);
 
 //prepare to page the results
+<<<<<<< HEAD
 $rows_per_page = ($_SESSION['domain']['paging']['numeric'] != '') ? $_SESSION['domain']['paging']['numeric'] : 50;
+=======
+$rows_per_page = $settings->get('domain', 'paging', 50);
+>>>>>>> develop
 $param = !empty($search) ? "&search=".$search : null;
 $param .= (!empty($_GET['page']) && $show == 'all' && permission_exists('user_log_all')) ? "&show=all" : null;
 $page = !empty($_GET['page']) && is_numeric($_GET['page']) ? $_GET['page'] : 0;
@@ -115,6 +130,7 @@ else {
 }
 
 //get the list
+<<<<<<< HEAD
 $sql = "select emergency_log_uuid, ";
 $sql .= "domain_uuid, ";
 $sql .= "extension, ";
@@ -123,15 +139,36 @@ $sql .= "to_char(timezone(:time_zone, insert_date), 'DD Mon YYYY') as date_forma
 $sql .= "to_char(timezone(:time_zone, insert_date), 'HH12:MI:SS am') as time_formatted, ";
 $sql .= "insert_date ";
 $sql .= "from v_emergency_logs ";
+=======
+$sql = "select e.emergency_log_uuid, ";
+$sql .= "e.domain_uuid, ";
+$sql .= "e.extension, ";
+$sql .= "e.event, ";
+$sql .= "to_char(timezone(:time_zone, e.insert_date), 'DD Mon YYYY') as date_formatted, ";
+$sql .= "to_char(timezone(:time_zone, e.insert_date), 'HH12:MI:SS am') as time_formatted, ";
+$sql .= "e.insert_date, ";
+$sql .= "c.status as status, ";
+$sql .= "concat(c.record_path, '/', c.record_name) as recording, ";	//temp
+$sql .= "c.record_path as call_recording_path, ";
+$sql .= "c.record_name as call_recording_name ";
+$sql .= "from v_emergency_logs e ";
+$sql .= "left join v_xml_cdr c ";
+$sql .= "on e.emergency_log_uuid = c.xml_cdr_uuid ";
+>>>>>>> develop
 if ($show == 'all') {
 	$sql .= "where true ";
 }
 else {
+<<<<<<< HEAD
 	$sql .= "where domain_uuid = :domain_uuid ";
+=======
+	$sql .= "where e.domain_uuid = :domain_uuid ";
+>>>>>>> develop
 	$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
 }
 if (!empty($search)) {
 	$sql .= "and ( ";
+<<<<<<< HEAD
 	$sql .= "	lower(event) like :search ";
 	$sql .= ") ";
 	$parameters['search'] = '%'.$search.'%';
@@ -140,6 +177,17 @@ $sql .= "order by insert_date desc ";
 $sql .= limit_offset($rows_per_page, $offset);
 $parameters['time_zone'] = $time_zone;
 $emergency_logs = $database->select($sql, $parameters ?? null, 'all');
+=======
+	$sql .= "	lower(e.event) like :search ";
+	$sql .= ") ";
+	$parameters['search'] = '%'.$search.'%';
+}
+$sql .= "order by e.insert_date desc ";
+$sql .= limit_offset($rows_per_page, $offset);
+$parameters['time_zone'] = $time_zone;
+$emergency_logs = $database->select($sql, $parameters ?? null, 'all');
+
+>>>>>>> develop
 unset($sql, $parameters);
 
 //create token
@@ -152,10 +200,17 @@ require_once "resources/header.php";
 
 //show the content
 echo "<div class='action_bar' id='action_bar'>\n";
-echo "	<div class='heading'><b>".$text['title-emergency_logs']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
+<<<<<<< HEAD
+echo "	<div class='heading'><b>".$text['title-emergency_logs']." (".$num_rows.")</b></div>\n";
 echo "	<div class='actions'>\n";
 if ($emergency_logs) {
 	echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'id'=>'btn_delete','name'=>'btn_delete','style'=>'display:none;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+=======
+echo "	<div class='heading'><b>".$text['title-emergency_logs']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
+echo "	<div class='actions'>\n";
+if ($emergency_logs) {
+	echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'id'=>'btn_delete','name'=>'btn_delete','style'=>'display:none;','onclick'=>"modal_open('modal-delete','btn_delete');"]);
+>>>>>>> develop
 }
 echo 		"<form id='form_search' class='inline' method='get'>\n";
 if (permission_exists('emergency_logs_view_all')) {
@@ -163,11 +218,19 @@ if (permission_exists('emergency_logs_view_all')) {
 		echo "<input type='hidden' name='show' value='all'>\n";
 	}
 	else {
+<<<<<<< HEAD
 		echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$_SESSION['theme']['button_icon_all'],'link'=>'?show=all&search='.$search]);
 	}
 }
 echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown=''>";
 echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search']);
+=======
+		echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$settings->get('theme', 'button_icon_all'),'link'=>'?show=all&search='.$search]);
+	}
+}
+echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown=''>";
+echo button::create(['label'=>$text['button-search'],'icon'=>$settings->get('theme', 'button_icon_search'),'type'=>'submit','id'=>'btn_search']);
+>>>>>>> develop
 if ($paging_controls_mini != '') {
 	echo 	"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>\n";
 }
@@ -183,16 +246,32 @@ if ($emergency_logs) {
 echo $text['title_description-emergency_logs']."\n";
 echo "<br /><br />\n";
 
+<<<<<<< HEAD
+=======
 echo "<div class='card'>\n";
+>>>>>>> develop
 echo "<table class='list'>\n";
 echo "<tr class='list-header'>\n";
 if (!empty($show) && $show == 'all' && permission_exists('emergency_logs_view_all')) {
 	echo th_order_by('domain_name', $text['label-domain'], $order_by, $order);
 }
+<<<<<<< HEAD
 echo "<th class='left'>".$text['label-emergency_time']."</th>\n";
 echo "<th class='left'>".$text['label-emergency_date']."</th>\n";
 echo "<th class='left'>".$text['label-emergency_extension']."</th>\n";
 echo "<th class='left'>".$text['label-emergency_event']."</th>\n";
+=======
+echo "<th class='left'>".$text['label-emergency_date']."</th>\n";
+echo "<th class='left'>".$text['label-emergency_time']."</th>\n";
+echo "<th class='left'>".$text['label-emergency_extension']."</th>\n";
+echo "<th class='left'>".$text['label-emergency_event']."</th>\n";
+if ($permission['xml_cdr_recording'] && ($permission['xml_cdr_recording_play'] || $permission['xml_cdr_recording_download'])) {
+	echo "<th class='center'>".$text['label-recording']."</th>\n";
+}
+if ($permission['xml_cdr_status'] || $permission['xml_cdr_hangup_cause']) {
+	echo "<th class='left'>".$text['label-emergency_call_status']."</th>\n";
+}
+>>>>>>> develop
 echo "</tr>\n";
 
 if (!empty($emergency_logs) && is_array($emergency_logs) && @sizeof($emergency_logs) != 0) {
@@ -202,10 +281,54 @@ if (!empty($emergency_logs) && is_array($emergency_logs) && @sizeof($emergency_l
 		if (!empty($_GET['show']) && $_GET['show'] == 'all' && permission_exists('emergency_logs_view_all')) {
 			echo "	<td>".escape($_SESSION['domains'][$row['domain_uuid']]['domain_name'])."</td>\n";
 		}
+<<<<<<< HEAD
 		echo "	<td>".escape($row['time_formatted'])."</td>\n";
 		echo "	<td>".escape($row['date_formatted'])."</td>\n";
 		echo "	<td>".escape($row['extension'])."</td>\n";
 		echo "	<td>".escape($row['event'])."</td>\n";
+=======
+		echo "	<td>".escape($row['date_formatted'])."</td>\n";
+		echo "	<td>".escape($row['time_formatted'])."</td>\n";
+		echo "	<td>".escape($row['extension'])."</td>\n";
+		echo "	<td>".escape($row['event'])."</td>\n";
+		if (permission_exists('call_recording_play') || permission_exists('call_recording_download')) {
+			echo "	<td class='middle button center no-link no-wrap'>";
+			if ($row['recording'] !== '/') {
+				if (permission_exists('call_recording_play')) {
+					$recording_file_ext = pathinfo($row['call_recording_name'], PATHINFO_EXTENSION);
+					switch ($recording_file_ext) {
+						case "wav" : $recording_type = "audio/wav"; break;
+						case "mp3" : $recording_type = "audio/mpeg"; break;
+						case "ogg" : $recording_type = "audio/ogg"; break;
+					}
+					echo "<audio id='recording_audio_".escape($row['emergency_log_uuid'])."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".escape($row['emergency_log_uuid'])."')\" onended=\"recording_reset('".escape($row['emergency_log_uuid'])."');\" src='download.php?id=".urlencode($row['emergency_log_uuid'])."' type='".$recording_type."'></audio>";
+					echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$settings->get('theme', 'button_icon_play'),'id'=>'recording_button_'.escape($row['emergency_log_uuid']),'onclick'=>"recording_play('".escape($row['emergency_log_uuid'])."')"]);
+				}
+				if (permission_exists('call_recording_download')) {
+					echo button::create(['type'=>'button','title'=>$text['label-download'],'icon'=>$settings->get('theme', 'button_icon_download'),'link'=>'download.php?id='.urlencode($row['emergency_log_uuid']).'&binary']);
+				}
+			}
+			echo "	</td>\n";
+		}
+// debug: display file directory and filename of the call recording
+	/*
+		if ($permission['xml_cdr_recording'] && ($permission['xml_cdr_recording_play'] || $permission['xml_cdr_recording_download'])) {
+			if ($row['recording'] !== '/') {
+		    	echo "<td>" . escape($row['recording']) . "</td>\n";
+			}
+		}
+	*/
+		$domain_name = $_SESSION['domains'][$row['domain_uuid']]['domain_name'];
+		if ($permission['xml_cdr_status'] || $permission['xml_cdr_hangup_cause']) {
+			if (!empty($_GET['show']) && $_GET['show'] == 'all' && permission_exists('emergency_logs_view_all')) {
+				echo "	<td>" . (isset($row['status']) && $row['status'] !== '' ? "<a href='https://{$domain_name}/app/xml_cdr/xml_cdr_details.php?id=".urlencode($row['emergency_log_uuid'])."&show=all' target='_blank'>".escape($row['status'])."</a>" : '&nbsp;') . "</td>\n";
+			}
+			else {
+				//echo "	<td>" . (isset($row['status']) && $row['status'] !== '' ? escape($row['status']) : '') . "</td>\n";
+				echo "	<td>" . (isset($row['status']) && $row['status'] !== '' ? "<a href='https://{$domain_name}/app/xml_cdr/xml_cdr_details.php?id=".urlencode($row['emergency_log_uuid'])."' target='_blank'>".escape($row['status'])."</a>" : '&nbsp;') . "</td>\n";
+			}
+		}
+>>>>>>> develop
 		echo "</tr>\n";
 		$x++;
 	}
@@ -213,7 +336,10 @@ if (!empty($emergency_logs) && is_array($emergency_logs) && @sizeof($emergency_l
 }
 
 echo "</table>\n";
+<<<<<<< HEAD
+=======
 echo "</div>\n";
+>>>>>>> develop
 echo "<br />\n";
 echo "<div align='center'>".$paging_controls."</div>\n";
 echo "<input type='hidden' name='".$token['name']."' value='".$token['hash']."'>\n";
