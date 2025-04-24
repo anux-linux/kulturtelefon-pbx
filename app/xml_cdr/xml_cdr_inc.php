@@ -46,10 +46,7 @@
 	$permission['xml_cdr_delete'] = permission_exists('xml_cdr_delete');
 	$permission['xml_cdr_domain'] = permission_exists('xml_cdr_domain');
 	$permission['xml_cdr_search_call_center_queues'] = permission_exists('xml_cdr_search_call_center_queues');
-<<<<<<< HEAD
-=======
 	$permission['xml_cdr_search_ring_groups'] = permission_exists('xml_cdr_search_ring_groups');
->>>>>>> develop
 	$permission['xml_cdr_statistics'] = permission_exists('xml_cdr_statistics');
 	$permission['xml_cdr_archive'] = permission_exists('xml_cdr_archive');
 	$permission['xml_cdr_all'] = permission_exists('xml_cdr_all');
@@ -144,10 +141,7 @@
 		$order = $_REQUEST["order"] ?? '';
 		$cc_side = $_REQUEST["cc_side"] ?? '';
 		$call_center_queue_uuid = $_REQUEST["call_center_queue_uuid"] ?? '';
-<<<<<<< HEAD
-=======
 		$ring_group_uuid = $_REQUEST["ring_group_uuid"] ?? '';
->>>>>>> develop
 		if (isset($_SESSION['cdr']['field']) && is_array($_SESSION['cdr']['field'])) {
 			foreach ($_SESSION['cdr']['field'] as $field) {
 				$array = explode(",", $field);
@@ -291,11 +285,7 @@
 	//$rows_per_page = $_SESSION['domain']['paging']['numeric'];
 
 //prepare to page the results
-<<<<<<< HEAD
-	//$rows_per_page = ($_SESSION['domain']['paging']['numeric'] != '') ? $_SESSION['domain']['paging']['numeric'] : 50; //set on the page that includes this page
-=======
 	//$rows_per_page = $settings->get('domain', 'paging', 50); //set on the page that includes this page
->>>>>>> develop
 	if (empty($_GET['page']) || (!empty($_GET['page']) && !is_numeric($_GET['page']))) {
 		$_GET['page'] = 0;
 	}
@@ -622,14 +612,11 @@
 		$sql .= "and call_center_queue_uuid = :call_center_queue_uuid \n";
 		$parameters['call_center_queue_uuid'] = $call_center_queue_uuid;
 	}
-<<<<<<< HEAD
-=======
 	//show specific ring groups
 	if (!empty($ring_group_uuid)) {
 		$sql .= "and ring_group_uuid = :ring_group_uuid \n";
 		$parameters['ring_group_uuid'] = $ring_group_uuid;
 	}
->>>>>>> develop
 	//end where
 	if (!empty($order_by)) {
 		$sql .= order_by($order_by, $order);
@@ -646,11 +633,7 @@
 		}
 	}
 	$sql = str_replace("  ", " ", $sql);
-<<<<<<< HEAD
-	if ($archive_request && $_SESSION['cdr']['archive_database']['boolean'] == 'true') {
-=======
 	if ($archive_request && filter_var($_SESSION['cdr']['archive_database']['boolean'] ?? false, FILTER_VALIDATE_BOOL)) {
->>>>>>> develop
 		$database->driver = $_SESSION['cdr']['archive_database_driver']['text'];
 		$database->host = $_SESSION['cdr']['archive_database_host']['text'];
 		$database->type = $_SESSION['cdr']['archive_database_type']['text'];

@@ -48,21 +48,6 @@
 	$database = database::new();
 	$settings = new settings(['database' => $database, 'domain_uuid' => $domain_uuid, 'user_uuid' => $user_uuid]);
 
-<<<<<<< HEAD
-//set all permissions
-	$has_device_import = permission_exists('device_import');
-	$has_device_edit = permission_exists('device_edit');
-	$has_device_all = permission_exists('device_all');
-	$has_device_delete = permission_exists('device_delete');
-	$has_device_domain_all = permission_exists('device_domain_all');
-	$has_device_export = permission_exists('device_export');
-	$has_device_vendor_view = permission_exists('device_vendor_view');
-	$has_device_profile_view = permission_exists('device_profile_view');
-	$has_device_add = permission_exists('device_add');
-	$has_show_all = &$has_device_domain_all;
-
-=======
->>>>>>> develop
 //add multi-lingual support
 	$language = new text;
 	$text = $language->get();
@@ -321,17 +306,10 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['header-devices']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 	echo "	<div class='actions'>\n";
-<<<<<<< HEAD
-	if ($has_device_import) {
-		echo button::create(['type'=>'button','label'=>$text['button-import'],'icon'=>$settings->get('theme', 'button_icon_import'),'link'=>'device_imports.php']);
-	}
-	if ($has_device_export) {
-=======
 	if (permission_exists('device_import')) {
 		echo button::create(['type'=>'button','label'=>$text['button-import'],'icon'=>$settings->get('theme', 'button_icon_import'),'link'=>'device_imports.php']);
 	}
 	if (permission_exists('device_export')) {
->>>>>>> develop
 		echo button::create(['type'=>'button','label'=>$text['button-export'],'icon'=>$settings->get('theme', 'button_icon_export'),'link'=>'device_download.php']);
 	}
 	if ($has_device_vendor_view) {
@@ -340,18 +318,6 @@
 	if ($has_device_profile_view) {
 		echo button::create(['type'=>'button','label'=>$text['button-profiles'],'icon'=>'clone','link'=>'device_profiles.php']);
 	}
-<<<<<<< HEAD
-	$margin_left = $has_device_import || $has_device_export || $has_device_vendor_view || $has_device_profile_view ? "margin-left: 15px;" : null;
-	if ($has_device_add) {
-		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','style'=>$margin_left,'link'=>'device_edit.php']);
-		unset($margin_left);
-	}
-	if ($has_device_edit && $devices) {
-		echo button::create(['type'=>'button','label'=>$text['button-toggle'],'icon'=>$settings->get('theme', 'button_icon_toggle'),'id'=>'btn_toggle','name'=>'btn_toggle','style'=>'display: none; '.($margin_left ?? null),'onclick'=>"modal_open('modal-toggle','btn_toggle');"]);
-		unset($margin_left);
-	}
-	if ($has_device_delete && $devices) {
-=======
 	$margin_left = permission_exists('device_import') || permission_exists('device_export') || permission_exists('device_vendor_view') || permission_exists('device_profile_view') ? "margin-left: 15px;" : null;
 	if (permission_exists('device_add') && (empty($_SESSION['limit']['devices']['numeric']) || ($total_devices < $_SESSION['limit']['devices']['numeric']))) {
 		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','style'=>$margin_left,'link'=>'device_edit.php']);
@@ -362,7 +328,6 @@
 		unset($margin_left);
 	}
 	if (permission_exists('device_delete') && $devices) {
->>>>>>> develop
 		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none; '.($margin_left ?? null),'onclick'=>"modal_open('modal-delete','btn_delete');"]);
 		unset($margin_left);
 	}
@@ -433,11 +398,7 @@
 	echo th_order_by('device_enabled', $text['label-device_enabled'], $order_by, $order, null, "class='center'", $param ?? null);
 	echo th_order_by('device_provisioned_date', $text['label-device_status'], $order_by, $order, null, null, $param ?? null);
 	echo th_order_by('device_description', $text['label-device_description'], $order_by, $order, null, "class='hide-sm-dn'", $param ?? null);
-<<<<<<< HEAD
-	if ($has_device_edit && $settings->get('theme', 'list_row_edit_button', 'false') === 'true') {
-=======
 	if (permission_exists('device_edit') && $settings->get('theme', 'list_row_edit_button', false)) {
->>>>>>> develop
 		echo "	<td class='action-button'>&nbsp;</td>\n";
 	}
 	echo "</tr>\n";
@@ -453,12 +414,8 @@
 				}
 			}
 
-<<<<<<< HEAD
-			if ($has_device_edit) {
-=======
 			$list_row_url = '';
 			if (permission_exists('device_edit')) {
->>>>>>> develop
 				$list_row_url = "device_edit.php?id=".urlencode($row['device_uuid']);
 				if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
 					$list_row_url .= '&domain_uuid='.urlencode($row['domain_uuid']).'&domain_change=true';
@@ -482,13 +439,8 @@
 				echo "		<input type='hidden' name='devices[$x][uuid]' value='".escape($row['device_uuid'])."' />\n";
 				echo "	</td>\n";
 			}
-<<<<<<< HEAD
-			if (!empty($_GET['show']) && $_GET['show'] == "all" && $has_device_all) {
-				echo "	<td>".escape($domains[$row['domain_uuid']])."</td>\n";
-=======
 			if (!empty($_GET['show']) && $_GET['show'] == "all" && permission_exists('device_all')) {
 				echo "	<td>".escape($row['domain_name'])."</td>\n";
->>>>>>> develop
 			}
 			echo "	<td class='no-wrap'>";
 			echo $has_device_edit ? "<a href='".$list_row_url."'>".escape(format_device_address($row['device_address']))."</a>" : escape(format_device_address($row['device_address']));
@@ -518,11 +470,7 @@
 			echo "	</td>\n";
 			echo "	<td class='no-link'><a title='".escape($row['device_provisioned_agent'])."' href='javascript:void(0)'>".escape($row['provisioned_date_formatted'])." ".escape($row['provisioned_time_formatted'])."</a> &nbsp; ".escape($device_provisioned_method)." &nbsp; <a href='".escape($device_provisioned_method)."://".escape($row['device_provisioned_ip'])."' target='_blank'>".escape($row['device_provisioned_ip'])."</a>&nbsp;</td>\n";
 			echo "	<td class='description overflow hide-sm-dn'>".escape($row['device_description'])."&nbsp;</td>\n";
-<<<<<<< HEAD
-			if ($has_device_edit && $settings->get('theme', 'list_row_edit_button', 'false') === 'true') {
-=======
 			if (permission_exists('device_edit')  && $settings->get('theme', 'list_row_edit_button', false)) {
->>>>>>> develop
 				echo "	<td class='action-button'>";
 				echo button::create(['type'=>'button','title'=>$text['button-edit'],'icon'=>$settings->get('theme','button_icon_edit'),'link'=>$list_row_url]);
 				echo "	</td>\n";
@@ -546,7 +494,3 @@
 	require_once "resources/footer.php";
 
 ?>
-<<<<<<< HEAD
-=======
-
->>>>>>> develop

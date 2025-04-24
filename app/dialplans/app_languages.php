@@ -6,11 +6,7 @@ $text['title-dialplan_manager']['ar-eg'] = "مدير برنامج";
 $text['title-dialplan_manager']['de-at'] = "Wählplan Einstellungen";
 $text['title-dialplan_manager']['de-ch'] = "Wählplan Einstellungen";
 $text['title-dialplan_manager']['de-de'] = "Wählplan Einstellungen";
-<<<<<<< HEAD
-$text['title-dialplan_manager']['el-gr'] = "Dialplan Manager";
-=======
 $text['title-dialplan_manager']['el-gr'] = "Διαχειριστής διαλέξεων";
->>>>>>> develop
 $text['title-dialplan_manager']['es-cl'] = "Administrador de Plan de Marcado";
 $text['title-dialplan_manager']['es-mx'] = "Administrador de Plan de Marcado";
 $text['title-dialplan_manager']['fr-ca'] = "Gestion du plan de numérotation";
@@ -69,13 +65,8 @@ $text['title-dialplan_detail']['es-cl'] = "Detalle de Plan de Marcado";
 $text['title-dialplan_detail']['es-mx'] = "Detalle de Plan de Marcado";
 $text['title-dialplan_detail']['fr-ca'] = "Détail du plan de numérotation";
 $text['title-dialplan_detail']['fr-fr'] = "Détail du plan de numérotation";
-<<<<<<< HEAD
-$text['title-dialplan_detail']['he-il'] = "Dialplan מפורט";
-$text['title-dialplan_detail']['it-it'] = "Dialplan dettaglio";
-=======
 $text['title-dialplan_detail']['he-il'] = "פרטי חיוג";
 $text['title-dialplan_detail']['it-it'] = "Dettaglio del dial plan";
->>>>>>> develop
 $text['title-dialplan_detail']['ka-ge'] = "დარეკვის გეგმის დეტალები";
 $text['title-dialplan_detail']['nl-nl'] = "Kiesplan detail";
 $text['title-dialplan_detail']['pl-pl'] = "Szczegóły ialplanu";
@@ -417,15 +408,9 @@ $text['option-record']['ko-kr'] = "기록";
 $text['select-global']['en-us'] = "Global";
 $text['select-global']['en-gb'] = "Global";
 $text['select-global']['ar-eg'] = "عالمي";
-<<<<<<< HEAD
-$text['select-global']['de-at'] = "Global";
-$text['select-global']['de-ch'] = "Global";
-$text['select-global']['de-de'] = "Global";
-=======
 $text['select-global']['de-at'] = "Allgemein";
 $text['select-global']['de-ch'] = "Allgemein";
 $text['select-global']['de-de'] = "Allgemein";
->>>>>>> develop
 $text['select-global']['el-gr'] = "Παγκόσμια";
 $text['select-global']['es-cl'] = "Global";
 $text['select-global']['es-mx'] = "Global";
@@ -978,11 +963,7 @@ $text['option-dialplan']['nl-nl'] = "Kiesplan";
 $text['option-dialplan']['pl-pl'] = "plan wybierania";
 $text['option-dialplan']['pt-br'] = "plano de discagem";
 $text['option-dialplan']['pt-pt'] = "plano de discagem";
-<<<<<<< HEAD
-$text['option-dialplan']['ro-ro'] = "Dialplan";
-=======
 $text['option-dialplan']['ro-ro'] = "Plan de apelare";
->>>>>>> develop
 $text['option-dialplan']['ru-ru'] = "План Нумерации";
 $text['option-dialplan']['sv-se'] = "Nummerplan";
 $text['option-dialplan']['uk-ua'] = "Маршрутизація";
@@ -1459,17 +1440,10 @@ $text['label-tag']['de-de'] = "Bezeichnung";
 $text['label-tag']['el-gr'] = "Ετικέτα";
 $text['label-tag']['es-cl'] = "Etiqueta";
 $text['label-tag']['es-mx'] = "Etiqueta";
-<<<<<<< HEAD
-$text['label-tag']['fr-ca'] = "Tag";
-$text['label-tag']['fr-fr'] = "Tag";
-$text['label-tag']['he-il'] = "Tag Tag";
-$text['label-tag']['it-it'] = "Tag:";
-=======
 $text['label-tag']['fr-ca'] = "Étiqueter";
 $text['label-tag']['fr-fr'] = "Étiqueter";
 $text['label-tag']['he-il'] = "תָג";
 $text['label-tag']['it-it'] = "Etichetta";
->>>>>>> develop
 $text['label-tag']['ka-ge'] = "ჭდე";
 $text['label-tag']['nl-nl'] = "Etiket";
 $text['label-tag']['pl-pl'] = "Etykietka";
@@ -1687,11 +1661,7 @@ $text['label-data']['fr-fr'] = "Donnée";
 $text['label-data']['he-il'] = "מידע";
 $text['label-data']['it-it'] = "Dati";
 $text['label-data']['ka-ge'] = "მონაცემები";
-<<<<<<< HEAD
-$text['label-data']['nl-nl'] = "Data";
-=======
 $text['label-data']['nl-nl'] = "Gegevens";
->>>>>>> develop
 $text['label-data']['pl-pl'] = "Dane";
 $text['label-data']['pt-br'] = "Dados";
 $text['label-data']['pt-pt'] = "Dados";
@@ -2066,13 +2036,8 @@ $text['header-dialplan_detail']['es-cl'] = "Detalle de Plan de Marcado";
 $text['header-dialplan_detail']['es-mx'] = "Detalle de Plan de Marcado";
 $text['header-dialplan_detail']['fr-ca'] = "Détail du plan de numérotation";
 $text['header-dialplan_detail']['fr-fr'] = "Détail du plan de numérotation";
-<<<<<<< HEAD
-$text['header-dialplan_detail']['he-il'] = "Dialplan מפורט";
-$text['header-dialplan_detail']['it-it'] = "Dialplan dettaglio";
-=======
 $text['header-dialplan_detail']['he-il'] = "פירוט דיאלפלן";
 $text['header-dialplan_detail']['it-it'] = "Dettaglio del piano di selezione";
->>>>>>> develop
 $text['header-dialplan_detail']['ka-ge'] = "დარეკვის გეგმის დეტალები";
 $text['header-dialplan_detail']['nl-nl'] = "Kiesplan detail";
 $text['header-dialplan_detail']['pl-pl'] = "Szczegóły dialplanu";
@@ -2433,10 +2398,7 @@ $text['description-conditions_and_actions']['ro-ro'] = "Următoarele condiții, 
 $text['description-conditions_and_actions']['ru-ru'] = "Следующие условия, действия и противодействия используются в Плане Нумерации для направления потока вызовов. Используйте столько условий, действий или противодействий, сколько необходимо.";
 $text['description-conditions_and_actions']['sv-se'] = "Följande villkor, aktioner och anti-aktioner används i nummerplanen för samtalsflöden. Varje utförs i ordning. Använd så många villkor, aktioner eller anti-aktioner som behövs.";
 $text['description-conditions_and_actions']['uk-ua'] = "Наступні умови, дії і анти-дії в маршрутизації направляють потік дзвінка. Вони обробляються в заданому порядку. Використовуйте їх як завгодно.";
-<<<<<<< HEAD
-=======
 $text['description-conditions_and_actions']['tr-tr'] = "Arama akışını yönlendirmek için dialplan'da aşağıdaki koşullar, eylemler ve karşı eylemler kullanılır. Her biri verildiği sırayla işlenir. Gerektiği kadar koşul, eylem veya karşı eylem kullanın.";
->>>>>>> develop
 $text['description-conditions_and_actions']['zh-cn'] = "拨号计划中使用以下条件、操作和反操作来引导呼叫流程。 每个都按照给出的顺序进行处理。 根据需要使用尽可能多的条件、操作或反操作。";
 $text['description-conditions_and_actions']['ja-jp'] = "次の条件、アクション、およびアンチアクションは、コール フローを指示するためにダイヤルプランで使用されます。 それぞれは与えられた順に処理されます。 条件、アクション、またはアンチアクションを必要なだけ使用します。";
 $text['description-conditions_and_actions']['ko-kr'] = "통화 흐름을 지시하기 위해 다이얼플랜에서 다음 조건, 작업 및 방지 작업이 사용됩니다. 각각은 주어진 순서대로 처리됩니다. 필요에 따라 많은 조건, 조치 또는 반조치를 사용하십시오.";

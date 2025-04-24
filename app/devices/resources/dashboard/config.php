@@ -14,31 +14,19 @@ $array['dashboard'][$x]['dashboard_content_text_align'] = '';
 $array['dashboard'][$x]['dashboard_content_details'] = '';
 $array['dashboard'][$x]['dashboard_chart_type'] = '';
 $array['dashboard'][$x]['dashboard_label_enabled'] = 'true';
-<<<<<<< HEAD
-$array['dashboard'][$x]['dashboard_label_text_color'] = '';
-=======
 $array['dashboard'][$x]['dashboard_label_text_color'] = '#444444';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_number_background_color'] = '';
 $array['dashboard'][$x]['dashboard_number_text_color'] = '';
 $array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
-<<<<<<< HEAD
-$array['dashboard'][$x]['dashboard_background_color'] ='';
-=======
 $array['dashboard'][$x]['dashboard_background_color'] = '#ffffff';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_detail_background_color'] = '';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
 $array['dashboard'][$x]['dashboard_row_span'] = '2';
-<<<<<<< HEAD
-$array['dashboard'][$x]['dashboard_details_state'] = 'expanded';
-=======
 $array['dashboard'][$x]['dashboard_details_state'] = 'none';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_order'] = '150';
 $array['dashboard'][$x]['dashboard_enabled'] = 'false';
 $array['dashboard'][$x]['dashboard_description'] = 'Used to manage phone provisioned device keys.';
@@ -62,22 +50,14 @@ $array['dashboard'][$x]['dashboard_content_text_align'] = '';
 $array['dashboard'][$x]['dashboard_content_details'] = '';
 $array['dashboard'][$x]['dashboard_chart_type'] = '';
 $array['dashboard'][$x]['dashboard_label_enabled'] = 'true';
-<<<<<<< HEAD
-$array['dashboard'][$x]['dashboard_label_text_color'] = '';
-=======
 $array['dashboard'][$x]['dashboard_label_text_color'] = '#444444';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_number_background_color'] = '';
 $array['dashboard'][$x]['dashboard_number_text_color'] = '#0292ff';
 $array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
-<<<<<<< HEAD
-$array['dashboard'][$x]['dashboard_background_color'] ='';
-=======
 $array['dashboard'][$x]['dashboard_background_color'] = '#ffffff';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_detail_background_color'] = '';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';

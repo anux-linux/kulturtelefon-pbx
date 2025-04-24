@@ -78,16 +78,12 @@
 			$.ajax({
 				url: url,
 				success: function(response){
-<<<<<<< HEAD
-					$("#ajax_reponse").html(response);
-=======
 					$("#ajax_response").html(response);
 					const table = document.getElementById('calls_active');
 					var row_count = table.rows.length;
 					if (row_count > 0) { row_count = row_count - 1; }
 					const calls_active_count = document.getElementById('calls_active_count');
 					calls_active_count.innerHTML = row_count;
->>>>>>> develop
 				}
 			});
 			timer_id = setTimeout(ajax_get, refresh);
@@ -139,22 +135,6 @@
 	</script>
 
 <?php
-<<<<<<< HEAD
-
-//create simple array of users own extensions
-unset($_SESSION['user']['extensions']);
-if (is_array($_SESSION['user']['extension'])) {
-	foreach ($_SESSION['user']['extension'] as $assigned_extensions) {
-		$_SESSION['user']['extensions'][] = $assigned_extensions['user'];
-	}
-}
-
-echo "<div id='ajax_reponse'></div>\n";
-echo "<div id='cmd_response' style='display: none;'></div>\n";
-echo "<div id='time_stamp' style='visibility:hidden'>".date('Y-m-d-s')."</div>\n";
-echo "<br><br><br>";
-=======
->>>>>>> develop
 
 //create simple array of users own extensions
 	unset($_SESSION['user']['extensions']);

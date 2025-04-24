@@ -226,11 +226,7 @@
 
 //show the content
 	echo "<div class='action_bar' id='action_bar'>\n";
-<<<<<<< HEAD
-	echo "	<div class='heading'><b>".$text['title-call_block']." (".$num_rows.")</b></div>\n";
-=======
 	echo "	<div class='heading'><b>".$text['title-call_block']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
->>>>>>> develop
 	echo "	<div class='actions'>\n";
 	if (permission_exists('call_block_add')) {
 		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','link'=>'call_block_edit.php']);
@@ -313,10 +309,7 @@
 	if (!empty($result)) {
 		$x = 0;
 		foreach ($result as $row) {
-<<<<<<< HEAD
-=======
 			$list_row_url = '';
->>>>>>> develop
 			if (permission_exists('call_block_edit')) {
 				$list_row_url = "call_block_edit.php?id=".urlencode($row['call_block_uuid']);
 				if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
@@ -415,9 +408,5 @@
 //include the footer
 	require_once "resources/footer.php";
 
-<<<<<<< HEAD
-?>
-=======
 ?>
 
->>>>>>> develop

@@ -328,10 +328,6 @@
 								legend: {
 									display: true,
 									position: 'right',
-<<<<<<< HEAD
-									reverse: true,
-=======
->>>>>>> develop
 									labels: {
 										usePointStyle: true,
 										pointStyle: 'rect',

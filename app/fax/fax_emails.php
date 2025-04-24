@@ -17,11 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-<<<<<<< HEAD
-	Portions created by the Initial Developer are Copyright (C) 2015-2023
-=======
 	Portions created by the Initial Developer are Copyright (C) 2015-2025
->>>>>>> develop
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -41,11 +37,7 @@ $sql .= "where fax_email_connection_host <> '' ";
 $sql .= "and f.domain_uuid = d.domain_uuid ";
 $sql .= "and fax_email_connection_host is not null ";
 $sql .= "and fax_email_outbound_subject_tag is not null ";
-<<<<<<< HEAD
-$database = new database;
-=======
 $database = database::new();
->>>>>>> develop
 $result = $database->select($sql, null, 'all');
 unset($sql);
 
@@ -86,25 +78,6 @@ if (!empty($result) && @sizeof($result) != 0) {
 		$fax_accountcode = $row["accountcode"];
 		$fax_toll_allow = $row["fax_toll_allow"];
 
-<<<<<<< HEAD
-		//get event socket connection parameters
-		$setting = new settings(["domain_uuid" => $domain_uuid]);
-
-		$fax_cover_font_default =$setting->get('fax','cover_font');
-
-		$fax_allowed_extension_default = arr_to_map($setting->get('fax','allowed_extension'));
-		if($fax_allowed_extension_default == false){
-			$tmp = array('.pdf', '.tiff', '.tif');
-			$fax_allowed_extension_default = arr_to_map($tmp);
-		}
-
-		$fax_cover_font = $setting->get('fax','cover_font');
-		if(empty($fax_cover_font)){
-			$fax_cover_font = $fax_cover_font_default;
-		}
-
-		$fax_allowed_extension = arr_to_map($setting->get('fax','allowed_extension'));
-=======
 		//send the domain name to the command line output
 		if (!empty($fax_email_connection_host) && !empty($fax_email_connection_username)) {
 			echo "Domain Name: ".$domain_name."\n";
@@ -124,32 +97,15 @@ if (!empty($result) && @sizeof($result) != 0) {
 			$fax_allowed_extension_default = arr_to_map($tmp);
 		}
 		$fax_allowed_extension = arr_to_map($settings->get('fax','allowed_extension'));
->>>>>>> develop
 		if($fax_allowed_extension == false) {
 			$fax_allowed_extension = $fax_allowed_extension_default;
 		}
 
-<<<<<<< HEAD
-		//get domain name, set the domain_name variable
-		$sql = "select domain_name from v_domains where domain_uuid = :domain_uuid ";
-		$parameters['domain_uuid'] = $domain_uuid;
-		$database = new database;
-		$row = $database->select($sql, $parameters, 'row');
-		$domain_name = $row['domain_name'];
-		unset($sql, $parameters, $row);
-
-		//set needed variables
-		$fax_page_size = $setting->get('fax','page_size');
-		$fax_resolution = $setting->get('fax','resolution');
-		$fax_header = $setting->get('fax','cover_header');
-		$fax_footer = $setting->get('fax','cover_footer');
-=======
 		//set needed variables
 		$fax_page_size = $settings->get('fax','page_size');
 		$fax_resolution = $settings->get('fax','resolution');
 		$fax_header = $settings->get('fax','cover_header');
 		$fax_footer = $settings->get('fax','cover_footer');
->>>>>>> develop
 		$fax_sender = $fax_caller_id_name;
 
 		//open account connection
@@ -237,15 +193,6 @@ if (!empty($result) && @sizeof($result) != 0) {
 					$fax_message = '';
 
 					//Debug print
-<<<<<<< HEAD
-					print('attachments:' . "\n");
-					foreach ($message['attachments'] as $attachment){
-						print(' - ' . $attachment['type'] . ' - ' . $attachment['name'] . ': ' . $attachment['size'] . ' disposition: ' . $attachment['disposition'] . "\n");
-					}
-					print('messages:' . "\n");
-					foreach ($message['messages'] as $msg){
-						print(' - ' . $msg['type'] . ' - ' . $msg['size'] . "\n");
-=======
 					print('   Attachments:' . "\n");
 					foreach ($message['attachments'] as $attachment){
 						print('   ' . $attachment['type'] . ' - ' . $attachment['name'] . ': ' . $attachment['size'] . ' disposition: ' . $attachment['disposition'] . "\n");
@@ -253,7 +200,6 @@ if (!empty($result) && @sizeof($result) != 0) {
 					print('   Messages:' . "\n");
 					foreach ($message['messages'] as $msg){
 						print('   ' . $msg['type'] . ' - ' . $msg['size'] . "\n");
->>>>>>> develop
 						// print($msg['data']);
 						// print("\n--------------------------------------------------------\n");
 					}
@@ -272,21 +218,14 @@ if (!empty($result) && @sizeof($result) != 0) {
 					}
 
 					// set fax directory (used for pdf creation - cover and/or attachments)
-<<<<<<< HEAD
-					$fax_dir = $setting->get('switch','storage').'/fax'.(($domain_name != '') ? '/'.$domain_name : null);
-=======
 					$fax_dir = $settings->get('switch','storage').'/fax'.(($domain_name != '') ? '/'.$domain_name : null);
->>>>>>> develop
 
 					//handle attachments (if any)
 					$emailed_files = Array();
 					$attachments = $message['attachments'];
 					if (sizeof($attachments) > 0) {
 						foreach ($attachments as $attachment) {
-<<<<<<< HEAD
-=======
 							//get the fax file extension
->>>>>>> develop
 							$fax_file_extension = pathinfo($attachment['name'], PATHINFO_EXTENSION);
 
 							//block unknown files
@@ -346,12 +285,9 @@ if (!empty($result) && @sizeof($result) != 0) {
 		//close account connection
 		imap_close($connection);
 
-<<<<<<< HEAD
-=======
 		//add a line feed
 		echo "\n";
 	}
 }
 
->>>>>>> develop
 ?>

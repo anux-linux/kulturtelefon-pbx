@@ -67,8 +67,6 @@
   </macro>
 
   <macro name="voicemail_new_message_count">
-<<<<<<< HEAD
-=======
     <input pattern="^(1):(.*)$" break_on_match="true">
       <match>
         <action function="play-file" data="voicemail/vm-you_have.wav"/>
@@ -107,7 +105,6 @@
   </macro>
 
   <macro name="voicemail_deleted_message_count">
->>>>>>> develop
     <input pattern="^(1):(.*)$" break_on_match="true">
       <match>
         <action function="play-file" data="voicemail/vm-you_have.wav"/>
@@ -144,7 +141,7 @@
       </match>
     </input>
   </macro>
-  
+
   <macro name="voicemail_menu">
     <input pattern="^([0-9#*]):([0-9#*]):([0-9#*]):([0-9#*])$">
       <match>

@@ -1547,11 +1547,7 @@
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "1549a926-fcb5-4384-a237-83aa77170e5a";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "yealink_summer_time";
-<<<<<<< HEAD
-		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
-=======
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
->>>>>>> develop
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "2";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "It configures Daylight Saving Time (DST) feature. 0-Disabled, 1-Enabled, 2-Automatic (default)";
@@ -1746,13 +1742,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "fe750e00-906b-4ade-bb94-be3dd1d2f9f5";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "provision";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "yealink_ps_enabled";
-<<<<<<< HEAD
-		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "0";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Saving Enabled. Options: 0-Disabled, 1-Enabled";	
-		$y++;
-=======
 		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "0";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
@@ -1773,6 +1762,5 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Forced ringer volume: 0 - 15, default: empty";
->>>>>>> develop
 
 ?>

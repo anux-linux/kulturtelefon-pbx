@@ -324,34 +324,6 @@ $text['label-number_translation_details']['zh-cn'] = "细节";
 $text['label-number_translation_details']['ja-jp'] = "詳細";
 $text['label-number_translation_details']['ko-kr'] = "세부";
 
-<<<<<<< HEAD
-$text['description-number_translation_details']['en-us'] = "";
-$text['description-number_translation_details']['en-gb'] = "";
-$text['description-number_translation_details']['ar-eg'] = "";
-$text['description-number_translation_details']['de-at'] = "";
-$text['description-number_translation_details']['de-ch'] = "";
-$text['description-number_translation_details']['de-de'] = "";
-$text['description-number_translation_details']['el-gr'] = "";
-$text['description-number_translation_details']['es-cl'] = "";
-$text['description-number_translation_details']['es-mx'] = "";
-$text['description-number_translation_details']['fr-ca'] = "";
-$text['description-number_translation_details']['fr-fr'] = "";
-$text['description-number_translation_details']['he-il'] = "";
-$text['description-number_translation_details']['it-it'] = "";
-$text['description-number_translation_details']['ka-ge'] = "";
-$text['description-number_translation_details']['nl-nl'] = "";
-$text['description-number_translation_details']['pl-pl'] = "";
-$text['description-number_translation_details']['pt-br'] = "";
-$text['description-number_translation_details']['pt-pt'] = "";
-$text['description-number_translation_details']['ro-ro'] = "";
-$text['description-number_translation_details']['ru-ru'] = "";
-$text['description-number_translation_details']['sv-se'] = "";
-$text['description-number_translation_details']['uk-ua'] = "";
-$text['description-number_translation_details']['tr-tr'] = "";
-$text['description-number_translation_details']['zh-cn'] = "";
-$text['description-number_translation_details']['ja-jp'] = "";
-$text['description-number_translation_details']['ko-kr'] = "";
-=======
 $text['description-number_translation_details']['en-us'] = "Define the regular expression and replace string to format the number.";
 $text['description-number_translation_details']['en-gb'] = "Define the regular expression and replace string to format the number.";
 $text['description-number_translation_details']['ar-eg'] = "حدد التعبير العادي وسلسلة الاستبدال لتنسيق الرقم.";
@@ -378,7 +350,6 @@ $text['description-number_translation_details']['tr-tr'] = "Sayıyı biçimlendi
 $text['description-number_translation_details']['zh-cn'] = "定义正则表达式和替换字符串以格式化数字。";
 $text['description-number_translation_details']['ja-jp'] = "数値をフォーマットするための正規表現と置換文字列を定義します。";
 $text['description-number_translation_details']['ko-kr'] = "숫자를 포맷하기 위해 정규식과 교체 문자열을 정의합니다.";
->>>>>>> develop
 
 $text['label-number_translation_enabled']['en-us'] = "Enabled";
 $text['label-number_translation_enabled']['en-gb'] = "Enabled";

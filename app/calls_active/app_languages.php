@@ -650,8 +650,6 @@ $text['label-eavesdrop']['zh-cn'] = "窃听";
 $text['label-eavesdrop']['ja-jp'] = "盗聴";
 $text['label-eavesdrop']['ko-kr'] = "엿듣다";
 
-<<<<<<< HEAD
-=======
 $text['label-duration']['en-us'] = "Duration";
 $text['label-duration']['en-gb'] = "Duration";
 $text['label-duration']['ar-eg'] = "المدة";
@@ -679,7 +677,6 @@ $text['label-duration']['zh-cn'] = "期间";
 $text['label-duration']['ja-jp'] = "間隔";
 $text['label-duration']['ko-kr'] = "지속";
 
->>>>>>> develop
 $text['description-2']['en-us'] = "Use this to view all extensions and monitor and interact with active calls.";
 $text['description-2']['en-gb'] = "Use this to view all extensions and monitor and interact with active calls.";
 $text['description-2']['ar-eg'] = "استخدم هذا لعرض جميع الملحقات ومراقبة المكالمات النشطة والتفاعل معها.";

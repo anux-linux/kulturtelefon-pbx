@@ -143,11 +143,7 @@
 	echo 			"<option value='4096' ".($_POST['size'] == 4096 ? "selected='selected'" : null).">4096</option>";
 	echo 		"</select> ";
 	echo 		$text['label-size'];
-<<<<<<< HEAD
-	echo button::create(['type'=>'submit','label'=>$text['button-update'],'icon'=>$_SESSION['theme']['button_icon_save'],'style'=>'margin-left: 15px;','name'=>'submit']);
-=======
 	echo button::create(['type'=>'submit','label'=>$text['button-update'],'icon'=>$settings->get('theme', 'button_icon_save'),'style'=>'margin-left: 15px;','name'=>'submit']);
->>>>>>> develop
 	if (permission_exists('log_download')) {
 		echo button::create(['type'=>'button','label'=>$text['button-download'],'icon'=>$settings->get('theme', 'button_icon_download'),'style'=>'margin-left: 15px;','link'=>'log_viewer.php?a=download&n='.basename($log_file)]);
 	}
@@ -217,24 +213,10 @@
 
 		echo "<div style='padding-bottom: 10px; text-align: right; color: #fff; margin-bottom: 15px; border-bottom: 1px solid #fff;'>";
 		$user_file_size = '32768';
-<<<<<<< HEAD
-		if (isset($_POST['submit'])) {
-			if (!is_numeric($_POST['size'])) {
-				//should generate log warning here...
-				$user_file_size = 512 * 1024;
-			}
-			else {
-				$user_file_size = $_POST['size'] * 1024;
-			}
-			if (!empty($_REQUEST['filter'])) {
-				$filter = $_REQUEST['filter'];
-			}
-=======
 		
 		if (!is_numeric($_POST['size'])) {
 			//should generate log warning here...
 			$user_file_size = 512 * 1024;
->>>>>>> develop
 		}
 		else {
 			$user_file_size = $_POST['size'] * 1024;

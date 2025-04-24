@@ -26,16 +26,7 @@
 
 /**
  * switch class provides methods for copying switch_files
-<<<<<<< HEAD
- *
- * @method string correct_path
- * @method string copy_scripts
- * @method string copy_languages
  */
-if (!class_exists('switch_files')) {
-=======
- */
->>>>>>> develop
 	class switch_files {
 
 		/**

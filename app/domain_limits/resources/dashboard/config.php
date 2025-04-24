@@ -3,8 +3,6 @@
 $array['dashboard'][$x]['dashboard_uuid'] = '2f7a90cc-8d60-4df4-98ee-2ef4000afac7';
 $array['dashboard'][$x]['dashboard_name'] = 'Domain Limits';
 $array['dashboard'][$x]['dashboard_path'] = 'domain_limits/domain_limits';
-<<<<<<< HEAD
-=======
 $array['dashboard'][$x]['dashboard_icon'] = '';
 $array['dashboard'][$x]['dashboard_icon_color'] = '';
 $array['dashboard'][$x]['dashboard_url'] = '';
@@ -29,7 +27,6 @@ $array['dashboard'][$x]['dashboard_detail_background_color'] = '#ffffff';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
 $array['dashboard'][$x]['dashboard_row_span'] = '2';
 $array['dashboard'][$x]['dashboard_details_state'] = 'expanded';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_order'] = '120';
 $array['dashboard'][$x]['dashboard_enabled'] = 'false';
 $array['dashboard'][$x]['dashboard_description'] = '';

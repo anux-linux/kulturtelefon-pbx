@@ -5,11 +5,7 @@
 		$apps[$x]['uuid'] = '16589224-c876-aeb3-f59f-523a1c0801f7';
 		$apps[$x]['category'] = 'Switch';
 		$apps[$x]['subcategory'] = '';
-<<<<<<< HEAD
-		$apps[$x]['version'] = '2.0';
-=======
 		$apps[$x]['version'] = '2.1';
->>>>>>> develop
 		$apps[$x]['license'] = 'Mozilla Public License 1.1';
 		$apps[$x]['url'] = 'http://www.fusionpbx.com';
 		$apps[$x]['description']['en-us'] = "Queues are used to setup waiting lines for callers. Also known as FIFO Queues.";
@@ -34,51 +30,6 @@
 		$apps[$x]['description']['sv-se'] = "";
 		$apps[$x]['description']['uk-ua'] = "";
 
-<<<<<<< HEAD
-	//permission details
-		$y = 0;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_view';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_add';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_edit';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_delete';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_all';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_member_view';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_member_add';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_member_edit';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_member_delete';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		//$apps[$x]['permissions'][$y]['groups'][] = 'admin';
-		$y++;
-		$apps[$x]['permissions'][$y]['name'] = 'fifo_member_all';
-		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
-		$y++;
-
-	//queues
-		$y=0;
-=======
 	//destination details
 		$y=0;
 		$apps[$x]['destinations'][$y]['type'] = "sql";
@@ -143,7 +94,6 @@
 
 	//queues
 		$y=0;
->>>>>>> develop
 		$apps[$x]['db'][$y]['table']['name'] = 'v_fifo';
 		$apps[$x]['db'][$y]['table']['parent'] = '';
 		$z=0;
@@ -190,21 +140,16 @@
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = 'A feature code for the agent to login or logout of the Queue.';
 		$z++;
-<<<<<<< HEAD
-=======
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "fifo_strategy";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['search'] = 'true';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Select the strategy.";
 		$z++;
->>>>>>> develop
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fifo_members';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 		$z++;
-<<<<<<< HEAD
-=======
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fifo_timeout_seconds';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
@@ -220,7 +165,6 @@
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = '';
 		$z++;
->>>>>>> develop
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = 'fifo_music';
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = 'text';
 		$apps[$x]['db'][$y]['fields'][$z]['search_by'] = '';

@@ -17,11 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-<<<<<<< HEAD
-	Portions created by the Initial Developer are Copyright (C) 2008-2023
-=======
 	Portions created by the Initial Developer are Copyright (C) 2008-2025
->>>>>>> develop
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -99,11 +95,7 @@
 				if (($show == 'all' && permission_exists('call_active_all'))) {
 					$rows[] = $row;
 				}
-<<<<<<< HEAD
-				elseif ($row['domain_name'] == $_SESSION['domain_name']) {
-=======
 				elseif ($row['domain_name'] == $domain_name) {
->>>>>>> develop
 					$rows[] = $row;
 				}
 		}
@@ -113,10 +105,6 @@
 
 //if the connnection is available then run it and return the results
 	if (!$event_socket) {
-<<<<<<< HEAD
-
-=======
->>>>>>> develop
 		$msg = "<div align='center'>".$text['confirm-socket']."<br /></div>";
 		echo "<div align='center'>\n";
 		echo "<table width='40%'>\n";
@@ -149,169 +137,11 @@
 	echo "\n";
 	echo "</style>\n";
 
-<<<<<<< HEAD
-		//show content
-			echo "<div class='action_bar' id='action_bar'>\n";
-			echo "	<div class='heading'><b>".$text['title']." (".$num_rows.")</b></div>\n";
-			echo "	<div class='actions'>\n";
-			echo "		<span id='refresh_state'>".button::create(['type'=>'button','title'=>$text['label-refresh_pause'],'icon'=>'sync-alt fa-spin','onclick'=>'refresh_stop()'])."</span>";
-			if (permission_exists('call_active_eavesdrop') && !empty($_SESSION['user']['extensions'])) {
-				if (sizeof($_SESSION['user']['extensions']) > 1) {
-					echo "	<input type='hidden' id='eavesdrop_dest' value=\"".(($_REQUEST['eavesdrop_dest'] == '') ? $_SESSION['user']['extension'][0]['destination'] : escape($_REQUEST['eavesdrop_dest']))."\">\n";
-					echo "	<i class='fas fa-headphones' style='margin-left: 15px; cursor: help;' title='".$text['description-eavesdrop_destination']."' align='absmiddle'></i>\n";
-					echo "	<select class='formfld' style='margin-right: 5px;' align='absmiddle' onchange=\"document.getElementById('eavesdrop_dest').value = this.options[this.selectedIndex].value; refresh_start();\" onfocus='refresh_stop();'>\n";
-					if (is_array($_SESSION['user']['extensions'])) {
-						foreach ($_SESSION['user']['extensions'] as $user_extension) {
-							echo "	<option value='".escape($user_extension)."' ".(($_REQUEST['eavesdrop_dest'] == $user_extension) ? "selected" : null).">".escape($user_extension)."</option>\n";
-						}
-					}
-					echo "	</select>\n";
-				}
-				else if (sizeof($_SESSION['user']['extensions']) == 1) {
-					echo "	<input type='hidden' id='eavesdrop_dest' value=\"".escape($_SESSION['user']['extension'][0]['destination'])."\">\n";
-				}
-			}
-			if (permission_exists('call_active_hangup') && $rows) {
-				echo button::create(['type'=>'button','label'=>$text['label-hangup'],'icon'=>'phone-slash','id'=>'btn_delete','onclick'=>"refresh_stop(); modal_open('modal-hangup','btn_hangup');"]);
-			}
-			if (permission_exists('call_active_all')) {
-				if ($show == "all") {
-					echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'link'=>'calls_active.php','onmouseover'=>'refresh_stop()','onmouseout'=>'refresh_start()']);
-				}
-				else {
-					echo button::create(['type'=>'button','label'=>$text['button-show_all'],'icon'=>$_SESSION['theme']['button_icon_all'],'link'=>'calls_active.php?show=all','onmouseover'=>'refresh_stop()','onmouseout'=>'refresh_start()']);
-				}
-			}
-			echo "	</div>\n";
-			echo "	<div style='clear: both;'></div>\n";
-			echo "</div>\n";
-
-			if (permission_exists('call_active_hangup') && $rows) {
-				echo modal::create(['id'=>'modal-hangup','type'=>'general','message'=>$text['confirm-hangups'],'actions'=>button::create(['type'=>'button','label'=>$text['label-hangup'],'icon'=>'check','id'=>'btn_hangup','style'=>'float: right; margin-left: 15px;','collapse'=>'never','onclick'=>"modal_close(); list_action_set('hangup'); list_form_submit('form_list');"])]);
-			}
-
-			echo $text['description']."\n";
-			echo "<br /><br />\n";
-
-		//show the results
-			echo "<div id='cmd_reponse'></div>\n";
-
-			echo "<form id='form_list' method='post' action='calls_exec.php'>\n";
-			echo "<input type='hidden' id='action' name='action' value=''>\n";
-
-			echo "<table class='list'>\n";
-			echo "<tr class='list-header'>\n";
-			if (permission_exists('call_active_hangup')) {
-				echo "	<th class='checkbox'>\n";
-				echo "		<input type='checkbox' id='checkbox_all' name='checkbox_all' onclick='if (this.checked) { refresh_stop(); } else { refresh_start(); } list_all_toggle();' ".(empty($rows) ? "style='visibility: hidden;'" : null).">\n";
-				echo "	</th>\n";
-			}
-			echo "	<th>".$text['label-profile']."</th>\n";
-			echo "	<th>".$text['label-created']."</th>\n";
-			if ($show == 'all') {
-				echo "	<th>".$text['label-domain']."</th>\n";
-			}
-			echo "	<th>".$text['label-number']."</th>\n";
-			echo "	<th>".$text['label-cid-name']."</th>\n";
-			echo "	<th>".$text['label-cid-number']."</th>\n";
-			echo "	<th>".$text['label-destination']."</th>\n";
-			echo "	<th>".$text['label-app']."</th>\n";
-			echo "	<th>".$text['label-codec']."</th>\n";
-			echo "	<th>".$text['label-secure']."</th>\n";
-			if (permission_exists('call_active_eavesdrop') || permission_exists('call_active_hangup')) {
-				echo "	<th>&nbsp;</th>\n";
-			}
-			echo "</tr>\n";
-
-			if (is_array($rows)) {
-				$x = 0;
-				foreach ($rows as $row) {
-
-					//set the php variables
-						foreach ($row as $key => $value) {
-							$$key = $value;
-						}
-
-					//get the sip profile
-						$name_array = explode("/", $name);
-						$sip_profile = $name_array[1];
-						$sip_uri = $name_array[2];
-
-					//get the number
-						$temp_array = explode("@", $sip_uri);
-						$tmp_number = $temp_array[0];
-						$tmp_number = str_replace("sip:", "", $tmp_number);
-
-					//remove the '+' because it breaks the call recording
-						$cid_num = str_replace("+", "", $cid_num);
-
-					//replace gateway uuid with name
-						if (is_array($_SESSION['gateways']) && sizeof($_SESSION['gateways']) > 0) {
-							foreach ($_SESSION['gateways'] as $gateway_uuid => $gateway_name) {
-								$application_data = str_replace($gateway_uuid, $gateway_name, $application_data);
-							}
-						}
-
-					// reduce too long app data
-						if(strlen($application_data) > 512) {
-							$application_data = substr($application_data, 0, 512) . '...';
-						}
-
-					//send the html
-						echo "<tr class='list-row'>\n";
-						if (permission_exists('call_active_hangup')) {
-							echo "	<td class='checkbox'>\n";
-							echo "		<input type='checkbox' name='calls[$x][checked]' id='checkbox_".$x."' value='true' onclick=\"if (this.checked) { refresh_stop(); } else { document.getElementById('checkbox_all').checked = false; }\">\n";
-							echo "		<input type='hidden' name='calls[$x][uuid]' value='".escape($uuid)."' />\n";
-							echo "	</td>\n";
-						}
-						echo "	<td>".escape($sip_profile)."&nbsp;</td>\n";
-						echo "	<td>".escape($created)."&nbsp;</td>\n";
-						if ($show == 'all') {
-							echo "	<td>".escape($domain_name)."&nbsp;</td>\n";
-						}
-						echo "	<td>".escape($tmp_number)."&nbsp;</td>\n";
-						echo "	<td>".escape($cid_name)."&nbsp;</td>\n";
-						echo "	<td>".escape($cid_num)."&nbsp;</td>\n";
-						echo "	<td>".escape($dest)."&nbsp;</td>\n";
-						echo "	<td>".(!empty($application) ? escape($application).":".escape($application_data) : null)."&nbsp;</td>\n";
-						echo "	<td>".escape($read_codec).":".escape($read_rate)." / ".escape($write_codec).":".escape($write_rate)."&nbsp;</td>\n";
-						echo "	<td>".escape($secure)."&nbsp;</td>\n";
-						if (permission_exists('call_active_eavesdrop') || permission_exists('call_active_hangup')) {
-							echo "	<td class='button right' style='padding-right: 0;'>\n";
-							//eavesdrop
-							if (permission_exists('call_active_eavesdrop') && $callstate == 'ACTIVE' && !empty($_SESSION['user']['extensions']) && !in_array($cid_num, $_SESSION['user']['extensions'])) {
-								echo button::create(['type'=>'button','label'=>$text['label-eavesdrop'],'icon'=>'headphones','collapse'=>'hide-lg-dn','onclick'=>"if (confirm('".$text['confirm-eavesdrop']."')) { eavesdrop_call('".escape($cid_num)."','".escape($uuid)."'); } else { this.blur(); return false; }",'onmouseover'=>'refresh_stop()','onmouseout'=>'refresh_start()']);
-							}
-							//hangup
-							if (permission_exists('call_active_hangup')) {
-								echo button::create(['type'=>'button','label'=>$text['label-hangup'],'icon'=>'phone-slash','collapse'=>'hide-lg-dn','onclick'=>"if (confirm('".$text['confirm-hangup']."')) { list_self_check('checkbox_".$x."'); list_action_set('hangup'); list_form_submit('form_list'); } else { this.blur(); return false; }",'onmouseover'=>'refresh_stop()','onmouseout'=>'refresh_start()']);
-							}
-							echo "</td>\n";
-						}
-						echo "</tr>\n";
-
-					//unset the domain name
-						unset($domain_name);
-
-					//increment counter
-						$x++;
-				}
-				unset($rows);
-			}
-
-			echo "</table>\n";
-
-			echo "<input type='hidden' name='".$token['name']."' value='".$token['hash']."'>\n";
-
-			echo "</form>\n";
-=======
 //show the results
 	echo "<div id='cmd_reponse'></div>\n";
 
 	echo "<form id='form_list' method='post' action='calls_exec.php'>\n";
 	echo "<input type='hidden' id='action' name='action' value=''>\n";
->>>>>>> develop
 
 	echo "<div class='card'>\n";
 	echo "	<table id='calls_active' class='list'>\n";

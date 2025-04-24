@@ -243,197 +243,6 @@ $text['label-name']['zh-cn'] = "姓名";
 $text['label-name']['ja-jp'] = "名前";
 $text['label-name']['ko-kr'] = "이름";
 
-<<<<<<< HEAD
-$text['label-minutes']['en-us'] = "Minutes";
-$text['label-minutes']['en-gb'] = "Minutes";
-$text['label-minutes']['ar-eg'] = "دقائق";
-$text['label-minutes']['de-at'] = "Minuten";
-$text['label-minutes']['de-ch'] = "Minuten";
-$text['label-minutes']['de-de'] = "Minuten";
-$text['label-minutes']['el-gr'] = "Λεπτά";
-$text['label-minutes']['es-cl'] = "Minutos";
-$text['label-minutes']['es-mx'] = "Minutos";
-$text['label-minutes']['fr-ca'] = "Minutes";
-$text['label-minutes']['fr-fr'] = "Minutes";
-$text['label-minutes']['he-il'] = "דקות";
-$text['label-minutes']['it-it'] = "Minuti";
-$text['label-minutes']['ka-ge'] = "წუთი";
-$text['label-minutes']['nl-nl'] = "Minuten";
-$text['label-minutes']['pl-pl'] = "Ilość minut";
-$text['label-minutes']['pt-br'] = "Minutos";
-$text['label-minutes']['pt-pt'] = "Minutos";
-$text['label-minutes']['ro-ro'] = "Minute";
-$text['label-minutes']['ru-ru'] = "Минут";
-$text['label-minutes']['sv-se'] = "Minuter";
-$text['label-minutes']['uk-ua'] = "Хвилини";
-$text['label-minutes']['tr-tr'] = "dakika";
-$text['label-minutes']['zh-cn'] = "分钟";
-$text['label-minutes']['ja-jp'] = "分";
-$text['label-minutes']['ko-kr'] = "분";
-
-$text['label-hours']['en-us'] = "Hours";
-$text['label-hours']['en-gb'] = "Hours";
-$text['label-hours']['ar-eg'] = "ساعات";
-$text['label-hours']['de-at'] = "Stunden";
-$text['label-hours']['de-ch'] = "Stunden";
-$text['label-hours']['de-de'] = "Stunden";
-$text['label-hours']['el-gr'] = "Ωρες";
-$text['label-hours']['es-cl'] = "Horas";
-$text['label-hours']['es-mx'] = "Horas";
-$text['label-hours']['fr-ca'] = "Heures";
-$text['label-hours']['fr-fr'] = "Heures";
-$text['label-hours']['he-il'] = "שעה (ות";
-$text['label-hours']['it-it'] = "Ore";
-$text['label-hours']['ka-ge'] = "საათი";
-$text['label-hours']['nl-nl'] = "Uur";
-$text['label-hours']['pl-pl'] = "Godziny";
-$text['label-hours']['pt-br'] = "Horas ";
-$text['label-hours']['pt-pt'] = "Horas";
-$text['label-hours']['ro-ro'] = "Ore";
-$text['label-hours']['ru-ru'] = "Часов";
-$text['label-hours']['sv-se'] = "Timmar";
-$text['label-hours']['uk-ua'] = "Години";
-$text['label-hours']['tr-tr'] = "Saat";
-$text['label-hours']['zh-cn'] = "小时";
-$text['label-hours']['ja-jp'] = "時間";
-$text['label-hours']['ko-kr'] = "시간";
-
-$text['label-end']['en-us'] = "End";
-$text['label-end']['en-gb'] = "End";
-$text['label-end']['ar-eg'] = "نهاية";
-$text['label-end']['de-at'] = "Ende";
-$text['label-end']['de-ch'] = "Ende";
-$text['label-end']['de-de'] = "Ende";
-$text['label-end']['el-gr'] = "Τέλος";
-$text['label-end']['es-cl'] = "Fin";
-$text['label-end']['es-mx'] = "Fin";
-$text['label-end']['fr-ca'] = "Fin";
-$text['label-end']['fr-fr'] = "Fin";
-$text['label-end']['he-il'] = "סוֹף";
-$text['label-end']['it-it'] = "Fine";
-$text['label-end']['ka-ge'] = "დასასრული";
-$text['label-end']['nl-nl'] = "Einde";
-$text['label-end']['pl-pl'] = "Koniec";
-$text['label-end']['pt-br'] = "Fim";
-$text['label-end']['pt-pt'] = "Fim";
-$text['label-end']['ro-ro'] = "Sfârşit";
-$text['label-end']['ru-ru'] = "Конец";
-$text['label-end']['sv-se'] = "Slut";
-$text['label-end']['uk-ua'] = "Кінець";
-$text['label-end']['tr-tr'] = "Son";
-$text['label-end']['zh-cn'] = "结尾";
-$text['label-end']['ja-jp'] = "終わり";
-$text['label-end']['ko-kr'] = "끝";
-
-$text['label-download']['en-us'] = "Number";
-$text['label-download']['en-gb'] = "Number";
-$text['label-download']['ar-eg'] = "رقم";
-$text['label-download']['de-at'] = "Nummer";
-$text['label-download']['de-ch'] = "Nummer";
-$text['label-download']['de-de'] = "Nummer";
-$text['label-download']['el-gr'] = "Αριθμός";
-$text['label-download']['es-cl'] = "Número";
-$text['label-download']['es-mx'] = "Número";
-$text['label-download']['fr-ca'] = "Numéro";
-$text['label-download']['fr-fr'] = "Numéro";
-$text['label-download']['he-il'] = "מספר";
-$text['label-download']['it-it'] = "Numero";
-$text['label-download']['ka-ge'] = "ნომერი";
-$text['label-download']['nl-nl'] = "Nummer";
-$text['label-download']['pl-pl'] = "Numer";
-$text['label-download']['pt-br'] = "Número";
-$text['label-download']['pt-pt'] = "Número";
-$text['label-download']['ro-ro'] = "Număr";
-$text['label-download']['ru-ru'] = "Номер";
-$text['label-download']['sv-se'] = "Nummer";
-$text['label-download']['uk-ua'] = "Скачати";
-$text['label-download']['tr-tr'] = "Sayı";
-$text['label-download']['zh-cn'] = "数字";
-$text['label-download']['ja-jp'] = "番号";
-$text['label-download']['ko-kr'] = "숫자";
-
-$text['label-direction']['en-us'] = "Direction";
-$text['label-direction']['en-gb'] = "Direction";
-$text['label-direction']['ar-eg'] = "اتجاه";
-$text['label-direction']['de-at'] = "Richtung";
-$text['label-direction']['de-ch'] = "Richtung";
-$text['label-direction']['de-de'] = "Richtung";
-$text['label-direction']['el-gr'] = "Κατεύθυνση";
-$text['label-direction']['es-cl'] = "Dirección";
-$text['label-direction']['es-mx'] = "Dirección";
-$text['label-direction']['fr-ca'] = "Direction";
-$text['label-direction']['fr-fr'] = "Direction";
-$text['label-direction']['he-il'] = "כיוון";
-$text['label-direction']['it-it'] = "Direzione";
-$text['label-direction']['ka-ge'] = "მიმართულება";
-$text['label-direction']['nl-nl'] = "Richting";
-$text['label-direction']['pl-pl'] = "Kierunek";
-$text['label-direction']['pt-br'] = "Direção";
-$text['label-direction']['pt-pt'] = "Direcção";
-$text['label-direction']['ro-ro'] = "Direcţie";
-$text['label-direction']['ru-ru'] = "Направление";
-$text['label-direction']['sv-se'] = "Riktning";
-$text['label-direction']['uk-ua'] = "Напрям";
-$text['label-direction']['tr-tr'] = "Yön";
-$text['label-direction']['zh-cn'] = "方向";
-$text['label-direction']['ja-jp'] = "方向";
-$text['label-direction']['ko-kr'] = "방향";
-
-$text['label-days']['en-us'] = "Days";
-$text['label-days']['en-gb'] = "Days";
-$text['label-days']['ar-eg'] = "أيام";
-$text['label-days']['de-at'] = "Tage";
-$text['label-days']['de-ch'] = "Tage";
-$text['label-days']['de-de'] = "Tage";
-$text['label-days']['el-gr'] = "Ημέρες";
-$text['label-days']['es-cl'] = "Días";
-$text['label-days']['es-mx'] = "Días";
-$text['label-days']['fr-ca'] = "Jours";
-$text['label-days']['fr-fr'] = "Jours";
-$text['label-days']['he-il'] = "ימים";
-$text['label-days']['it-it'] = "Giorni";
-$text['label-days']['ka-ge'] = "დღე";
-$text['label-days']['nl-nl'] = "Dagen";
-$text['label-days']['pl-pl'] = "Dni";
-$text['label-days']['pt-br'] = "Dias";
-$text['label-days']['pt-pt'] = "Dias";
-$text['label-days']['ro-ro'] = "Zile";
-$text['label-days']['ru-ru'] = "Дни";
-$text['label-days']['sv-se'] = "Dagar";
-$text['label-days']['uk-ua'] = "Дні";
-$text['label-days']['tr-tr'] = "Günler";
-$text['label-days']['zh-cn'] = "天";
-$text['label-days']['ja-jp'] = "日々";
-$text['label-days']['ko-kr'] = "날";
-
-$text['label-date']['en-us'] = "Date";
-$text['label-date']['en-gb'] = "Date";
-$text['label-date']['ar-eg'] = "تاريخ";
-$text['label-date']['de-at'] = "Datum";
-$text['label-date']['de-ch'] = "Datum";
-$text['label-date']['de-de'] = "Datum";
-$text['label-date']['el-gr'] = "Ημερομηνία";
-$text['label-date']['es-cl'] = "Fecha";
-$text['label-date']['es-mx'] = "Fecha";
-$text['label-date']['fr-ca'] = "Date";
-$text['label-date']['fr-fr'] = "Date";
-$text['label-date']['he-il'] = "תַאֲרִיך";
-$text['label-date']['it-it'] = "Data";
-$text['label-date']['ka-ge'] = "თარიღი";
-$text['label-date']['nl-nl'] = "Datum";
-$text['label-date']['pl-pl'] = "Data";
-$text['label-date']['pt-br'] = "Data";
-$text['label-date']['pt-pt'] = "Data";
-$text['label-date']['ro-ro'] = "Data";
-$text['label-date']['ru-ru'] = "Дата";
-$text['label-date']['sv-se'] = "Datum";
-$text['label-date']['uk-ua'] = "Дата";
-$text['label-date']['tr-tr'] = "Tarih";
-$text['label-date']['zh-cn'] = "日期";
-$text['label-date']['ja-jp'] = "日にち";
-$text['label-date']['ko-kr'] = "날짜";
-
-=======
 $text['label-volume']['en-us'] = "Volume";
 $text['label-volume']['en-gb'] = "Volume";
 $text['label-volume']['ar-eg'] = "الحجم";
@@ -649,7 +458,6 @@ $text['label-date']['zh-cn'] = "日期";
 $text['label-date']['ja-jp'] = "日にち";
 $text['label-date']['ko-kr'] = "날짜";
 
->>>>>>> develop
 $text['label-calls-per-minute']['en-us'] = "Calls Per Min";
 $text['label-calls-per-minute']['en-gb'] = "Calls Per Min";
 $text['label-calls-per-minute']['ar-eg'] = "المكالمات في الدقيقة";
@@ -3754,13 +3562,8 @@ $text['label-call_center_queue']['zh-cn'] = "呼叫中心队列";
 $text['label-call_center_queue']['ja-jp'] = "コールセンターのキュー";
 $text['label-call_center_queue']['ko-kr'] = "콜센터 대기열";
 
-<<<<<<< HEAD
-$text['description_search']['en-us'] = "<u>Note</u>: Destination and Caller ID (CID) Name fields support the use of an <i>asterisk</i> ('*') as a wildcard character.";
-$text['description_search']['en-gb'] = "<u>Note</u>: Destination and Caller ID (CID) Name fields support the use of an <i>asterisk</i> ('*') as a wildcard character.";
-=======
 $text['description_search']['en-us'] = "Destination and Caller ID (CID) Name fields support the use of an <i>asterisk</i> ('*') as a wildcard character.";
 $text['description_search']['en-gb'] = "Destination and Caller ID (CID) Name fields support the use of an <i>asterisk</i> ('*') as a wildcard character.";
->>>>>>> develop
 $text['description_search']['ar-eg'] = "يدعم حقلا الوجهة واسم تعريف المتصل استخدام علامة النجمة كحرف بدل.";
 $text['description_search']['de-at'] = "Info: Ziel und Anruferkennung (CID) Namesfelder unterstützen die Verwendung von Stern ('*') als Wildcard Zeichen.";
 $text['description_search']['de-ch'] = "Info: Ziel und Anruferkennung (CID) Namesfelder unterstützen die Verwendung von Stern ('*') als Wildcard Zeichen.";
@@ -3771,11 +3574,7 @@ $text['description_search']['es-mx'] = "<u>Atención</u>: Destino y el identific
 $text['description_search']['fr-ca'] = "<u>Attention</u>: Destination et identification de l'appelant (CID) champs Nom appuient l'utilisation de <i>l'astérisque</i> ('*') comme un caractère générique.";
 $text['description_search']['fr-fr'] = "<u>Attention</u>: Destination et identification de l'appelant (CID) champs Nom appuient l'utilisation de <i>l'astérisque</i> ('*') comme un caractère générique.";
 $text['description_search']['he-il'] = "השדות 'יעד' ו'שם זיהוי מתקשר' תומכים בשימוש בכוכבית כתו כללי.";
-<<<<<<< HEAD
-$text['description_search']['it-it'] = "<u>Nota</u>: Destinazione e ID Nome Chiamante (CID) supportano l'uso di un <i>asterisco</i> ('*') come carattere jolly.";
-=======
 $text['description_search']['it-it'] = "Destinazione e ID Nome Chiamante (CID) supportano l'uso di un <i>asterisco</i> ('*') come carattere jolly.";
->>>>>>> develop
 $text['description_search']['ka-ge'] = "<u>შენიშვნა</u>: სამიზნე და დამრეკის ID (CID) სახელის ველებს აქვთ <i>ვარსკვლავის</i> ('*') მხარდაჭერა ვაილდქარდის სიმბოლოდ.";
 $text['description_search']['nl-nl'] = "De velden Destination en Caller Identification Name ondersteunen het gebruik van een sterretje als jokerteken.";
 $text['description_search']['pl-pl'] = "Uwaga: Następujące pola: numer dzwoniącego i odbiorcy rozmowy, prezentacja numeru oraz nazwy wspierają gwiazdkę (‘*’) jako symbol wieloznaczny.";
@@ -4323,9 +4122,6 @@ $text['label-text']['zh-cn'] = "文本";
 $text['label-text']['ja-jp'] = "文章";
 $text['label-text']['ko-kr'] = "텍스트";
 
-<<<<<<< HEAD
-?>
-=======
 $text['label-ring_group']['en-us'] = "Ring Group";
 $text['label-ring_group']['en-gb'] = "Ring Group";
 $text['label-ring_group']['ar-eg'] = "فريق الاعتماد";
@@ -4352,4 +4148,3 @@ $text['label-ring_group']['tr-tr'] = "Yüzük Grubu";
 $text['label-ring_group']['zh-cn'] = "环组";
 $text['label-ring_group']['ja-jp'] = "リンググループ";
 $text['label-ring_group']['ko-kr'] = "링 그룹";
->>>>>>> develop

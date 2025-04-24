@@ -4,8 +4,6 @@ $x++;
 $array['dashboard'][$x]['dashboard_uuid'] = 'b9d92260-eaf7-4c05-a51e-3083e25516b3';
 $array['dashboard'][$x]['dashboard_name'] = 'Switch Status';
 $array['dashboard'][$x]['dashboard_path'] = 'switch/switch_status';
-<<<<<<< HEAD
-=======
 $array['dashboard'][$x]['dashboard_icon'] = '';
 $array['dashboard'][$x]['dashboard_icon_color'] = '';
 $array['dashboard'][$x]['dashboard_url'] = '';
@@ -30,7 +28,6 @@ $array['dashboard'][$x]['dashboard_detail_background_color'] = '#ffffff';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
 $array['dashboard'][$x]['dashboard_row_span'] = '2';
 $array['dashboard'][$x]['dashboard_details_state'] = 'hidden';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_order'] = '105';
 $array['dashboard'][$x]['dashboard_enabled'] = 'false';
 $array['dashboard'][$x]['dashboard_description'] = 'Switch details such as version, uptime, channels and registrations.';

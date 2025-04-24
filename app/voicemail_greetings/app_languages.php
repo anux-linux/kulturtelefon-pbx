@@ -191,32 +191,6 @@ $text['message-greeting_selected']['ko-kr'] = "인사말 선택됨";
 
 $text['message-greeting_created']['en-us'] = "Greeting Created";
 $text['message-greeting_created']['en-gb'] = "Greeting Created";
-<<<<<<< HEAD
-$text['message-greeting_created']['ar-eg'] = "";
-$text['message-greeting_created']['de-at'] = "";
-$text['message-greeting_created']['de-ch'] = "";
-$text['message-greeting_created']['de-de'] = "";
-$text['message-greeting_created']['el-gr'] = "";
-$text['message-greeting_created']['es-cl'] = "";
-$text['message-greeting_created']['es-mx'] = "";
-$text['message-greeting_created']['fr-ca'] = "";
-$text['message-greeting_created']['fr-fr'] = "";
-$text['message-greeting_created']['he-il'] = "";
-$text['message-greeting_created']['it-it'] = "";
-$text['message-greeting_created']['ka-ge'] = "მისალმება შეიქმნა";
-$text['message-greeting_created']['nl-nl'] = "";
-$text['message-greeting_created']['pl-pl'] = "";
-$text['message-greeting_created']['pt-br'] = "";
-$text['message-greeting_created']['pt-pt'] = "";
-$text['message-greeting_created']['ro-ro'] = "";
-$text['message-greeting_created']['ru-ru'] = "";
-$text['message-greeting_created']['sv-se'] = "";
-$text['message-greeting_created']['uk-ua'] = "";
-$text['message-greeting_created']['tr-tr'] = "";
-$text['message-greeting_created']['zh-cn'] = "";
-$text['message-greeting_created']['ja-jp'] = "";
-$text['message-greeting_created']['ko-kr'] = "";
-=======
 $text['message-greeting_created']['ar-eg'] = "تم إنشاء التحية";
 $text['message-greeting_created']['de-at'] = "Begrüßung erstellt";
 $text['message-greeting_created']['de-ch'] = "Begrüßung erstellt";
@@ -241,7 +215,6 @@ $text['message-greeting_created']['tr-tr'] = "Hoş geldiniz oluşturuldu";
 $text['message-greeting_created']['zh-cn'] = "问候已创建";
 $text['message-greeting_created']['ja-jp'] = "挨拶が作成されました";
 $text['message-greeting_created']['ko-kr'] = "인사말이 생성되었습니다";
->>>>>>> develop
 
 $text['label-tools']['en-us'] = "Tools";
 $text['label-tools']['en-gb'] = "Tools";
@@ -809,8 +782,5 @@ $text['description-message']['tr-tr'] = "Kayıt mesajı.";
 $text['description-message']['zh-cn'] = "录音消息。";
 $text['description-message']['ja-jp'] = "録音メッセージ。";
 $text['description-message']['ko-kr'] = "녹음 메시지입니다.";
-<<<<<<< HEAD
 
 ?>
-=======
->>>>>>> develop

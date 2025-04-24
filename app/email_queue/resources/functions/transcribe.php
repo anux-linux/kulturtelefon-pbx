@@ -9,18 +9,6 @@ if (!function_exists('transcribe')) {
 			}
 
 		//get the email queue settings
-<<<<<<< HEAD
-			$setting = new settings(['category' => 'voicemail']);
-
-		//transcription variables
-			$transcribe_provider = $setting->get('voicemail', 'transcribe_provider');
-			$transcribe_language = $setting->get('voicemail', 'transcribe_language');
-
-		//transcribe - watson
-			if ($transcribe_provider == 'watson') {
-				$api_key = $setting->get('voicemail', 'watson_key');
-				$api_url = $setting->get('voicemail', 'watson_url');
-=======
 			$settings = new settings(['category' => 'voicemail']);
 
 		//transcription variables
@@ -31,7 +19,6 @@ if (!function_exists('transcribe')) {
 			if ($transcribe_provider == 'watson') {
 				$api_key = $settings->get('voicemail', 'watson_key');
 				$api_url = $settings->get('voicemail', 'watson_url');
->>>>>>> develop
 
 				if ($file_extension == "mp3") {
 					$content_type = 'audio/mp3';
@@ -131,19 +118,11 @@ if (!function_exists('transcribe')) {
 
 		//transcribe - google
 			if ($transcribe_provider == 'google') {
-<<<<<<< HEAD
-				$api_key = $setting->get('voicemail', 'google_key');
-				$api_url = $setting->get('voicemail', 'google_url');
-				$application_credentials = $setting->get('voicemail', 'google_application_credentials');
-				$transcribe_language =  $setting->get('voicemail', 'transcribe_language');
-				$transcribe_alternate_language = $setting->get('voicemail', 'transcribe_alternate_language');
-=======
 				$api_key = $settings->get('voicemail', 'google_key');
 				$api_url = $settings->get('voicemail', 'google_url');
 				$application_credentials = $settings->get('voicemail', 'google_application_credentials');
 				$transcribe_language =  $settings->get('voicemail', 'transcribe_language');
 				$transcribe_alternate_language = $settings->get('voicemail', 'transcribe_alternate_language');
->>>>>>> develop
 
 				if (!isset($transcribe_language) && empty($transcribe_language)) {
 					$transcribe_language = 'en-US';
@@ -157,11 +136,6 @@ if (!function_exists('transcribe')) {
 				if ($file_extension == "wav") {
 					$content_type = 'audio/wav';
 				}
-<<<<<<< HEAD
-				
-=======
-
->>>>>>> develop
 				//version 1
 				if (substr($api_url, 0, 32) == 'https://speech.googleapis.com/v1') {
 					if (isset($api_key) && $api_key != '') {
@@ -220,13 +194,8 @@ if (!function_exists('transcribe')) {
 
 		//transcribe - azure
 			if ($transcribe_provider == 'azure') {
-<<<<<<< HEAD
-				$api_key = $setting->get('voicemail', 'azure_key');
-				$api_url = $setting->get('voicemail', 'azure_server_region');
-=======
 				$api_key = $settings->get('voicemail', 'azure_key');
 				$api_url = $settings->get('voicemail', 'azure_server_region');
->>>>>>> develop
 
 				if (empty($transcribe_language)) {
 					$transcribe_language = 'en-US';
@@ -271,13 +240,8 @@ if (!function_exists('transcribe')) {
 			// transcribe - custom
 			// Works with self-hostable transcription service at https://github.com/AccelerateNetworks/an-transcriptions
 			if ($transcribe_provider == 'custom') {
-<<<<<<< HEAD
-				$api_key = $setting->get('voicemail', 'api_key');
-				$api_url = $setting->get('voicemail', 'transcription_server');
-=======
 				$api_key = $settings->get('voicemail', 'api_key');
 				$api_url = $settings->get('voicemail', 'transcription_server');
->>>>>>> develop
 
 				if (empty($transcribe_language)) {
 					$transcribe_language = 'en-US';
@@ -357,15 +321,9 @@ if (!function_exists('transcribe')) {
 		//		openai_url
 		//		openai_model
 			if ($transcribe_provider == 'openai') {
-<<<<<<< HEAD
-				$api_key = $setting->get('voicemail', 'openai_key');
-				$api_url = $setting->get('voicemail', 'openai_url');
-				$api_voice_model = $setting->get('voicemail', 'openai_model');
-=======
 				$api_key = $settings->get('voicemail', 'openai_key');
 				$api_url = $settings->get('voicemail', 'openai_url');
 				$api_voice_model = $settings->get('voicemail', 'openai_model');
->>>>>>> develop
 
 				if (empty($api_url)) {
 					$api_url = "https://api.openai.com/v1/audio/transcriptions";
@@ -380,11 +338,7 @@ if (!function_exists('transcribe')) {
 					$full_file_name = $file_path.'/'.$file_name ;
 
 					//start output buffer
-<<<<<<< HEAD
-					ob_start();  
-=======
 					ob_start();
->>>>>>> develop
 					$out = fopen('php://output', 'w');
 
 					//create the curl resource
@@ -411,11 +365,6 @@ if (!function_exists('transcribe')) {
 
 					//execute the curl with the options
 					$http_content = curl_exec($ch);
-<<<<<<< HEAD
-									
-=======
-
->>>>>>> develop
 					//return the error
 					if (curl_errno($ch)) {
 						echo 'Error:' . curl_error($ch);
@@ -429,15 +378,9 @@ if (!function_exists('transcribe')) {
 					$debug = ob_get_clean();
 					echo $debug;
 
-<<<<<<< HEAD
-					
-					$ob = json_decode($http_content, true);
-					
-=======
 
 					$ob = json_decode($http_content, true);
 
->>>>>>> develop
 					$message = $ob['text'];
 					return array(
 						'provider' => $transcribe_provider,

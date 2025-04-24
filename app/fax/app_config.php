@@ -91,14 +91,11 @@
 		$apps[$x]['permissions'][$y]['menu']['uuid'] = "9c9642e4-2b9b-2785-18d0-6c0a4ede2b2f";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
-<<<<<<< HEAD
-=======
 		$apps[$x]['permissions'][$y]['groups'][] = "fax";
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = "fax_sent_recipient";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
->>>>>>> develop
 		$apps[$x]['permissions'][$y]['groups'][] = "fax";
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = "fax_sent_delete";
@@ -260,14 +257,11 @@
 		$apps[$x]['permissions'][$y]['name'] = "fax_email";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
-<<<<<<< HEAD
-=======
 		$apps[$x]['permissions'][$y]['groups'][] = "fax";
 		$y++;
 		$apps[$x]['permissions'][$y]['name'] = "fax_email_confirmation";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
->>>>>>> develop
 		$apps[$x]['permissions'][$y]['groups'][] = "fax";
 
 	//default settings
@@ -569,14 +563,11 @@
 		$apps[$x]['db'][$y]['fields'][$z]['search'] = 'true';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "";
 		$z++;
-<<<<<<< HEAD
-=======
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "fax_email_confirmation";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['search'] = 'true';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Delivery addresses for fax confirmations";
 		$z++;
->>>>>>> develop
 		$apps[$x]['db'][$y]['fields'][$z]['name']['text'] = "fax_file";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['search'] = 'true';

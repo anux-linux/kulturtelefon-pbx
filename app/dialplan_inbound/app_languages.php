@@ -66,11 +66,7 @@ $text['option-username']['es-mx'] = "Nombre de usuario";
 $text['option-username']['fr-ca'] = "Nom d'utilisateur";
 $text['option-username']['fr-fr'] = "Nom d'utilisateur";
 $text['option-username']['he-il'] = "שם המשתמש";
-<<<<<<< HEAD
-$text['option-username']['it-it'] = "Username";
-=======
 $text['option-username']['it-it'] = "Nome utente";
->>>>>>> develop
 $text['option-username']['ka-ge'] = "მომხმარებლის სახელი";
 $text['option-username']['nl-nl'] = "Gebruikersnaam";
 $text['option-username']['pl-pl'] = "Użytkownik";
@@ -151,11 +147,7 @@ $text['option-public']['es-mx'] = "Público";
 $text['option-public']['fr-ca'] = "Publique";
 $text['option-public']['fr-fr'] = "Publique";
 $text['option-public']['he-il'] = "הציבור";
-<<<<<<< HEAD
-$text['option-public']['it-it'] = "Public";
-=======
 $text['option-public']['it-it'] = "Pubblico";
->>>>>>> develop
 $text['option-public']['ka-ge'] = "საჯარო";
 $text['option-public']['nl-nl'] = "Openbaar";
 $text['option-public']['pl-pl'] = "Publiczny";
@@ -292,13 +284,8 @@ $text['option-caller_id_number']['fr-fr'] = "Numéro d'appelant";
 $text['option-caller_id_number']['he-il'] = "מספר זיהוי מתקשר";
 $text['option-caller_id_number']['it-it'] = "ID Numero Chiamante";
 $text['option-caller_id_number']['ka-ge'] = "CID ნომერი";
-<<<<<<< HEAD
-$text['option-caller_id_number']['nl-nl'] = "CID nummer";
-$text['option-caller_id_number']['pl-pl'] = "Prezentacja numeru dzwoniącego";
-=======
 $text['option-caller_id_number']['nl-nl'] = "Beller-ID-nummer";
 $text['option-caller_id_number']['pl-pl'] = "Numer identyfikacyjny dzwoniącego";
->>>>>>> develop
 $text['option-caller_id_number']['pt-br'] = "Número do ID do Chamador";
 $text['option-caller_id_number']['pt-pt'] = "Número do Chamador";
 $text['option-caller_id_number']['ro-ro'] = "Numărul de identificare a apelantului";

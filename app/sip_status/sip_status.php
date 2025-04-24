@@ -348,10 +348,7 @@
 		echo trim(escape($response));
 		echo "</pre>\n";
 		echo "</div>";
-<<<<<<< HEAD
-=======
 		echo "</div>";
->>>>>>> develop
 	}
 
 //include the footer

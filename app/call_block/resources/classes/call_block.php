@@ -456,9 +456,5 @@
 		} //method
 
 	} //class
-<<<<<<< HEAD
-}
 
 ?>
-=======
->>>>>>> develop

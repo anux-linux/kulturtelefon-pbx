@@ -126,11 +126,7 @@
 	$offset = $rows_per_page * $page;
 
 //get the list
-<<<<<<< HEAD
-	$sql = "select b.bridge_uuid, d.domain_name, b.bridge_name, b.bridge_destination, bridge_enabled, bridge_description ";
-=======
 	$sql = "select d.domain_uuid, b.bridge_uuid, d.domain_name, b.bridge_name, b.bridge_destination, bridge_enabled, bridge_description ";
->>>>>>> develop
 	$sql .= "from v_bridges as b, v_domains as d ";
 	$sql .= "where b.domain_uuid = d.domain_uuid ";
 	if (!empty($show) && $show == "all" && permission_exists('bridge_all')) {
@@ -164,11 +160,7 @@
 	echo "	<div class='heading'><b>".$text['title-bridges']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 	echo "	<div class='actions'>\n";
 	if (permission_exists('bridge_import')) {
-<<<<<<< HEAD
-		echo button::create(['type'=>'button','label'=>$text['button-import'],'icon'=>$_SESSION['theme']['button_icon_import'],'style'=>'margin-right: 15px;','link'=>'bridge_imports.php']);
-=======
 		echo button::create(['type'=>'button','label'=>$text['button-import'],'icon'=>$settings->get('theme', 'button_icon_import'),'style'=>'margin-right: 15px;','link'=>'bridge_imports.php']);
->>>>>>> develop
 	}
 	if (permission_exists('bridge_add')) {
 		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','link'=>'bridge_edit.php']);

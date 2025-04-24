@@ -6,7 +6,7 @@
         <!--<action function="play-file" data="voicemail/vm-enter_id.wav"/>-->
         <!--<action function="say" data="$1" method="pronounced" type="name_spelled"/>-->
         <action function="play-file" data="voicemail/vm-knappa_in_din_anknytning_foljt_av.wav"/>
-          <action function="say" data="$1" method="pronounced" type="name_spelled"/>
+        <action function="say" data="$1" method="pronounced" type="name_spelled"/>
       </match>
     </input>
   </macro>
@@ -82,7 +82,7 @@
         <!--<action function="play-file" data="voicemail/vm-$2.wav"/>-->
         <!--<action function="play-file" data="voicemail/vm-message.wav"/>-->
         <action function="play-file" data="voicemail/vm-du_har.wav"/>
-        <action function="play-file" data="voicemail/vm-inga.wav"/> 
+        <action function="play-file" data="voicemail/vm-inga.wav"/>
         <action function="play-file" data="voicemail/vm-meddelanden.wav"/>
       </match>
     </input>
@@ -96,11 +96,7 @@
     </input>
   </macro>
 
-<<<<<<< HEAD
-    <macro name="voicemail_saved_message_count">
-=======
   <macro name="voicemail_saved_message_count">
->>>>>>> develop
     <input pattern="^(1):(.*)$" break_on_match="true">
       <match>
         <!--<action function="play-file" data="voicemail/vm-you_have.wav"/>-->
@@ -108,11 +104,9 @@
         <!--<action function="play-file" data="voicemail/vm-$2.wav"/>-->
         <!--<action function="play-file" data="voicemail/vm-message.wav"/>-->
         <action function="play-file" data="voicemail/vm-du_har.wav"/>
-        <action function="play-file" data="voicemail/vm-inga.wav"/> 
+        <action function="play-file" data="voicemail/vm-inga.wav"/>
         <action function="play-file" data="voicemail/vm-meddelanden.wav"/>
       </match>
-<<<<<<< HEAD
-=======
     </input>
     <input pattern="^(\d+):(.*)$">
       <match>
@@ -132,7 +126,6 @@
         <action function="play-file" data="voicemail/vm-$2.wav"/>
         <action function="play-file" data="voicemail/vm-message.wav"/>
       </match>
->>>>>>> develop
     </input>
     <input pattern="^(\d+):(.*)$">
       <match>

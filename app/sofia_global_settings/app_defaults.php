@@ -4,11 +4,7 @@ if ($domains_processed == 1) {
 
 	//get all of the sofia global default settings
 		$sql = "select * from v_sofia_global_settings \n";
-<<<<<<< HEAD
-		$sofia_global_settings = $database->select($sql, null, 'all');
-=======
 		$database_settings = $database->select($sql, null, 'all');
->>>>>>> develop
 
 	//build array
 		$x = 0;

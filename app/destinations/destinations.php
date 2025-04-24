@@ -202,10 +202,7 @@
 	$sql .= " d.destination_area_code, ";
 	$sql .= " d.destination_number, ";
 	$sql .= " d.destination_actions, ";
-<<<<<<< HEAD
-=======
 	$sql .= " d.destination_cid_name_prefix, ";
->>>>>>> develop
 	$sql .= " d.destination_context, ";
 	$sql .= " d.destination_caller_id_name, ";
 	$sql .= " d.destination_caller_id_number, ";
@@ -226,10 +223,7 @@
 		$sql .= "and (";
 		$sql .= " lower(destination_type) like :search ";
 		$sql .= " or lower(destination_number) like :search ";
-<<<<<<< HEAD
-=======
 		$sql .= " or lower(destination_cid_name_prefix) like :search ";
->>>>>>> develop
 		$sql .= " or lower(destination_context) like :search ";
 		$sql .= " or lower(destination_accountcode) like :search ";
 		if (permission_exists('outbound_caller_id_select')) {
@@ -427,12 +421,9 @@
 
 			if (!$show == "all") {
 				echo "	<td class='overflow' style='min-width: 125px;'>".$row['actions']."&nbsp;</td>\n";
-<<<<<<< HEAD
-=======
 			}
 			if (permission_exists("destination_cid_name_prefix")) {
 				echo "	<td>".escape($row['destination_cid_name_prefix'])."&nbsp;</td>\n";
->>>>>>> develop
 			}
 			if (permission_exists("destination_context")) {
 				echo "	<td>".escape($row['destination_context'])."&nbsp;</td>\n";

@@ -28,15 +28,9 @@
 	if ($domains_processed == 1) {
 
 		//create the directory
-<<<<<<< HEAD
-			if (!empty($setting->get('switch','extensions'))) {
-				if (!is_dir($setting->get('switch','extensions'))) {
-					mkdir($setting->get('switch','extensions'), 0770, false);
-=======
 			if (!empty($settings->get('switch','extensions'))) {
 				if (!is_dir($settings->get('switch','extensions'))) {
 					mkdir($settings->get('switch','extensions'), 0770, false);
->>>>>>> develop
 				}
 			}
 

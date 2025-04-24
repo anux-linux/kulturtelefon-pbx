@@ -117,11 +117,6 @@
 		$esl = event_socket::create();
 		if ($esl->is_connected()) {
 			$result = event_socket::api('show application');
-<<<<<<< HEAD
-			
-=======
-
->>>>>>> develop
 			$show_applications = explode("\n\n", $result);
 			$raw_applications = explode("\n", $show_applications[0]);
 			unset($result);

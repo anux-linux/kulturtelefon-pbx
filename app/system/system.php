@@ -49,15 +49,9 @@
 	if (permission_exists("system_view_support")) {
 		$setting_size = !empty($_SESSION["editor"]["font_size"]["text"]) ? $_SESSION["editor"]["font_size"]["text"] : '12px';
 		$setting_theme = !empty($_SESSION["editor"]["theme"]["text"]) ? $_SESSION["editor"]["theme"]["text"] : 'cobalt';
-<<<<<<< HEAD
-		$setting_invisibles = !empty($_SESSION["editor"]["invisibles"]["boolean"]) ? $_SESSION["editor"]["invisibles"]["boolean"] : 'false';
-		$setting_indenting = !empty($_SESSION["editor"]["indent_guides"]["boolean"]) ? $_SESSION["editor"]["indent_guides"]["boolean"] : 'false';
-		$setting_numbering = !empty($_SESSION["editor"]["line_numbers"]["boolean"]) ? $_SESSION["editor"]["line_numbers"]["boolean"] : 'true';
-=======
 		$setting_invisibles = isset($_SESSION['editor']['invisibles']['text']) ? $_SESSION['editor']['invisibles']["text"] : 'false';
 		$setting_indenting = isset($_SESSION['editor']['indent_guides']['text']) ? $_SESSION['editor']['indent_guides']["text"]: 'false';
 		$setting_numbering = isset($_SESSION['editor']['line_numbers']['text']) ? $_SESSION['editor']['line_numbers']["text"] : 'true';
->>>>>>> develop
 	}
 
 //additional includes
@@ -144,13 +138,8 @@
 		echo "</tr>\n";
 
 		$git_path = $system_information['git']['path'];
-<<<<<<< HEAD
-		if(file_exists($git_path)){
-			if($system_information['git']['status'] === 'unknown'){
-=======
 		if (file_exists($git_path)){
 			if ($system_information['git']['status'] === 'unknown') {
->>>>>>> develop
 				echo "<tr>\n";
 				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 				echo "		".$text['label-git_info']."\n";
@@ -159,12 +148,8 @@
 				echo "		".$text['label-git_corrupted']."\n";
 				echo "	</td>\n";
 				echo "</tr>\n";
-<<<<<<< HEAD
-			}else{
-=======
 			}
 			else {
->>>>>>> develop
 				echo "<tr>\n";
 				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 				echo "		".$text['label-git_info']."\n";
@@ -195,11 +180,7 @@
 			echo "	</td>\n";
 			echo "	<td class=\"row_style1\">{$system_information['switch']['version']} ({$system_information['switch']['bits']})</td>\n";
 			echo "</tr>\n";
-<<<<<<< HEAD
-			if($system_information['switch']['git']['info'] !== 'connection failed'){
-=======
 			if ($system_information['switch']['git']['info'] !== 'connection failed') {
->>>>>>> develop
 				echo "<tr>\n";
 				echo "	<td width='20%' class=\"vncell\" style='text-align: left;'>\n";
 				echo "		".$text['label-switch']." ".$text['label-git_info']."\n";
@@ -282,10 +263,7 @@
 //memory information
 	if (permission_exists('system_view_ram')) {
 		if ($system_information['os']['mem'] !== 'unknown' && $system_information['os']['mem'] !== 'permission denied') {
-<<<<<<< HEAD
-=======
 			echo "<div class='card'>\n";
->>>>>>> develop
 			echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
 			echo "<tr>\n";
 			echo "	<th colspan='2' align='left' valign='top'>".$text['title-mem']."</th>\n";
@@ -301,21 +279,14 @@
 			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
-<<<<<<< HEAD
-			echo "<br /><br />";
-=======
 			echo "</div>\n";
->>>>>>> develop
 		}
 	}
 
 //cpu information
 	if (permission_exists('system_view_cpu')) {
 		if ($system_information['os']['cpu'] !== 'unknown' && $system_information['os']['cpu'] !== 'permission denied') {
-<<<<<<< HEAD
-=======
 			echo "<div class='card'>\n";
->>>>>>> develop
 			echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
 			echo "<tr>\n";
 			echo "	<th class='th' colspan='2' align='left' valign='top'>".$text['title-cpu']."</th>\n";
@@ -331,23 +302,14 @@
 			echo "	</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
-<<<<<<< HEAD
-			echo "<br /><br />";
-=======
 			echo "</div>\n";
->>>>>>> develop
 		}
 	}
 
 //drive space
 	if (permission_exists('system_view_hdd')) {
 		if (stristr(PHP_OS, 'Linux') || stristr(PHP_OS, 'FreeBSD')) {
-<<<<<<< HEAD
-			echo "<!--\n";
-			echo "-->\n";
-=======
 			echo "<div class='card'>\n";
->>>>>>> develop
 			echo "<table width=\"100%\" border=\"0\" cellpadding=\"7\" cellspacing=\"0\">\n";
 			echo "<tr>\n";
 			echo "	<th class='th' colspan='2' align='left'>".$text['title-drive']."</th>\n";

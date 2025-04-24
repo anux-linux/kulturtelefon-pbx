@@ -54,14 +54,6 @@
 		$domain_name = $_SESSION['domain_name'];
 		$user_uuid = $_SESSION['user_uuid'];
 
-<<<<<<< HEAD
-	//initialize the settings object
-		if (empty($settings)) {
-			$setting = new settings(["domain_uuid" => $domain_uuid]);
-		}
-
-=======
->>>>>>> develop
 	//check permissions
 		if (permission_exists('fax_send')) {
 			//access granted
@@ -127,21 +119,12 @@
 		}
 
 	//set the fax directory
-<<<<<<< HEAD
-		if (!empty($setting->get('switch','storage'))) {
-			$fax_dir = $setting->get('switch','storage').'/fax/'.$domain_name;
-		}
-
-	//set fax cover font to generate pdf
-		$fax_cover_font = $setting->get('fax','cover_font') ?? null;
-=======
 		if (!empty($settings->get('switch','storage'))) {
 			$fax_dir = $settings->get('switch','storage').'/fax/'.$domain_name;
 		}
 
 	//set fax cover font to generate pdf
 		$fax_cover_font = $settings->get('fax','cover_font') ?? null;
->>>>>>> develop
 }
 
 //define function correct_path
@@ -186,16 +169,6 @@ if (!function_exists('fax_split_dtmf')) {
 			$dir_fax_temp = $fax_dir.'/'.$fax_extension.'/temp';
 
 		//make sure the directories exist
-<<<<<<< HEAD
-			if (!empty($setting->get('switch','storage')) && !is_dir($setting->get('switch','storage'))) {
-				mkdir($setting->get('switch','storage'), 0770);
-			}
-			if (!empty($setting->get('switch','storage')) && !is_dir($setting->get('switch','storage').'/fax')) {
-				mkdir($setting->get('switch','storage').'/fax', 0770);
-			}
-			if (!empty($setting->get('switch','storage')) && !is_dir($setting->get('switch','storage').'/fax/'.$domain_name)) {
-				mkdir($setting->get('switch','storage').'/fax/'.$domain_name, 0770);
-=======
 			if (!empty($settings->get('switch','storage')) && !is_dir($settings->get('switch','storage'))) {
 				mkdir($settings->get('switch','storage'), 0770);
 			}
@@ -204,7 +177,6 @@ if (!function_exists('fax_split_dtmf')) {
 			}
 			if (!empty($settings->get('switch','storage')) && !is_dir($settings->get('switch','storage').'/fax/'.$domain_name)) {
 				mkdir($settings->get('switch','storage').'/fax/'.$domain_name, 0770);
->>>>>>> develop
 			}
 			if (!is_dir($fax_dir.'/'.$fax_extension)) {
 				mkdir($fax_dir.'/'.$fax_extension, 0770);
@@ -327,11 +299,7 @@ if (!function_exists('fax_split_dtmf')) {
 		}
 
 		//un/authorized file extensions
-<<<<<<< HEAD
-		$allowed_file_extensions = $setting->get('fax','allowed_extension');
-=======
 		$allowed_file_extensions = $settings->get('fax','allowed_extension');
->>>>>>> develop
 		$disallowed_file_extensions = explode(',','sh,ssh,so,dll,exe,bat,vbs,zip,rar,z,tar,tbz,tgz,gz');
 
 		//process uploaded or emailed files (if any)
@@ -440,21 +408,6 @@ if (!function_exists('fax_split_dtmf')) {
 
 			//logo
 			$display_logo = false;
-<<<<<<< HEAD
-			if (empty($setting->get('fax','cover_logo'))) {
-				$logo = ''; //explicitly empty
-			}
-			else if ($setting->get('fax','cover_logo') != '') {
-				if (substr($setting->get('fax','cover_logo'), 0, 4) == 'http') {
-					$logo = $setting->get('fax','cover_logo');
-				}
-				else if (substr($setting->get('fax','cover_logo'), 0, 1) == '/') {
-					if (substr($setting->get('fax','cover_logo'), 0, strlen($_SERVER['DOCUMENT_ROOT'])) != $_SERVER['DOCUMENT_ROOT']) {
-						$logo = $_SERVER['DOCUMENT_ROOT'].$setting->get('fax','cover_logo');
-					}
-					else {
-						$logo = $setting->get('fax','cover_logo');
-=======
 			if (empty($settings->get('fax','cover_logo'))) {
 				$logo = ''; //explicitly empty
 			}
@@ -468,7 +421,6 @@ if (!function_exists('fax_split_dtmf')) {
 					}
 					else {
 						$logo = $settings->get('fax','cover_logo');
->>>>>>> develop
 					}
 				}
 			}
@@ -542,16 +494,9 @@ if (!function_exists('fax_split_dtmf')) {
 			//field values
 			$pdf->SetFont($pdf_font, "", 12);
 			$pdf->SetXY($x + 2.0, $y + 1.65);
-<<<<<<< HEAD
-			if ($_REQUEST['submit'] != '' && $_REQUEST['submit'] != 'preview') {
-				$time_zone = isset($_SESSION['domain']['time_zone']['name']) ? $_SESSION['domain']['time_zone']['name'] : date_default_timezone_get();
-				$date = new DateTime('now', new DateTimeZone($time_zone) );
-				$pdf->Write(0.3, $date->format('d M Y'));
-=======
 			if (defined('STDIN') || ($_REQUEST['submit'] != '' && $_REQUEST['submit'] != 'preview')) {
 				$date = new DateTime('now', new DateTimeZone( $settings->get('domain','time_zone', date_default_timezone_get() ) ));
 				$pdf->Write(0.3, $date->format('d M Y @ h:i:s A'));
->>>>>>> develop
 			}
 			$pdf->SetXY($x + 2.0, $y + 1.95);
 			if ($fax_recipient != '') {
@@ -730,11 +675,7 @@ if (!function_exists('fax_split_dtmf')) {
 		}
 		
 		//prepare variables send the fax
-<<<<<<< HEAD
-		$mail_from_address = (!empty($setting->get('fax','smtp_from'))) ? $setting->get('fax','smtp_from') : $setting->get('email','smtp_from');
-=======
 		$mail_from_address = (!empty($settings->get('fax','smtp_from'))) ? $settings->get('fax','smtp_from') : $settings->get('email','smtp_from');
->>>>>>> develop
 
 		//get the fax mail to address and fax prefix
 		$sql = "select * from v_fax where fax_uuid = :fax_uuid ";
@@ -809,11 +750,7 @@ if (!function_exists('fax_split_dtmf')) {
 		$fax_file = $dir_fax_sent."/".$fax_instance_uuid.".tif";
 		$common_variables = "fax_queue_uuid=".$fax_queue_uuid.",";
 		$common_variables .= "fax_uuid="   . $fax_uuid . ",";
-<<<<<<< HEAD
-		//$common_variables .= "accountcode='".$fax_accountcode."',";
-=======
 		$common_variables .= "accountcode='".$fax_accountcode."',";
->>>>>>> develop
 		$common_variables .= "sip_h_accountcode='".$fax_accountcode."',";
 		$common_variables .= "domain_uuid=".$domain_uuid.",";
 		$common_variables .= "domain_name=".$domain_name.",";
@@ -827,11 +764,8 @@ if (!function_exists('fax_split_dtmf')) {
 		if (!empty($provider_prefix)) {
 			$common_variables .= "provider_prefix='".$provider_prefix."',";
 		}
-<<<<<<< HEAD
-=======
 		$common_variables .= "hangup_after_bridge=true,";
 		$common_variables .= "continue_on_fail=true,";
->>>>>>> develop
 
 		if (!empty($fax_numbers)) {
 			foreach ($fax_numbers as $fax_number) {
@@ -869,11 +803,7 @@ if (!function_exists('fax_split_dtmf')) {
 
 					//send the external call
 					$fax_variables = '';
-<<<<<<< HEAD
-					foreach($setting->get('fax','variable') as $variable) {
-=======
 					foreach($settings->get('fax','variable') as $variable) {
->>>>>>> develop
 						$fax_variables .= $variable.",";
 					}
 				}
@@ -900,10 +830,7 @@ if (!function_exists('fax_split_dtmf')) {
 				$array['fax_queue'][0]['hostname'] = gethostname();
 				$array['fax_queue'][0]['fax_caller_id_name'] = $fax_caller_id_name;
 				$array['fax_queue'][0]['fax_caller_id_number'] = $fax_caller_id_number;
-<<<<<<< HEAD
-=======
 				$array['fax_queue'][0]['fax_recipient'] = $fax_recipient;
->>>>>>> develop
 				$array['fax_queue'][0]['fax_number'] = $fax_number;
 				$array['fax_queue'][0]['fax_prefix'] = $fax_prefix;
 				$array['fax_queue'][0]['fax_email_address'] = $mail_to_address;
@@ -915,11 +842,7 @@ if (!function_exists('fax_split_dtmf')) {
 				$array['fax_queue'][0]['fax_command'] = 'originate '.$dial_string;
 
 				//add temporary permisison
-<<<<<<< HEAD
-				$p = new permissions;
-=======
 				$p = permissions::new();
->>>>>>> develop
 				$p->add('fax_queue_add', 'temp');
 
 				//save the data
@@ -972,11 +895,7 @@ if (!defined('STDIN')) {
 		$sql .= "and cp.phone_type_fax = 1 ";
 		$sql .= "and cp.phone_number is not null ";
 		$sql .= "and cp.phone_number <> '' ";
-<<<<<<< HEAD
-		if ($setting->get('contact','permissions') == "true") {
-=======
 		if ($settings->get('contact','permissions', false)) {
->>>>>>> develop
 			if (is_array($user_group_uuids) && @sizeof($user_group_uuids) != 0) {
 				//only show contacts assigned to current user's group(s) and those not assigned to any group
 				$sql .= "and (";
@@ -1092,11 +1011,7 @@ if (!defined('STDIN')) {
 		echo "<div class='action_bar' id='action_bar'>\n";
 		echo "	<div class='heading'><b>".$text['header-new_fax']."</b></div>\n";
 		echo "	<div class='actions'>\n";
-<<<<<<< HEAD
-		echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$setting->get('theme','button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'fax.php']);
-=======
 		echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme','button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'fax.php']);
->>>>>>> develop
 		if ($domain_enabled == true) {
 		echo button::create(['type'=>'submit','label'=>$text['button-preview'],'icon'=>'eye','name'=>'submit','value'=>'preview']);
 		echo button::create(['type'=>'submit','label'=>$text['button-send'],'icon'=>'paper-plane','id'=>'btn_save','name'=>'submit','value'=>'send','style'=>'margin-left: 15px;']);
@@ -1119,11 +1034,7 @@ if (!defined('STDIN')) {
 		echo "	".$text['label-fax-header']."\n";
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
-<<<<<<< HEAD
-		echo "	<input type='text' name='fax_header' class='formfld' style='' value='".($setting->get('fax','cover_header') ?? '')."'>\n";
-=======
 		echo "	<input type='text' name='fax_header' class='formfld' style='' value='".($settings->get('fax','cover_header') ?? '')."'>\n";
->>>>>>> develop
 		echo "	<br />\n";
 		echo "	".$text['description-fax-header']."\n";
 		echo "</td>\n";
@@ -1191,11 +1102,7 @@ if (!defined('STDIN')) {
 		for ($f = 1; $f <= 3; $f++) {
 			echo "	<span id='fax_file_".$f."' ".(($f > 1) ? "style='display: none;'" : null).">";
 			echo "	<input name='fax_files[]' id='fax_files_".$f."' type='file' class='formfld fileinput' style='margin-right: 3px; ".(($f > 1) ? "margin-top: 3px;" : null)."' onchange=\"".(($f < 3) ? "document.getElementById('fax_file_".($f+1)."').style.display='';" : null)." list_selected_files(".$f.");\" multiple='multiple'>";
-<<<<<<< HEAD
-			echo button::create(['type'=>'button','label'=>$text['button-clear'],'icon'=>$setting->get('theme','button_icon_reset'),'onclick'=>"reset_file_input('fax_files_".$f."'); document.getElementById('file_list_".$f."').innerHTML='';"]);
-=======
 			echo button::create(['type'=>'button','label'=>$text['button-clear'],'icon'=>$settings->get('theme','button_icon_reset'),'onclick'=>"reset_file_input('fax_files_".$f."'); document.getElementById('file_list_".$f."').innerHTML='';"]);
->>>>>>> develop
 			echo 	"<br />";
 			echo "	<span id='file_list_".$f."'></span>";
 			echo "	</span>\n";
@@ -1210,15 +1117,9 @@ if (!defined('STDIN')) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<select name='fax_resolution' class='formfld'>\n";
-<<<<<<< HEAD
-		echo "		<option value='normal' ".(($setting->get('fax','resolution') == 'normal') ? 'selected' : null).">".$text['option-fax-resolution-normal']."</option>\n";
-		echo "		<option value='fine' ".(($setting->get('fax','resolution') == 'fine') ? 'selected' : null).">".$text['option-fax-resolution-fine']."</option>\n";
-		echo "		<option value='superfine' ".(($setting->get('fax','resolution') == 'superfine') ? 'selected' : null).">".$text['option-fax-resolution-superfine']."</option>\n";
-=======
 		echo "		<option value='normal' ".(($settings->get('fax','resolution') == 'normal') ? 'selected' : null).">".$text['option-fax-resolution-normal']."</option>\n";
 		echo "		<option value='fine' ".(($settings->get('fax','resolution') == 'fine') ? 'selected' : null).">".$text['option-fax-resolution-fine']."</option>\n";
 		echo "		<option value='superfine' ".(($settings->get('fax','resolution') == 'superfine') ? 'selected' : null).">".$text['option-fax-resolution-superfine']."</option>\n";
->>>>>>> develop
 		echo "	</select>\n";
 		echo "	<br />\n";
 		echo "	".$text['description-fax-resolution']."\n";
@@ -1231,15 +1132,9 @@ if (!defined('STDIN')) {
 		echo "</td>\n";
 		echo "<td class='vtable' align='left'>\n";
 		echo "	<select name='fax_page_size' class='formfld'>\n";
-<<<<<<< HEAD
-		echo "		<option value='letter' ".(($setting->get('fax','page_size') == 'letter') ? 'selected' : null).">Letter</option>\n";
-		echo "		<option value='legal' ".(($setting->get('fax','page_size') == 'legal') ? 'selected' : null).">Legal</option>\n";
-		echo "		<option value='a4' ".(($setting->get('fax','page_size') == 'a4') ? 'selected' : null).">A4</option>\n";
-=======
 		echo "		<option value='letter' ".(($settings->get('fax','page_size') == 'letter') ? 'selected' : null).">Letter</option>\n";
 		echo "		<option value='legal' ".(($settings->get('fax','page_size') == 'legal') ? 'selected' : null).">Legal</option>\n";
 		echo "		<option value='a4' ".(($settings->get('fax','page_size') == 'a4') ? 'selected' : null).">A4</option>\n";
->>>>>>> develop
 		echo "	</select>\n";
 		echo "	<br />\n";
 		echo "	".$text['description-fax-page-size']."\n";
@@ -1247,11 +1142,7 @@ if (!defined('STDIN')) {
 		echo "</tr>\n";
 
 		if (permission_exists('fax_subject')) {
-<<<<<<< HEAD
-			$cover_subject_required = $setting->get('fax','cover_subject_required') ?? '';
-=======
 			$cover_subject_required = $settings->get('fax','cover_subject_required') ?? '';
->>>>>>> develop
 			$class = ($cover_subject_required == 'true') ? 'vncellreq' : 'vncell';
 			$required = ($cover_subject_required == 'true') ? 'required' : '';
 			echo "<tr>\n";
@@ -1267,11 +1158,7 @@ if (!defined('STDIN')) {
 		}
 
 		if (permission_exists('fax_message')) {
-<<<<<<< HEAD
-			$cover_message_required = $setting->get('fax','cover_message_required') ?? '';
-=======
 			$cover_message_required = $settings->get('fax','cover_message_required') ?? '';
->>>>>>> develop
 			$class = ($cover_message_required == 'true') ? 'vncellreq' : 'vncell';
 			$required = ($cover_message_required == 'true') ? 'required' : '';
 			echo "<tr>\n";
@@ -1279,11 +1166,7 @@ if (!defined('STDIN')) {
 			echo "		".$text['label-fax-message']."\n";
 			echo "</td>\n";
 			echo "<td class='vtable' align='left'>\n";
-<<<<<<< HEAD
-			echo "	<textarea type='text' name='fax_message' class='formfld' ".$required." style='width: 65%; height: 175px;'></textarea>\n";
-=======
 			echo "	<textarea type='text' name='fax_message' class='formfld' ".$required." style='width: 65%; height: 175px;'>".$settings->get('fax','cover_message')."</textarea>\n";
->>>>>>> develop
 			echo "<br />\n";
 			echo "	".$text['description-fax-message']."\n";
 			echo "</td>\n";
@@ -1296,11 +1179,7 @@ if (!defined('STDIN')) {
 			echo "	".$text['label-fax-footer']."\n";
 			echo "</td>\n";
 			echo "<td class='vtable' align='left'>\n";
-<<<<<<< HEAD
-			echo "	<textarea type='text' name='fax_footer' class='formfld' style='width: 65%; height: 100px;'>".$setting->get('fax','cover_footer')."</textarea>\n";
-=======
 			echo "	<textarea type='text' name='fax_footer' class='formfld' style='width: 65%; height: 100px;'>".$settings->get('fax','cover_footer')."</textarea>\n";
->>>>>>> develop
 			echo "	<br />\n";
 			echo "	".$text['description-fax-footer']."\n";
 			echo "</td>\n";
@@ -1347,7 +1226,4 @@ function showgrid($pdf) {
 	}
 }
 */
-<<<<<<< HEAD
-=======
 ?>
->>>>>>> develop

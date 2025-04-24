@@ -99,11 +99,7 @@
 //get order and order by
 	$order_by = $_GET["order_by"] ?? 'voicemail_id';
 	$order = $_GET["order"] ?? 'asc';
-<<<<<<< HEAD
-	$sort = $order_by == 'voicemail_id' ? 'natural' : null;
-=======
 	$sort = $order_by == 'voicemail_id' ? 'natural' : '';
->>>>>>> develop
 
 //set additional variables
 	$show = $_GET["show"] ?? '';
@@ -192,13 +188,6 @@
 
 //get vm greeting count for each mailbox
 	if (permission_exists('voicemail_greeting_view')) {
-<<<<<<< HEAD
-		$sql = "select voicemail_id, count(greeting_id) as greeting_count ";
-		$sql .= "from v_voicemail_greetings where domain_uuid = :domain_uuid";
-		$sql .= " group by voicemail_id";
-		$parameters['domain_uuid'] = $domain_uuid;
-		$database = new database;
-=======
 		$parameters = null;
 		$sql = "select voicemail_id, count(greeting_id) as greeting_count ";
 		$sql .= "from v_voicemail_greetings where true ";
@@ -207,7 +196,6 @@
 			$parameters['domain_uuid'] = $domain_uuid;
 		}
 		$sql .= "group by voicemail_id";
->>>>>>> develop
 		$voicemail_greetings_count_tmp = $database->select($sql, $parameters, 'all');
 
 		$voicemail_greetings_count = array();
@@ -230,17 +218,10 @@
 	echo "	<div class='heading'><b>".$text['title-voicemails']."</b><div class='count'>".number_format($num_rows)."</div></div>\n";
 	echo "	<div class='actions'>\n";
 	if (permission_exists('voicemail_import')) {
-<<<<<<< HEAD
-		echo button::create(['type'=>'button','label'=>$text['button-import'],'icon'=>$_SESSION['theme']['button_icon_import'],'style'=>'','link'=>'voicemail_imports.php']);
-	}
-	if (permission_exists('voicemail_export')) {
-		echo button::create(['type'=>'button','label'=>$text['button-export'],'icon'=>$_SESSION['theme']['button_icon_export'],'style'=>'margin-right: 15px;','link'=>'voicemail_export.php']);
-=======
 		echo button::create(['type'=>'button','label'=>$text['button-import'],'icon'=>$settings->get('theme', 'button_icon_import'),'style'=>'','link'=>'voicemail_imports.php']);
 	}
 	if (permission_exists('voicemail_export')) {
 		echo button::create(['type'=>'button','label'=>$text['button-export'],'icon'=>$settings->get('theme', 'button_icon_export'),'style'=>'margin-right: 15px;','link'=>'voicemail_export.php']);
->>>>>>> develop
 	}
 	if (permission_exists('voicemail_add')) {
 		echo button::create(['type'=>'button','label'=>$text['button-add'],'icon'=>$settings->get('theme', 'button_icon_add'),'id'=>'btn_add','link'=>'voicemail_edit.php']);
@@ -261,13 +242,8 @@
 		}
 	}
 	echo 		"<input type='text' class='txt list-search' name='search' id='search' value=\"".escape($search)."\" placeholder=\"".$text['label-search']."\" onkeydown=''>";
-<<<<<<< HEAD
-	echo button::create(['label'=>$text['button-search'],'icon'=>$_SESSION['theme']['button_icon_search'],'type'=>'submit','id'=>'btn_search']);
-	//echo button::create(['label'=>$text['button-reset'],'icon'=>$_SESSION['theme']['button_icon_reset'],'type'=>'button','id'=>'btn_reset','link'=>'voicemails.php','style'=>($search == '' ? 'display: none;' : null)]);
-=======
 	echo button::create(['label'=>$text['button-search'],'icon'=>$settings->get('theme', 'button_icon_search'),'type'=>'submit','id'=>'btn_search']);
 	//echo button::create(['label'=>$text['button-reset'],'icon'=>$settings->get('theme', 'button_icon_reset'),'type'=>'button','id'=>'btn_reset','link'=>'voicemails.php','style'=>($search == '' ? 'display: none;' : null)]);
->>>>>>> develop
 	if (!empty($paging_controls_mini)) {
 		echo 	"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>\n";
 	}
@@ -305,13 +281,8 @@
 	echo th_order_by('voicemail_mail_to', $text['label-voicemail_mail_to'], $order_by, $order, null, "class='hide-sm-dn'");
 	echo th_order_by('voicemail_file', $text['label-voicemail_file_attached'], $order_by, $order, null, "class='center hide-md-dn'");
 	echo th_order_by('voicemail_local_after_email', $text['label-voicemail_local_after_email'], $order_by, $order, null, "class='center hide-md-dn'");
-<<<<<<< HEAD
-	if (permission_exists('voicemail_transcription_enabled') && ($_SESSION['transcribe']['enabled']['boolean'] ?? '') == "true") {
-		echo th_order_by('voicemail_transcription_enabled', $text['label-voicemail_transcribe_enabled'], $order_by, $order);
-=======
 	if (permission_exists('voicemail_transcription_enabled') && $settings->get('transcribe', 'enabled', false) === true) {
 		echo th_order_by('voicemail_transcription_enabled', $text['label-voicemail_transcription_enabled'], $order_by, $order);
->>>>>>> develop
 	}
 	if (permission_exists('voicemail_message_view') || permission_exists('voicemail_greeting_view')) {
 		echo "<th>".$text['label-tools']."</th>\n";
@@ -361,11 +332,7 @@
 			echo "	<td class='hide-sm-dn'>".escape($row['voicemail_mail_to'])."&nbsp;</td>\n";
 			echo "	<td class='center hide-md-dn'>".($row['voicemail_file'] == 'attach' ? $text['label-true'] : $text['label-false'])."</td>\n";
 			echo "	<td class='center hide-md-dn'>".ucwords(escape($row['voicemail_local_after_email']))."&nbsp;</td>\n";
-<<<<<<< HEAD
-			if (permission_exists('voicemail_transcription_enabled') && ($_SESSION['transcribe']['enabled']['boolean'] ?? '') == "true") {
-=======
 			if (permission_exists('voicemail_transcription_enabled') && $settings->get('transcribe', 'enabled', false) === true) {
->>>>>>> develop
 				echo "	<td>".ucwords(escape($row['voicemail_transcription_enabled']))."&nbsp;</td>\n";
 			}
 			if (permission_exists('voicemail_message_view') || permission_exists('voicemail_greeting_view')) {

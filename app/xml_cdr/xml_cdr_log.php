@@ -135,24 +135,15 @@
 	echo "<div class='action_bar' id='action_bar'>\n";
 	echo "	<div class='heading'><b>".$text['label-call_log']."</b></div>\n";
 	echo "	<div class='actions'>\n";
-<<<<<<< HEAD
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'style'=>'margin-left: 15px;','link'=>'xml_cdr_details.php?id='.$xml_cdr_uuid]);
-	if (permission_exists('log_download')) {
-		echo button::create(['type'=>'button','label'=>$text['button-download'],'icon'=>$_SESSION['theme']['button_icon_download'],'style'=>'margin-left: 15px;','link'=>'xml_cdr_log.php?id='.$xml_cdr_uuid.'&a=download']);
-=======
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'style'=>'margin-left: 15px;','link'=>'xml_cdr_details.php?id='.$xml_cdr_uuid]);
 	if (permission_exists('log_download')) {
 		echo button::create(['type'=>'button','label'=>$text['button-download'],'icon'=>$settings->get('theme', 'button_icon_download'),'style'=>'margin-left: 15px;','link'=>'xml_cdr_log.php?id='.$xml_cdr_uuid.'&a=download']);
->>>>>>> develop
 	}
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";
 
-<<<<<<< HEAD
-=======
 	echo "<div class='card'>\n";
->>>>>>> develop
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
 	echo "	<tr>\n";
 	echo "		<td style='background-color: #1c1c1c; padding: 8px; text-align: left;'>";
@@ -222,10 +213,7 @@
 	echo "		</td>";
 	echo "	</tr>\n";
 	echo "</table>\n";
-<<<<<<< HEAD
-=======
 	echo "</div>\n";
->>>>>>> develop
 
 //include the footer
 	require_once "resources/footer.php";

@@ -44,14 +44,9 @@
 	$device_firmware_version = '';
 	$device_template ='';
 
-<<<<<<< HEAD
-//get the domain uuid
-	$domain_uuid = $_SESSION['domain_uuid'] ?? '';
-=======
 //get the domain values
 	$domain_uuid = $_SESSION['domain_uuid'] ?? '';
 	$domain_name = $_SESSION['domain_name'] ?? '';
->>>>>>> develop
 
 //initialize the database object
 	$database = database::new();
@@ -72,11 +67,7 @@
 	if ($action == 'add') {
 		if (!empty($settings->get('limit', 'devices', ''))) {
 			$sql = "select count(*) from v_devices where domain_uuid = :domain_uuid ";
-<<<<<<< HEAD
-			$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
-=======
 			$parameters['domain_uuid'] = $domain_uuid;
->>>>>>> develop
 			$total_devices = $database->select($sql, $parameters, 'column');
 			if ($total_devices >= $settings->get('limit', 'devices', '')) {
 				message::add($text['message-maximum_devices'].' '.$settings->get('limit', 'devices', ''), 'negative');
@@ -238,15 +229,9 @@
 					$sql .= " and d1.device_uuid <> :device_uuid ";
 				}
 				$parameters['device_address'] = $device_address;
-<<<<<<< HEAD
-				$domain_name = $database->select($sql, $parameters, 'column');
-				if ($domain_name != '') {
-					$message = $text['message-duplicate'].(if_group("superadmin") && $_SESSION["domain_name"] != $domain_name ? ": ".$domain_name : null);
-=======
 				$device_domain_name = $database->select($sql, $parameters, 'column');
 				if ($device_domain_name != '') {
 					$message = $text['message-duplicate'].($device_domain_name != $domain_name ? ": ".$device_domain_name : null);
->>>>>>> develop
 					message::add($message,'negative');
 					header('Location: devices.php');
 					exit;
@@ -500,11 +485,7 @@
 					}
 
 				//write the provision files
-<<<<<<< HEAD
-					if (!empty($_SESSION['provision']['path']['text'])) {
-=======
 					if (!empty($settings->get('provision', 'path'))) {
->>>>>>> develop
 						$prov = new provision(['settings' => $settings]);
 						$prov->domain_uuid = $domain_uuid;
 						$response = $prov->write();
@@ -533,10 +514,6 @@
 		$sql = "select * from v_devices ";
 		$sql .= "where device_uuid = :device_uuid ";
 		$parameters['device_uuid'] = $device_uuid;
-<<<<<<< HEAD
-		
-=======
->>>>>>> develop
 		$row = $database->select($sql, $parameters, 'row');
 		if (is_array($row) && @sizeof($row) != 0) {
 			$device_address = $row["device_address"];
@@ -603,10 +580,6 @@
 	$sql .= "and l.domain_uuid = d.domain_uuid ";
 	$sql .= "order by cast(line_number as int) asc ";
 	$parameters['device_uuid'] = $device_uuid ?? null;
-<<<<<<< HEAD
-	
-=======
->>>>>>> develop
 	$device_lines = $database->select($sql, $parameters, 'all');
 	unset($sql, $parameters);
 
@@ -652,19 +625,11 @@
 
 //add empty device key row(s)
 	if (!is_uuid($device_uuid)) {
-<<<<<<< HEAD
-		$rows = $_SESSION['devices']['key_add_rows']['numeric'] ?? 1;
-		$id = 0;
-	}
-	else {
-		$rows = $_SESSION['devices']['key_edit_rows']['numeric'] ?? 1;
-=======
 		$rows = $settings->get('devices', 'key_add_rows', '10');
 		$id = 0;
 	}
 	else {
 		$rows = $settings->get('devices', 'key_edit_rows', '3');
->>>>>>> develop
 		$id = count($device_keys) + 1;
 	}
 	for ($x = 0; $x < $rows; $x++) {
@@ -686,10 +651,6 @@
 	$sql .= "from v_device_vendors ";
 	$sql .= "where enabled = 'true' ";
 	$sql .= "order by name asc ";
-<<<<<<< HEAD
-	
-=======
->>>>>>> develop
 	$device_vendors = $database->select($sql, null, 'all');
 	unset($sql);
 
@@ -713,19 +674,11 @@
 
 //add empty device setting row(s)
 	if (!is_uuid($device_uuid)) {
-<<<<<<< HEAD
-		$rows = $_SESSION['devices']['setting_add_rows']['numeric'] ?? 1;
-		$id = 0;
-	}
-	else {
-		$rows = $_SESSION['devices']['setting_edit_rows']['numeric'] ?? 1;
-=======
 		$rows = $settings->get('devices', 'key_add_rows', '10');
 		$id = 0;
 	}
 	else {
 		$rows = $settings->get('devices', 'key_edit_rows', '3');
->>>>>>> develop
 		$id = count($device_settings) + 1;
 	}
 	for ($x = 0; $x < $rows; $x++) {
@@ -753,16 +706,7 @@
 
 //get the first device line info (found on the local server) for the provision button
 	foreach ($device_lines as $row) {
-<<<<<<< HEAD
-		if (
-			array_key_exists($row['domain_uuid'], $_SESSION['domains']) &&
-			$row['server_address'] == $_SESSION['domains'][$row['domain_uuid']]['domain_name'] &&
-			!empty($row['user_id']) &&
-			!empty($row['server_address'])
-			) {
-=======
 		if ($row['server_address'] == $row['domain_name'] && !empty($row['user_id']) && !empty($row['server_address'])) {
->>>>>>> develop
 			$user_id = $row['user_id'];
 			$server_address = $row['server_address'];
 			break;
@@ -942,11 +886,6 @@
 				//get the provision settings
 					$provision = new settings(["category" => "provision"]);
 					$acrobits_code = $provision->get('provision', 'acrobits_code');
-<<<<<<< HEAD
-				
-=======
-
->>>>>>> develop
 				if (!empty($template) && isset($acrobits_code)) {
 					$template = str_replace('{$server_address}', $row['server_address'], $template);
 					$template = str_replace('{$user_id}', urlencode($row['user_id']), $template);
@@ -1094,11 +1033,7 @@
 				$template_dir = $prov->template_dir;
 				$files = glob($template_dir.'/'.$device_template.'/*');
 			//add file buttons and the file list
-<<<<<<< HEAD
-				echo button::create(['type'=>'button','id'=>'button_files','label'=>$text['button-files'],'icon'=>$_SESSION['theme']['button_icon_download'],'style'=>($button_margin ?? ''),'onclick'=>'show_files()']);
-=======
 				echo button::create(['type'=>'button','id'=>'button_files','label'=>$text['button-files'],'icon'=>$settings->get('theme', 'button_icon_download', ''),'style'=>($button_margin ?? ''),'onclick'=>'show_files()']);
->>>>>>> develop
 				echo 		"<select class='formfld' style='display: none; width: auto;' name='target_file' id='target_file' onchange='download(this.value)'>\n";
 				echo "			<option value=''>".$text['label-download']."</option>\n";
 				foreach ($files as $file) {
@@ -1114,11 +1049,7 @@
 				unset($button_margin);
 		}
 		if (permission_exists('device_add')) {
-<<<<<<< HEAD
-			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$_SESSION['theme']['button_icon_copy'],'style'=>($button_margin ?? ''),'name'=>'btn_copy','onclick'=>"modal_open('modal-copy','new_address');"]);
-=======
 			echo button::create(['type'=>'button','label'=>$text['button-copy'],'icon'=>$settings->get('theme', 'button_icon_copy', ''),'style'=>($button_margin ?? ''),'name'=>'btn_copy','onclick'=>"modal_open('modal-copy','new_address');"]);
->>>>>>> develop
 			unset($button_margin);
 		}
 		if (
@@ -1127,11 +1058,7 @@
 			permission_exists('device_key_delete') ||
 			permission_exists('device_setting_delete')
 			) {
-<<<<<<< HEAD
-			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'style'=>($button_margin ?? ''),'name'=>'btn_delete','onclick'=>"modal_open('modal-delete','btn_delete');"]);
-=======
 			echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete', ''),'style'=>($button_margin ?? ''),'name'=>'btn_delete','onclick'=>"modal_open('modal-delete','btn_delete');"]);
->>>>>>> develop
 			unset($button_margin);
 		}
 	}
@@ -1357,19 +1284,11 @@
 
 			//set the defaults
 				if (!permission_exists('device_line_server_address')) {
-<<<<<<< HEAD
-					if (empty($row['server_address'])) { $row['server_address'] = $_SESSION['domain_name']; }
-				}
-				if (empty($row['sip_transport'])) { $row['sip_transport'] = $_SESSION['provision']['line_sip_transport']['text']; }
-				if (!isset($row['sip_port'])) { $row['sip_port'] = $_SESSION['provision']['line_sip_port']['numeric']; } //used !isset to support a value of 0 as empty the empty function considers a value of 0 as empty.
-				if (empty($row['register_expires'])) { $row['register_expires'] = $_SESSION['provision']['line_register_expires']['numeric']; }
-=======
 					if (empty($row['server_address'])) { $row['server_address'] = $domain_name; }
 				}
 				if (empty($row['sip_transport'])) { $row['sip_transport'] = $settings->get('provision', 'line_sip_transport', 'tcp'); }
 				if (!isset($row['sip_port'])) { $row['sip_port'] = $settings->get('provision', 'line_sip_port', '5060'); } //used !isset to support a value of 0 as empty the empty function considers a value of 0 as empty.
 				if (empty($row['register_expires'])) { $row['register_expires'] = $settings->get('provision', 'line_register_expires', '120'); }
->>>>>>> develop
 
 			//add the primary key uuid
 				if (!empty($row['device_line_uuid']) && is_uuid($row['device_line_uuid'])) {
@@ -1575,11 +1494,7 @@
 				foreach($device_profiles as $row) {
 					echo "			<option value='".escape($row['device_profile_uuid'])."' ".(!empty($device_profile_uuid) && $row['device_profile_uuid'] == $device_profile_uuid ? "selected='selected'" : null).">".escape($row['device_profile_name'])." ".(($row['domain_uuid'] == '') ? "&nbsp;&nbsp;(".$text['select-global'].")" : null)."</option>\n";
 				}
-<<<<<<< HEAD
-				echo "                  </select>\n";
-=======
 				echo "			</select>\n";
->>>>>>> develop
 			}
 			else {
 				foreach($device_profiles as $row) {

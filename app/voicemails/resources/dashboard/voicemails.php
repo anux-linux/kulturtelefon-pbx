@@ -97,11 +97,6 @@
 		</script>
 		<?php
 	}
-<<<<<<< HEAD
-	if (!isset($dashboard_chart_type) || $dashboard_chart_type == "number") {
-		echo "	<span class='hud_stat'>".$messages['new']."</span>";
-	}
-=======
 
 	//dashboard number
 	if (!isset($dashboard_chart_type) || $dashboard_chart_type == "number") {
@@ -118,7 +113,6 @@
 		echo "</span>";
 	}
 
->>>>>>> develop
 	echo "</div>\n";
 
 	if ($dashboard_details_state != 'disabled') {

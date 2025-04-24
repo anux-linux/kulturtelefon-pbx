@@ -183,10 +183,7 @@
 	echo $text['description-extension_export'];
 	echo "<br /><br />\n";
 
-<<<<<<< HEAD
-=======
 	echo "<div class='card'>\n";
->>>>>>> develop
 	echo "<table class='list'>\n";
 	echo "<tr class='list-header'>\n";
 	echo "	<th class='checkbox'>\n";

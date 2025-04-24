@@ -56,12 +56,9 @@ delete = argv[1];
 --prepare the api object
 api = freeswitch.API();
 
-<<<<<<< HEAD
-=======
 --prepare the email to address
 to = {}
 
->>>>>>> develop
 --get sessions info
 if (session and session:ready()) then
 	domain_uuid = session:getVariable("domain_uuid");
@@ -77,24 +74,6 @@ else
 	headers = {}
 end
 
-<<<<<<< HEAD
-function escape_csv(s)
-	if string.find(s, '[,"]') then
-		s = '"' .. string.gsub(s, '"', '""') .. '"'
-	end
-	return s
-end
-
-function to_csv(tt)
-	local s = ""
-	for _,p in ipairs(tt) do
-		s = s .. "," .. escape_csv(p)
-	end
-	return string.sub(s, 2)
-end
-
-=======
->>>>>>> develop
 --connect to the database
 local dbh = Database.new('system');
 
@@ -103,11 +82,7 @@ local sql = "SELECT * FROM v_email_templates ";
 	sql = sql .. "WHERE template_category = :category ";
 	sql = sql .. "AND template_subcategory = :subcategory ";
 	sql = sql .. "AND template_enabled = :status ";
-<<<<<<< HEAD
-	local params = {category = 'plugins', subcategory = 'emergency', status = 'true'}
-=======
 	local params = {category = 'plugin', subcategory = 'emergency', status = 'true'}
->>>>>>> develop
 	dbh:query(sql, params, function(row)
 		subject = row.template_subject;
 		body = row.template_body;
@@ -143,65 +118,6 @@ if (session and session:ready()) then
 	sip_from_user = session:getVariable("sip_from_user");
 	emergency_caller_id_name = session:getVariable("emergency_caller_id_name");
 	emergency_caller_id_number = session:getVariable("emergency_caller_id_number");
-<<<<<<< HEAD
-	call_duration = session:getVariable("call_duration");
-	destination_number = session:getVariable("destination_number");
-end
-
---domain level check
-result = {}
-local sql = "SELECT count(domain_setting_value) ";
-sql = sql .. "AS total ";
-sql = sql .. "FROM v_domain_settings ";
-sql = sql .. "WHERE domain_uuid = :domain_uuid ";
-sql = sql .. "AND domain_setting_category = :category ";
-sql = sql .. "AND domain_setting_subcategory = :email_address ";
-sql = sql .. "AND domain_setting_enabled = :status ";
-
-local params = {domain_uuid = domain_uuid, category = 'emergency', email_address = 'email_address', status = 't'}
-
-dbh:query(sql, params, function(result)
-	total = result.total;
-	--no emergency emails found under domain, using default
-	if (total == 0 or total == nil) then
-		to = {}
-		local sql = "SELECT default_setting_value ";
-			sql = sql .. "FROM v_default_settings ";
- 			sql = sql .. "WHERE default_setting_category = :category ";
-			sql = sql .. "AND default_setting_subcategory = :email_address ";
-			sql = sql .. "AND default_setting_enabled = :status ";
-			sql = sql .. "LIMIT 5 ";
-		local params = {category = 'emergency', email_address = 'email_address', status = 't'}
-		dbh:query(sql, params, function(result)
-			for key,row in pairs(result) do
-				table.insert(to, row);
-				freeswitch.consoleLog("info", "[emergency] Inserted into table from default settings " .. row .. "\n");
-			end
-			--add some details
-			if (debug["sql"]) then
-				freeswitch.consoleLog("notice", "[emergency] SQL: " .. sql .. " result " .. result .. "\n");
-			end
-		end);
-	--domain level emails max 5
-	else if (tonumber(total) <= 5) then
-		to = {}
-		local   sql = "SELECT domain_setting_value ";
-			sql = sql .. "FROM v_domain_settings ";
-			sql = sql .. "WHERE domain_uuid = :domain_uuid ";
-			sql = sql .. "AND domain_setting_category = :category ";
-			sql = sql .. "AND domain_setting_subcategory = :email_address ";
-			sql = sql .. "AND domain_setting_enabled = :status ";
-		local params = {domain_uuid = domain_uuid, category = 'emergency', email_address = 'email_address', status = 't'}
-		dbh:query(sql, params, function(result)
-			for key,row in pairs(result) do
-				table.insert(to, row);
-				freeswitch.consoleLog("info", "[template] Inserted into table " .. row .. "\n");
-			end
-		end);
-		end
-	end
-
-=======
 	outbound_caller_id_name = session:getVariable("outbound_caller_id_name");
 	outbound_caller_id_number = session:getVariable("outbound_caller_id_number");
 	destination_number = session:getVariable("destination_number");
@@ -248,22 +164,15 @@ dbh:query(sql, params, function(result)
 		table.insert(to, row);
 		freeswitch.consoleLog("info", "[template] Inserted into table " .. row .. "\n");
 	end
->>>>>>> develop
 end);
 
 --set event
 if (tonumber(destination_number) == 933) then
 	event = '933 Emergency Address Validation Service';
-<<<<<<< HEAD
-else if (tonumber(destination_number) == 911) then
-	event = '911 Emergency Call';
-	end
-=======
 elseif (tonumber(destination_number) == 922) then
 	event = '922 Emergency Address Validation Service';
 elseif (tonumber(destination_number) == 911) then
 	event = '911 Emergency Call';
->>>>>>> develop
 end
 
 --connect to the database
@@ -277,12 +186,9 @@ end
 local t = dbh:first_row(sql);
 call_date = t.call_date;
 
-<<<<<<< HEAD
-=======
 -- replace the hardcoded template subject with the event
 subject = event;
 
->>>>>>> develop
 --send the email
 if (#to > 0) then
 	--prepare the body
@@ -292,10 +198,6 @@ if (#to > 0) then
 		body = body:gsub("${emergency_caller_id_name}", emergency_caller_id_name);
 		body = body:gsub("${emergency_caller_id_number}", emergency_caller_id_number);
 		body = body:gsub("${sip_from_user}", sip_from_user);
-<<<<<<< HEAD
-		body = body:gsub("${caller_id_number}", caller_id_number);
-=======
->>>>>>> develop
 		body = body:gsub("${message_date}", call_date);
 		body = body:gsub("${event}", event);
 		body = trim(body);
@@ -339,7 +241,3 @@ end
 
 dbh:query(sql, params);
 dbh:release();
-<<<<<<< HEAD
-
-=======
->>>>>>> develop

@@ -76,8 +76,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "30";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Number of days to retain the fax queue logs in the database for the maintenance app.";
-<<<<<<< HEAD
-=======
 		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "5506cf35-e19d-4f02-ab9d-43fd0f8460f7";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax_queue";
@@ -86,7 +84,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Determine whether fax calls should attempt to stay local or route to the provider.";
->>>>>>> develop
 		//$y++;
 		//$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "afd729d9-cf69-4793-a140-21093814d314";
 		//$apps[$x]['default_settings'][$y]['default_setting_category'] = "fax_queue";

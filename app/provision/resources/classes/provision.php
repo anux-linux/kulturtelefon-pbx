@@ -339,11 +339,7 @@
 								//checks either device enabled
 									if ($row['device_enabled'] != 'true') {
 										syslog(LOG_WARNING, '['.$_SERVER['REMOTE_ADDR']."] provision attempted but the device is not enabled for ".escape($device_address));
-<<<<<<< HEAD
-										if ($this->settings->get('provision','debug', 'false') === 'true') {
-=======
 										if ($this->settings->get('provision','debug', false)) {
->>>>>>> develop
 											echo "<br/>device disabled<br/>";
 										}
 										else {
@@ -527,11 +523,7 @@
 							$templates['Flyingvoice FIP16'] = 'flyingvoice/fip16';
 							$templates['Flyingvoice FIP16PLUS'] = 'flyingvoice/fip16plus';
 
-<<<<<<< HEAD
-							foreach ($templates as $key=>$value){
-=======
 							foreach ($templates as $key=>$value) {
->>>>>>> develop
 								if(stripos($_SERVER['HTTP_USER_AGENT'],$key)!== false) {
 									$device_template = $value;
 									break;
@@ -540,11 +532,7 @@
 							unset($templates);
 
 						//device address does not exist in the table so add it
-<<<<<<< HEAD
-							if ($this->settings->get('provision','auto_insert_enabled','false') === "true") {
-=======
 							if ($this->settings->get('provision','auto_insert_enabled',false)) {
->>>>>>> develop
 
 								//get a new primary key
 								$device_uuid = uuid();
@@ -602,26 +590,17 @@
 							if (is_array($row) && sizeof($row) != 0) {
 								if ($row["device_enabled"] == "true") {
 									$device_label = $row["device_label"];
-<<<<<<< HEAD
-=======
 
 									//if the device vendor match then use the alternate device template
 									if ($device_vendor == $row["device_vendor"]) {
 										$device_template = $row["device_template"];
 									}
 
->>>>>>> develop
 									$device_profile_uuid = $row["device_profile_uuid"];
 									$device_firmware_version = $row["device_firmware_version"];
 									$device_user_uuid = $row["device_user_uuid"];
 									$device_location = strtolower($row["device_location"]);
-<<<<<<< HEAD
-									//keep the original device_vendor
 									$device_enabled = $row["device_enabled"];
-									//keep the original device_template
-=======
-									$device_enabled = $row["device_enabled"];
->>>>>>> develop
 									$device_description = $row["device_description"];
 								}
 							}
@@ -891,24 +870,14 @@
 
 				//get the list of contact directly assigned to the user
 					if (is_uuid($domain_uuid)) {
-<<<<<<< HEAD
-						if ($this->settings->get('contact','permissions','false') === "true") {
-							//get the contacts assigned to the groups and add to the contacts array
-								if (is_uuid($device_user_uuid) && $this->settings->get('contact','contact_groups', 'false') === "true") {
-=======
 						if ($this->settings->get('contact','permissions',false)) {
 							//get the contacts assigned to the groups and add to the contacts array
 								if (is_uuid($device_user_uuid) && $this->settings->get('contact','contact_groups', false)) {
->>>>>>> develop
 									$this->contact_append($contacts, $line, $domain_uuid, $device_user_uuid, 'groups');
 								}
 
 							//get the contacts assigned to the user and add to the contacts array
-<<<<<<< HEAD
-								if (is_uuid($device_user_uuid) && $this->settings->get('contact','contact_users', 'false') === "true") {
-=======
 								if (is_uuid($device_user_uuid) && $this->settings->get('contact','contact_users', false)) {
->>>>>>> develop
 									$this->contact_append($contacts, $line, $domain_uuid, $device_user_uuid, 'users');
 								}
 						}
@@ -919,12 +888,8 @@
 					}
 
 				//get the extensions and add them to the contacts array
-<<<<<<< HEAD
-					if (is_uuid($device_uuid) && is_uuid($domain_uuid) && $this->settings->get('provision','contact_extensions','false') === "true") {
-=======
 					if (is_uuid($device_uuid) && is_uuid($domain_uuid) && $this->settings->get('provision','contact_extensions',false)) {
 
->>>>>>> develop
 						//get contacts from the database
 							$sql = "select extension_uuid as contact_uuid, directory_first_name, directory_last_name, ";
 							$sql .= "effective_caller_id_name, effective_caller_id_number, ";
@@ -986,25 +951,6 @@
 						exit;
 					}
 
-<<<<<<< HEAD
-				//set the variables key and values
-					$x = 1;
-					$variables['domain_name'] = $domain_name;
-					$variables['user_id'] = $lines[$x]['user_id'];
-					$variables['auth_id'] = $lines[$x]['auth_id'];
-					$variables['extension'] = $lines[$x]['extension'] ?? '';
-					//$variables['password'] = $lines[$x]['password'];
-					$variables['register_expires'] = $lines[$x]['register_expires'];
-					$variables['sip_transport'] = $lines[$x]['sip_transport'];
-					$variables['sip_port'] = $lines[$x]['sip_port'];
-					$variables['server_address'] = $lines[$x]['server_address'];
-					$variables['outbound_proxy'] = $lines[$x]['outbound_proxy_primary'];
-					$variables['outbound_proxy_primary'] = $lines[$x]['outbound_proxy_primary'];
-					$variables['outbound_proxy_secondary'] = $lines[$x]['outbound_proxy_secondary'];
-					$variables['display_name'] = $lines[$x]['display_name'];
-					$variables['location'] = $device_location;
-					$variables['description'] = $device_description;
-=======
 				//list of variable names
 					$variable_names = [];
 					$variable_names[] = 'domain_name';
@@ -1027,7 +973,6 @@
 						$lines[$id]['location'] = $device_location;
 						$lines[$id]['description'] = $device_description;
 					}
->>>>>>> develop
 
 				//update the device keys by replacing variables with their values
 					if (!empty($device_keys['line']) && is_array($device_keys)) {
@@ -1196,17 +1141,6 @@
 					}
 
 				//get the time zone
-<<<<<<< HEAD
-					$time_zone_name = $this->settings->get('domain','time_zone', '');
-					if (!empty($time_zone_name)) {
-						$time_zone_offset_raw = get_time_zone_offset($time_zone_name)/3600;
-						$time_zone_offset_hours = floor($time_zone_offset_raw);
-						$time_zone_offset_minutes = ($time_zone_offset_raw - $time_zone_offset_hours) * 60;
-						$time_zone_offset_minutes = number_pad($time_zone_offset_minutes, 2);
-						if ($time_zone_offset_raw > 0) {
-							$time_zone_offset_hours = number_pad($time_zone_offset_hours, 2);
-							$time_zone_offset_hours = "+".$time_zone_offset_hours;
-=======
 					$time_zone = $this->settings->get('domain','time_zone', 'UTC');
 
 				//auto calculate the daylight savings settings
@@ -1234,7 +1168,6 @@
 								//standard time
 								$standard_offset_seconds = $transition['offset'];
 							}
->>>>>>> develop
 						}
 
 						//find the end of daylight saving time
@@ -1316,11 +1249,7 @@
 						//make sure the file exists
 						if (!file_exists($template_dir."/".$device_template ."/".$file)) {
 							$this->http_error('404');
-<<<<<<< HEAD
-							if ($this->settings->get('provision','debug','false') === 'true') {
-=======
 							if ($this->settings->get('provision','debug',false)) {
->>>>>>> develop
 								echo ":$template_dir/$device_template/$file<br/>";
 								echo "template_dir: $template_dir<br/>";
 								echo "device_template: $device_template<br/>";
@@ -1334,11 +1263,7 @@
 					$file_contents = $view->render($file);
 
 				//log file for testing
-<<<<<<< HEAD
-					if ($this->settings->get('provision','debug','false') === 'true') {
-=======
 					if ($this->settings->get('provision','debug',false)) {
->>>>>>> develop
 						$tmp_file = "/tmp/provisioning_log.txt";
 						$fh = fopen($tmp_file, 'w') or die("can't open file");
 						$tmp_string = $device_address."\n";

@@ -323,21 +323,13 @@
 	echo "<style>\n";
 	echo "	div#pdf-container {\n";
 	echo "		z-index: -1;\n";
-<<<<<<< HEAD
-	echo "		position: absolute;\n";
-=======
 	echo "		position: fixed;\n";
->>>>>>> develop
 	echo "		top: 0;\n";
 	echo "		left: 0;\n";
 	echo "		width: 100%;\n";
 	echo "		height: 100%;\n";
 	echo "		opacity: 0;\n";
-<<<<<<< HEAD
-	echo "		transition: opacity 1s;\n";
-=======
 	echo "		transition: opacity .5s;\n";
->>>>>>> develop
 	echo "		padding: 20px;\n";
 	echo "	}\n";
 	echo "	div#pdf-div {\n";
@@ -374,16 +366,6 @@
 	echo "	</div>\n";
 	echo "	<div class='actions'>\n";
 
-<<<<<<< HEAD
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','link'=>'fax.php']);
-	$margin_left = false;
-	if (permission_exists('fax_file_edit') && $_REQUEST['box'] == 'inbox' && $fax_files) {
-		echo button::create(['type'=>'button','label'=>$text['button-toggle'],'icon'=>$_SESSION['theme']['button_icon_toggle'],'id'=>'btn_toggle','name'=>'btn_toggle','collapse'=>'hide-xs','style'=>'display: none; margin-left: 15px;','onclick'=>"modal_open('modal-toggle','btn_toggle');"]);
-		$margin_left = true;
-	}
-	if (permission_exists('fax_file_delete') && $fax_files) {
-		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$_SESSION['theme']['button_icon_delete'],'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none; '.(!$margin_left ? 'margin-left: 15px;' : null),'onclick'=>"modal_open('modal-delete','btn_delete');"]);
-=======
 	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','link'=>'fax.php']);
 	$margin_left = false;
 	if (permission_exists('fax_file_edit') && $_REQUEST['box'] == 'inbox' && $fax_files) {
@@ -392,7 +374,6 @@
 	}
 	if (permission_exists('fax_file_delete') && $fax_files) {
 		echo button::create(['type'=>'button','label'=>$text['button-delete'],'icon'=>$settings->get('theme', 'button_icon_delete'),'id'=>'btn_delete','name'=>'btn_delete','style'=>'display: none; '.(!$margin_left ? 'margin-left: 15px;' : null),'onclick'=>"modal_open('modal-delete','btn_delete');"]);
->>>>>>> develop
 	}
 	if ($paging_controls_mini != '') {
 		echo 	"<span style='margin-left: 15px;'>".$paging_controls_mini."</span>\n";
@@ -540,11 +521,7 @@
 			}
 
 			echo "<tr class='list-row' href='".$list_row_url."'>\n";
-<<<<<<< HEAD
-			if (permission_exists('fax_file_delete') || permission_exists['fax_file_edit']) {
-=======
 			if (permission_exists('fax_file_delete') || permission_exists('fax_file_edit')) {
->>>>>>> develop
 				echo "	<td class='checkbox'>\n";
 				echo "		<input type='checkbox' name='fax_files[$x][checked]' id='checkbox_".$x."' value='true' onclick=\"if (!this.checked) { document.getElementById('checkbox_all').checked = false; } checkbox_on_change(this);\">\n";
 				echo "		<input type='hidden' name='fax_files[$x][uuid]' value='".escape($row['fax_file_uuid'])."' />\n";

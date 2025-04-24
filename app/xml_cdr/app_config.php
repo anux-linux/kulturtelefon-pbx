@@ -129,12 +129,9 @@
 		$apps[$x]['permissions'][$y]['name'] = "xml_cdr_search_call_center_queues";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$y++;
-<<<<<<< HEAD
-=======
 		$apps[$x]['permissions'][$y]['name'] = "xml_cdr_search_ring_groups";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$y++;
->>>>>>> develop
 		$apps[$x]['permissions'][$y]['name'] = "xml_cdr_cc_side";
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$y++;
@@ -270,8 +267,6 @@
 		$apps[$x]['permissions'][$y]['groups'][] = "superadmin";
 		$apps[$x]['permissions'][$y]['groups'][] = "admin";
 		$y++;
-<<<<<<< HEAD
-=======
 		$apps[$x]['permissions'][$y]['name'] = 'xml_cdr_extension_view';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 		$y++;
@@ -287,7 +282,6 @@
 		$apps[$x]['permissions'][$y]['name'] = 'xml_cdr_extension_all';
 		$apps[$x]['permissions'][$y]['groups'][] = 'superadmin';
 		$y++;
->>>>>>> develop
 
 	//default settings
 		$y=0;
@@ -419,8 +413,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Limit allowed range of addresses for CDR over HTTP POST.";
 		$y++;
-<<<<<<< HEAD
-=======
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "4750feaf-70d0-4425-af37-036060ce7d37";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "cdr";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "column_overflow";
@@ -429,7 +421,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Hide overflowing columns or use horizontal scroll bar";
 		$y++;
->>>>>>> develop
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "7b9a5a95-a964-4fa1-b1b6-7641ca478405";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "cdr";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "summary_style";

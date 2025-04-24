@@ -823,11 +823,6 @@
 					case 'hour': //hours of day
 						<?php
 						if ( $_SESSION['domain']['time_format']['text'] =="24h") {
-<<<<<<< HEAD
-						
-=======
-
->>>>>>> develop
 							for ($h = 0; $h <= 23; $h++) {
 								echo "sel_start.options[sel_start.options.length] = new Option(".$h.", ".$h.");\n";
 								echo "sel_stop.options[sel_stop.options.length] = new Option(".$h.", ".$h.");\n";
@@ -1067,11 +1062,6 @@ if ($action == 'update') {
 
 							//adjust time one minute earlier to account for freeswitch one minute early on start condition behavior.
 							$cond_val_start = $cond_val_start - 1;
-<<<<<<< HEAD
-							
-=======
-
->>>>>>> develop
 							$cond_val_start = number_pad(floor($cond_val_start / 60),2).":".number_pad(fmod($cond_val_start, 60),2);
 							if ($cond_val_stop != '') {
 								$cond_val_stop = number_pad(floor($cond_val_stop / 60),2).":".number_pad(fmod($cond_val_stop, 60),2);

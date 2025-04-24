@@ -147,17 +147,10 @@
 		$switch_cmd = "conference ".$conference_room_uuid."@".$_SESSION['domain_name']." play ".$_SESSION['switch']['sounds']['dir']."/".$default_language."/".$default_dialect."/".$default_voice."/ivr/ivr-recording_started.wav";
 
 		//connect to event socket
-<<<<<<< HEAD
-			$esl = event_socket::create();
-			if ($esl->is_connected()) {
-				$switch_result = event_socket::api($switch_cmd);
-			}
-=======
 		$esl = event_socket::create();
 		if ($esl->is_connected()) {
 			$switch_result = event_socket::api($switch_cmd);
 		}
->>>>>>> develop
 	}
 
 //generate the pin number length

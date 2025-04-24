@@ -5,10 +5,7 @@ $array['dashboard'][$x]['dashboard_uuid'] = 'e9f06ed4-ddfc-4611-b246-fdeab36a49c
 $array['dashboard'][$x]['dashboard_name'] = 'Time Conditions';
 $array['dashboard'][$x]['dashboard_path'] = 'dashboard/icon';
 $array['dashboard'][$x]['dashboard_icon'] = 'fa-clock';
-<<<<<<< HEAD
-=======
 $array['dashboard'][$x]['dashboard_icon_color'] = '#0292ff';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_url'] = '/app/time_conditions/time_conditions.php';
 $array['dashboard'][$x]['dashboard_target'] = 'self';
 $array['dashboard'][$x]['dashboard_width'] = '';
@@ -18,16 +15,6 @@ $array['dashboard'][$x]['dashboard_content_text_align'] = '';
 $array['dashboard'][$x]['dashboard_content_details'] = '';
 $array['dashboard'][$x]['dashboard_chart_type'] = '';
 $array['dashboard'][$x]['dashboard_label_enabled'] = 'true';
-<<<<<<< HEAD
-$array['dashboard'][$x]['dashboard_label_text_color'] = '';
-$array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
-$array['dashboard'][$x]['dashboard_label_background_color'] = '';
-$array['dashboard'][$x]['dashboard_label_background_color_hover'] = '';
-$array['dashboard'][$x]['dashboard_number_background_color'] = '';
-$array['dashboard'][$x]['dashboard_number_text_color'] = '#0292ff';
-$array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
-$array['dashboard'][$x]['dashboard_background_color'] = '';
-=======
 $array['dashboard'][$x]['dashboard_label_text_color'] = '#444444';
 $array['dashboard'][$x]['dashboard_label_text_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_label_background_color'] = '';
@@ -36,7 +23,6 @@ $array['dashboard'][$x]['dashboard_number_text_color'] = '';
 $array['dashboard'][$x]['dashboard_number_text_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_number_background_color'] = '';
 $array['dashboard'][$x]['dashboard_background_color'] = '#ffffff';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_background_color_hover'] = '';
 $array['dashboard'][$x]['dashboard_detail_background_color'] = '';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';

@@ -102,7 +102,6 @@
 	elseif (permission_exists('ring_group_domain') || permission_exists('ring_group_all')) {
 		$sql = "select count(*)  from v_ring_groups ";
 		$sql .= "where domain_uuid = :domain_uuid ";
-<<<<<<< HEAD
 		$parameters['domain_uuid'] = $domain_uuid;
 	}
 	else {
@@ -124,57 +123,6 @@
 		$sql .= ") ";
 		$parameters['search'] = '%'.$search.'%';
 	}
-	$database = new database;
-	$num_rows = $database->select($sql, $parameters, 'column');
-	unset($sql, $parameters);
-
-//prepare to page the results
-	$rows_per_page = ($_SESSION['domain']['paging']['numeric'] != '') ? $_SESSION['domain']['paging']['numeric'] : 50;
-	$param = $search ? "&search=".$search : null;
-	$param = ($show == "all" && permission_exists('ring_group_all')) ? "&show=all" : null;
-	$page = isset($_GET['page']) ? $_GET['page'] : 0;
-	list($paging_controls, $rows_per_page) = paging($num_rows, $param, $rows_per_page);
-	list($paging_controls_mini, $rows_per_page) = paging($num_rows, $param, $rows_per_page, true);
-	$offset = $rows_per_page * $page;
-
-//get the list
-	if ($show == "all" && permission_exists('ring_group_all')) {
-		$sql = "select * from v_ring_groups ";
-		$sql .= "where true ";
-	}
-	elseif (permission_exists('ring_group_domain') || permission_exists('ring_group_all')) {
-		$sql = "select * from v_ring_groups ";
-		$sql .= "where domain_uuid = :domain_uuid ";
-		$parameters['domain_uuid'] = $domain_uuid;
-	}
-	else {
-		$sql = "select r.ring_group_uuid, r.ring_group_name, r.ring_group_extension, r.ring_group_strategy, ";
-		$sql .= "r.ring_group_forward_destination, r.ring_group_forward_enabled, r.ring_group_description ";
-=======
-		$parameters['domain_uuid'] = $domain_uuid;
-	}
-	else {
-		$sql = "select count(*) ";
->>>>>>> develop
-		$sql .= "from v_ring_groups as r, v_ring_group_users as u ";
-		$sql .= "where r.domain_uuid = :domain_uuid ";
-		$sql .= "and r.ring_group_uuid = u.ring_group_uuid ";
-		$sql .= "and u.user_uuid = :user_uuid ";
-		$parameters['domain_uuid'] = $domain_uuid;
-		$parameters['user_uuid'] = $_SESSION['user_uuid'];
-	}
-	if (!empty($search)) {
-		$sql .= "and (";
-		$sql .= "lower(ring_group_name) like :search ";
-		$sql .= "or lower(ring_group_extension) like :search ";
-		$sql .= "or lower(ring_group_description) like :search ";
-		$sql .= "or lower(ring_group_enabled) like :search ";
-		$sql .= "or lower(ring_group_strategy) like :search ";
-		$sql .= ") ";
-		$parameters['search'] = '%'.$search.'%';
-	}
-<<<<<<< HEAD
-=======
 	$database = new database;
 	$num_rows = $database->select($sql, $parameters, 'column');
 	unset($sql, $parameters);
@@ -218,7 +166,6 @@
 		$sql .= ") ";
 		$parameters['search'] = '%'.$search.'%';
 	}
->>>>>>> develop
 	$sql .= order_by($order_by, $order, null, null, $sort);
 	$sql .= limit_offset($rows_per_page, $offset);
 	$ring_groups = $database->select($sql, $parameters, 'all');

@@ -621,8 +621,5 @@ $c->destination_number = "";
 $c->queue_cc_exit_keys = "";
 $c->dialplan();
 */
-<<<<<<< HEAD
 
 ?>
-=======
->>>>>>> develop

@@ -353,11 +353,7 @@ if (is_array($activity)) {
 		}
 		else {
 			//unregistered extension
-<<<<<<< HEAD
-			if (!empty($_SESSION['operator_panel']['show_unregistered']['boolean']) && $_SESSION['operator_panel']['show_unregistered']['boolean'] == 'true') {
-=======
 			if (filter_var($_SESSION['operator_panel']['show_unregistered']['boolean'] ?? false, FILTER_VALIDATE_BOOL)) {
->>>>>>> develop
 				$css_class = "ur_ext";
 			}
 			else {

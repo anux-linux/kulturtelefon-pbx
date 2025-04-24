@@ -337,8 +337,6 @@
 			unset($sql, $parameters, $call_center_queues, $row, $selected);
 		}
 
-<<<<<<< HEAD
-=======
 		if (permission_exists('xml_cdr_search_ring_groups')) {
 			echo "	<tr>";
 			echo "		<td class='vncell'>".$text['label-ring_group']."</td>";
@@ -357,7 +355,6 @@
 			unset($sql, $parameters, $ring_groups, $row, $selected);
 		}
 
->>>>>>> develop
 		echo "</table>\n";
 	
 	echo "		</td>";

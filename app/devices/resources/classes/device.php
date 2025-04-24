@@ -405,12 +405,9 @@
 					if (preg_replace('/^.*?(avaya).*$/i', '$1', $agent) == "avaya") {
 						return "avaya";
 					}
-<<<<<<< HEAD
-=======
 					if (preg_replace('/^.*?(BITTEL).*$/i', '$1', $agent) == "bittel") {
 						return "bittel";
 					}
->>>>>>> develop
 					// unknown vendor
 					return "";
 				}
@@ -1385,11 +1382,7 @@
 
 								//save the array
 									$this->database->app_name = $this->app_name;
-<<<<<<< HEAD
-									$this->databasee->app_uuid = $this->app_uuid;
-=======
 									$this->database->app_uuid = $this->app_uuid;
->>>>>>> develop
 									$this->database->save($array);
 									unset($array);
 

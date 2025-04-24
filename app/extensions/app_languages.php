@@ -2698,34 +2698,6 @@ $text['description-voicemail_password']['zh-cn'] = "在此处输入数字语音�
 $text['description-voicemail_password']['ja-jp'] = "ここに数値のボイスメール パスワードを入力します。";
 $text['description-voicemail_password']['ko-kr'] = "여기에 숫자 음성사서함 암호를 입력합니다.";
 
-<<<<<<< HEAD
-$text['description-voicemail_mail_to']['en-us'] = "Enter the email address to send voicemail to (optional).";
-$text['description-voicemail_mail_to']['en-gb'] = "Enter the email address to send voicemail to (optional).";
-$text['description-voicemail_mail_to']['ar-eg'] = "أدخل العنوان الإلكتروني لإرسال البريد الصوتي إلى (اختياري).";
-$text['description-voicemail_mail_to']['de-at'] = "Geben Sie die Email Adresse an, an die Ihre Mailbox Nachricht gesendet werden soll (optional).";
-$text['description-voicemail_mail_to']['de-ch'] = "Geben Sie die Email Adresse an, an die Ihre Mailbox Nachricht gesendet werden soll (optional).";
-$text['description-voicemail_mail_to']['de-de'] = "Geben Sie die Email Adresse an, an die Ihre Mailbox Nachricht gesendet werden soll (optional).";
-$text['description-voicemail_mail_to']['el-gr'] = "Εισαγάγετε τη διεύθυνση email στην οποία θα στείλετε αυτόματο τηλεφωνητή (προαιρετικό).";
-$text['description-voicemail_mail_to']['es-cl'] = "Ingrese una dirección de correo electrónico para enviar el correo de voz (opcional).";
-$text['description-voicemail_mail_to']['es-mx'] = "Ingrese una dirección de correo electrónico para enviar el correo de voz (opcional).";
-$text['description-voicemail_mail_to']['fr-ca'] = "Insérer le courriel où sera envoyé le message de notification (optionnel).";
-$text['description-voicemail_mail_to']['fr-fr'] = "Insérer le courriel où sera envoyé le message de notification (optionnel).";
-$text['description-voicemail_mail_to']['he-il'] = "היכנס לכתובת הדואר האלקטרוני כדי לשלוח הודעות קוליות (אופציונלי).";
-$text['description-voicemail_mail_to']['it-it'] = "Inserire l'indirizzo email a cui recapitare i messaggi vocali (opzionale).";
-$text['description-voicemail_mail_to']['ka-ge'] = "შეიყვანეთ ელფოსტის მისამართი, რომელზეც ხმოვანი ფოსტა გამოიგზავნება (არასავალდებულო).";
-$text['description-voicemail_mail_to']['nl-nl'] = "Voer het E-mail adres om de voicemail naar te sturen (optioneel).";
-$text['description-voicemail_mail_to']['pl-pl'] = "Dodaj adres email na który będą wysyłane pliki poczty głosowej";
-$text['description-voicemail_mail_to']['pt-br'] = "Insira o endereço de email para enviar o correio de voz (opcional).";
-$text['description-voicemail_mail_to']['pt-pt'] = "Introduza o endereço de email para enviar o correio de voz (opcional).";
-$text['description-voicemail_mail_to']['ro-ro'] = "Introduceți adresa de e-mail la care trimiteți mesajul vocal (opțional).";
-$text['description-voicemail_mail_to']['ru-ru'] = "Введите адрес электронной почты, чтобы отправить голосовую почту (опционально).";
-$text['description-voicemail_mail_to']['sv-se'] = "Ange E-post adressen för röstbrevlådan (valfritt).";
-$text['description-voicemail_mail_to']['uk-ua'] = "Введіть адресу електронної пошти для відправки голосового повідомлення (за бажанням).";
-$text['description-voicemail_mail_to']['tr-tr'] = "Sesli mesajın gönderileceği e-posta adresini girin (isteğe bağlı).";
-$text['description-voicemail_mail_to']['zh-cn'] = "输入要向其发送语音邮件的电子邮件地址（可选）。";
-$text['description-voicemail_mail_to']['ja-jp'] = "ボイスメールの送信先の電子メール アドレスを入力します (オプション)。";
-$text['description-voicemail_mail_to']['ko-kr'] = "음성 메일을 보낼 이메일 주소를 입력합니다(선택 사항).";
-=======
 $text['description-voicemail_mail_to']['en-us'] = "Enter the email address to send voicemail to (optional). Multiple addresses may be separated by commas.";
 $text['description-voicemail_mail_to']['en-gb'] = "Enter the email address to send voicemail to (optional). Multiple addresses may be separated by commas.";
 $text['description-voicemail_mail_to']['ar-eg'] = "أدخل عنوان البريد الإلكتروني لإرسال البريد الصوتي إليه (اختياري). يمكن فصل العناوين المتعددة بفواصل.";
@@ -2752,7 +2724,6 @@ $text['description-voicemail_mail_to']['tr-tr'] = "Sesli mesajın gönderileceğ
 $text['description-voicemail_mail_to']['zh-cn'] = "输入要发送语音邮件的电子邮件地址（可选）。多个地址可用逗号分隔。";
 $text['description-voicemail_mail_to']['ja-jp'] = "ボイスメールを送信するメールアドレスを入力してください（オプション）。複数のアドレスはコンマで区切ることができます。";
 $text['description-voicemail_mail_to']['ko-kr'] = "보이스메일을 보낼 이메일 주소를 입력하세요(선택 사항). 여러 개의 주소는 쉼표로 구분할 수 있습니다.";
->>>>>>> develop
 
 $text['description-voicemail_local_after_email']['en-us'] = "Choose whether to keep the voicemail in the system after sending the email notification.";
 $text['description-voicemail_local_after_email']['en-gb'] = "Choose whether to keep the voicemail in the system after sending the email notification.";

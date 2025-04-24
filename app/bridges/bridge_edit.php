@@ -17,11 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-<<<<<<< HEAD
-	Portions created by the Initial Developer are Copyright (C) 2018 - 2023
-=======
 	Portions created by the Initial Developer are Copyright (C) 2018-2024
->>>>>>> develop
 	the Initial Developer. All Rights Reserved.
 */
 
@@ -605,10 +601,7 @@
 	echo "</tr>\n";
 
 	echo "</table>\n";
-<<<<<<< HEAD
-=======
 	echo "</div>\n";
->>>>>>> develop
 	echo "<br /><br />\n";
 
 	if (!empty($bridge_uuid)) {

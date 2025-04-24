@@ -17,11 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-<<<<<<< HEAD
-	Portions created by the Initial Developer are Copyright (C) 2017 - 2023
-=======
 	Portions created by the Initial Developer are Copyright (C) 2017 - 2025
->>>>>>> develop
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -34,18 +30,11 @@
 	class destinations {
 
 		/**
-<<<<<<< HEAD
-		* declare public variables
-		*/
-		public $destinations;
-		public $domain_uuid;
-=======
 		 * declare public variables
 		 */
 		public $destinations;
 		public $domain_uuid;
 		public $domain_name;
->>>>>>> develop
 		public $start_stamp_begin;
 		public $start_stamp_end;
 		public $quick_select;
@@ -59,18 +48,12 @@
 		private $list_page;
 		private $table;
 		private $uuid_prefix;
-<<<<<<< HEAD
-=======
 		private $database;
->>>>>>> develop
 		private $settings;
 
 		/**
 		* Called when the object is created
 		*/
-<<<<<<< HEAD
-		public function __construct($settings = null) {
-=======
 		public function __construct($setting_array = []) {
 
 			//open a database connection
@@ -80,7 +63,6 @@
 					$this->database = $setting_array['database'];
 				}
 
->>>>>>> develop
 			//set the domain details
 			$this->domain_uuid = $_SESSION['domain_uuid'] ?? '';
 			$this->user_uuid = $_SESSION['user_uuid'] ?? '';
@@ -588,11 +570,7 @@
 			$sql = "select domain_name from v_domains ";
 			$sql .= "where domain_uuid = :domain_uuid ";
 			$parameters['domain_uuid'] = $this->domain_uuid;
-<<<<<<< HEAD
-			$this->domain_name = $database->select($sql, $parameters, 'column');
-=======
 			$this->domain_name = $this->database->select($sql, $parameters, 'column');
->>>>>>> develop
 
 			//get the destinations
 			if (!is_array($this->destinations)) {
@@ -656,11 +634,7 @@
 						}
 						$sql .= "order by ".trim($row['order_by']);
 						$sql = str_replace("\${domain_uuid}", $this->domain_uuid, $sql);
-<<<<<<< HEAD
-						$result = $database->select($sql, null, 'all');
-=======
 						$result = $this->database->select($sql, null, 'all');
->>>>>>> develop
 
 						$this->destinations[$x]['result']['sql'] = $sql;
 						$this->destinations[$x]['result']['data'] = $result;
@@ -806,11 +780,7 @@
 			$sql = "select domain_name from v_domains ";
 			$sql .= "where domain_uuid = :domain_uuid ";
 			$parameters['domain_uuid'] = $this->domain_uuid;
-<<<<<<< HEAD
-			$this->domain_name = $database->select($sql, $parameters, 'column');
-=======
 			$this->domain_name = $this->database->select($sql, $parameters, 'column');
->>>>>>> develop
 
 			//get the destinations
 			if (!is_array($this->destinations)) {
@@ -875,11 +845,7 @@
 						}
 						$sql .= "order by ".trim($row['order_by']);
 						$sql = str_replace("\${domain_uuid}", $this->domain_uuid, $sql);
-<<<<<<< HEAD
-						$result = $database->select($sql, null, 'all');
-=======
 						$result = $this->database->select($sql, null, 'all');
->>>>>>> develop
 
 						$this->destinations[$x]['result']['sql'] = $sql;
 						$this->destinations[$x]['result']['data'] = $result;
@@ -1500,8 +1466,5 @@ echo $obj->select('ivr', 'example4', '');
 echo $obj->select('ivr', 'example5', '');
 echo $obj->select('ivr', 'example6', '');
 */
-<<<<<<< HEAD
 
 ?>
-=======
->>>>>>> develop

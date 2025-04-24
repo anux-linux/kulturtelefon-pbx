@@ -17,11 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-<<<<<<< HEAD
-	Portions created by the Initial Developer are Copyright (C) 2008-2024
-=======
 	Portions created by the Initial Developer are Copyright (C) 2008-2025
->>>>>>> develop
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -651,11 +647,7 @@ if (permission_exists('call_block_all') || permission_exists('call_block_ring_gr
 		echo "		</select>\n";
 		echo "	</div>\n";
 		echo "	<div class='actions'>\n";
-<<<<<<< HEAD
-		echo button::create(['type'=>'button','id'=>'action_bar_sub_button_back','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'collapse'=>'hide-xs','style'=>'display: none;','link'=>'call_block.php']);
-=======
 		echo button::create(['type'=>'button','id'=>'action_bar_sub_button_back','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'collapse'=>'hide-xs','style'=>'display: none;','link'=>'call_block.php']);
->>>>>>> develop
 		if ($recent_calls) {
 			$select_margin = 'margin-left: 15px;';
 			if (permission_exists('call_block_extension')) {
@@ -763,11 +755,8 @@ if (permission_exists('call_block_all') || permission_exists('call_block_ring_gr
 			}
 			echo "</table>\n";
 		}
-<<<<<<< HEAD
-=======
 
 		echo "</div>\n";
->>>>>>> develop
 
 		echo "<br />\n";
 		echo "<input type='hidden' name='".$token['name']."' value='".$token['hash']."'>\n";

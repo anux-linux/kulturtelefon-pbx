@@ -106,9 +106,6 @@
 				$id = 0;
 
 			//create the event socket connection
-<<<<<<< HEAD
-				$esl = event_socket::create();
-=======
 				$event_socket = $this->event_socket;
 
 			//make sure the event socket is connected
@@ -124,7 +121,6 @@
 				}
 
 
->>>>>>> develop
 
 			//get the default settings
 				$sql = "select sip_profile_name from v_sip_profiles ";
@@ -146,11 +142,7 @@
 
 						//get sofia status profile information including registrations
 							$cmd = "api sofia xmlstatus profile '".$field['sip_profile_name']."' reg";
-<<<<<<< HEAD
-							$xml_response = trim(event_socket::command($cmd));
-=======
 							$xml_response = trim($event_socket->request($cmd));
->>>>>>> develop
 
 						//show an error message
 							if ($xml_response == "Invalid Profile!") {
@@ -346,17 +338,10 @@
 							unset($sql);
 
 						//create the event socket connection
-<<<<<<< HEAD
-							$esl = event_socket::create();
-
-						//loop through registrations
-							if ($esl->is_connected()) {
-=======
 							$event_socket = $this->event_socket;
 
 						//loop through registrations
 							if ($event_socket->is_connected()) {
->>>>>>> develop
 								//check if registrations exist
 								if (is_array($registrations)) {
 									foreach ($registrations as $registration) {
@@ -416,16 +401,10 @@
 											}
 
 										//send the api command
-<<<<<<< HEAD
-											if (!empty($command) && $esl->is_connected()) {
-												$response_api[$registration['user']]['command'] = event_socket::api($command);
-												$response_api[$registration['user']]['log'] = event_socket::api("log notice $command");
-=======
 											if (!empty($command) && $event_socket->is_connected()) {
 												$response = $event_socket->request('api ' . $command);
 												$response_api[$user]['command'] = $command;
 												$response_api[$user]['log'] = $response;
->>>>>>> develop
 											}
 									}
 								}

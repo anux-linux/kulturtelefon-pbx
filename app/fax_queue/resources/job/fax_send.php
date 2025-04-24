@@ -184,19 +184,6 @@
 	}
 	unset($parameters);
 
-<<<<<<< HEAD
-//get the email queue settings
-	$setting = new settings(["domain_uuid" => $domain_uuid]);
-
-//prepare the smtp from and from name variables
-	$email_from = $setting->get('fax','smtp_from');
-	$email_from_name = $setting->get('fax','smtp_from_name');
-	if (empty($email_from)) {
-		$email_from = $setting->get('email','smtp_from');
-	}
-	if (empty($email_from_name)) {
-		$email_from_name = $setting->get('email','smtp_from_name');
-=======
 //prepare the smtp from and from name variables
 	$email_from = $settings->get('fax','smtp_from');
 	$email_from_name = $settings->get('fax','smtp_from_name');
@@ -205,16 +192,11 @@
 	}
 	if (empty($email_from_name)) {
 		$email_from_name = $settings->get('email','smtp_from_name');
->>>>>>> develop
 	}
 
 //prepare the variables to send the fax
 	$email_from_address = $email_from;
-<<<<<<< HEAD
-	$retry_limit = $setting->get('fax_queue','retry_limit');
-=======
 	$retry_limit = $settings->get('fax_queue','retry_limit');
->>>>>>> develop
 
 //prepare the fax retry count
 	if (!isset($fax_retry_count)) {
@@ -267,14 +249,7 @@
 			if ($fax_retry_count == 0) {
 				//use default settings or domain settings (defaults to t38)
 				$fax_options = '';
-<<<<<<< HEAD
-			}
-			if ($fax_retry_count == 1) {
-				$fax_options = '';
-				foreach($setting->get('fax','variable') as $variable) {
-=======
 				foreach($settings->get('fax','variable') as $variable) {
->>>>>>> develop
 					$fax_options .= $variable.",";
 				}
 			}
@@ -309,21 +284,6 @@
 					$fax_options .= $variable.",";
 				}
 			}
-<<<<<<< HEAD
-
-		//define the fax file
-			$common_variables = '';
-			$common_variables = "accountcode='"                  . escape_quote($fax_accountcode) . "',";
-			$common_variables .= "sip_h_accountcode='"           . escape_quote($fax_accountcode) . "',";
-			$common_variables .= "domain_uuid="                  . $domain_uuid . ",";
-			$common_variables .= "domain_name="                  . $domain_name . ",";
-			$common_variables .= "origination_caller_id_name='"  . escape_quote($fax_caller_id_name) . "',";
-			$common_variables .= "origination_caller_id_number=" . $fax_caller_id_number . ",";
-			$common_variables .= "fax_ident='"                    . escape_quote($fax_caller_id_number) . "',";
-			$common_variables .= "fax_header='"                   . escape_quote($fax_caller_id_name) . "',";
-			$common_variables .= "fax_file='"                     . escape_quote($fax_file) . "',";
-=======
->>>>>>> develop
 
 		//extract fax_dtmf from the fax number
 			fax_split_dtmf($fax_number, $fax_dtmf);
@@ -332,28 +292,6 @@
 			if (!empty($fax_toll_allow)) {
 				$channel_variables["toll_allow"] = $fax_toll_allow;
 			}
-<<<<<<< HEAD
-			$route_array = outbound_route_to_bridge($domain_uuid, $fax_prefix . $fax_number, $channel_variables);
-			if (count($route_array) == 0) {
-				//check for valid extension
-				$sql = "select count(extension_uuid) ";
-				$sql .= "from v_extensions ";
-				$sql .= "where extension = :fax_number ";
-				$sql .= "and domain_uuid = :domain_uuid ";
-				$parameters['domain_uuid'] = $domain_uuid;
-				$parameters['fax_number'] = $fax_number;
-				$database = new database;
-				$extension_count = $database->select($sql, $parameters, 'column');
-				if ($extension_count > 0) {
-					//send the internal call to the registered extension
-					$route_array[] = "user/".$fax_number."@".$domain_name;
-				}
-				else {
-					$fax_status = 'failed';
-				}
-			}
-
-=======
 
 		//check to see if the destination number is local
 			$local_destination = false;
@@ -441,22 +379,12 @@
 				}
 			}
 
->>>>>>> develop
 		//set the origination uuid
 			$origination_uuid = uuid();
 
 		//build a list of fax variables
 			$dial_string = $common_variables;
 			$dial_string .= $fax_options.",";
-<<<<<<< HEAD
-			$dial_string .= "origination_uuid="    . $origination_uuid. ",";
-			$dial_string .= "fax_uuid="            . $fax_uuid. ",";
-			$dial_string .= "fax_queue_uuid="      . $fax_queue_uuid. ",";
-			$dial_string .= "mailto_address='"     . $fax_email_address   . "',";
-			$dial_string .= "mailfrom_address='"   . $email_from_address . "',";
-			$dial_string .= "fax_retry_attempts="  . $fax_retry_count  . ",";
-			$dial_string .= "fax_retry_limit="     . $retry_limit  . ",";
-=======
 			$dial_string .= "origination_uuid="    . $origination_uuid . ",";
 			$dial_string .= "fax_uuid="            . $fax_uuid . ",";
 			$dial_string .= "fax_queue_uuid="      . $fax_queue_uuid . ",";
@@ -465,7 +393,6 @@
 			$dial_string .= "fax_retry_attempts="  . $fax_retry_count . ",";
 			$dial_string .= "fax_retry_limit="     . $retry_limit . ",";
 			$dial_string .= "fax_recipient='"      . escape_quote($fax_recipient) . "',";
->>>>>>> develop
 			//$dial_string .= "fax_retry_sleep=180,";
 			$dial_string .= "fax_verbose=true,";
 			//$dial_string .= "fax_use_ecm=off,";
@@ -475,23 +402,6 @@
 		//connect to event socket and send the command
 			if ($fax_status != 'failed' && file_exists($fax_file)) {
 				//send the fax and try another route if the fax fails
-<<<<<<< HEAD
-				foreach($route_array as $route) {
-					$fax_command  = "originate {" . $dial_string . ",fax_uri=".$route."}" . $route." &txfax('".$fax_file."')";
-					$fax_response = event_socket::api($fax_command);
-					$response = str_replace("\n", "", $fax_response);
-					$response = trim(str_replace("+OK", "", $response));
-					if (is_uuid($response)) {
-						//originate command accepted
-						$uuid = $response;
-						echo "uuid: ".$uuid."\n";
-						break;
-					}
-					else {
-						//originate command failed (-ERR INVALID_GATEWAY or other errors)
-						echo "response: ".$response."\n";
-					}
-=======
 				$fax_command  = "originate {" . $dial_string . ",fax_uri=".$fax_uri."}" . $fax_uri." &txfax('".$fax_file."')";
 				$fax_response = event_socket::api($fax_command);
 				$response = str_replace("\n", "", $fax_response);
@@ -504,7 +414,6 @@
 				else {
 					//originate command failed (-ERR INVALID_GATEWAY or other errors)
 					echo "response: ".$response."\n";
->>>>>>> develop
 				}
 
 				//set the fax file name without the extension
@@ -551,11 +460,7 @@
 		//send the email
 			if (!empty($fax_email_address) && file_exists($fax_file)) {
 				//get the language code
-<<<<<<< HEAD
-				$language_code = $setting->get('domain','language');
-=======
 				$language_code = $settings->get('domain','language');
->>>>>>> develop
 
 				//get the template subcategory
 				if (isset($fax_relay) && $fax_relay == 'true') {

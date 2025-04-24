@@ -116,8 +116,6 @@ if ($domains_processed == 1) {
 	$sql .= "where domain_setting_category = 'provision' ";
 	$sql .= "and domain_setting_subcategory = 'http_auth_password' ";
 	$sql .= "and domain_setting_name = 'text' ";
-<<<<<<< HEAD
-=======
 	$database->execute($sql);
 
 	//update if the type is boolean with value of 0 or 1 use type text, or if type numeric use type text.
@@ -135,7 +133,6 @@ if ($domains_processed == 1) {
 	$sql .= "default_setting_category = 'provision' ";
 	$sql .= "and default_setting_name = 'numeric' ";
 	$sql .= ") ";
->>>>>>> develop
 	$database->execute($sql);
 
 }

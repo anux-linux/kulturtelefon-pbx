@@ -38,14 +38,9 @@
 		exit;
 	}
 
-<<<<<<< HEAD
-//initialize the database object
-	$database = new database;
-=======
 //get the domain and user UUIDs
 	$domain_uuid = $domain_uuid ?? '';
 	$user_uuid = $user_uuid ?? '';
->>>>>>> develop
 
 //add multi-lingual support
 	$language = new text;
@@ -114,11 +109,7 @@
 			$sql = "select count(extension_uuid) ";
 			$sql .= "from v_extensions ";
 			$sql .= "where domain_uuid = :domain_uuid ";
-<<<<<<< HEAD
-			$parameters['domain_uuid'] = $_SESSION['domain_uuid'];
-=======
 			$parameters['domain_uuid'] = $domain_uuid;
->>>>>>> develop
 			$total_extensions = $database->select($sql, $parameters, 'column');
 			unset($sql, $parameters);
 
@@ -1095,24 +1086,14 @@
 	$toll_allow = str_replace(':',',', $toll_allow ?? '');
 
 //get installed languages
-<<<<<<< HEAD
-	$language_paths = glob($_SESSION["switch"]['sounds']['dir']."/*/*/*");
-	foreach ($language_paths as $key => $path) {
-		$path = str_replace($_SESSION["switch"]['sounds']['dir'].'/', "", $path);
-=======
 	$language_paths = glob($switch_sounds."/*/*/*");
 	foreach ($language_paths as $key => $path) {
 		$path = str_replace($switch_sounds.'/', "", $path);
->>>>>>> develop
 		$path_array = explode('/', $path);
 		if (count($path_array) <> 3 || strlen($path_array[0]) <> 2 || strlen($path_array[1]) <> 2) {
 			unset($language_paths[$key]);
 		}
-<<<<<<< HEAD
-		$language_paths[$key] = str_replace($_SESSION["switch"]['sounds']['dir']."/","",$language_paths[$key] ?? '');
-=======
 		$language_paths[$key] = str_replace($switch_sounds."/","",$language_paths[$key] ?? '');
->>>>>>> develop
 		if (empty($language_paths[$key])) {
 			unset($language_paths[$key]);
 		}
@@ -1122,15 +1103,9 @@
 	if (empty($user_context)) { $user_context = $domain_name; }
 	if (empty($max_registrations)) { $max_registrations = $extension_max_registrations ?? ''; }
 	if (empty($accountcode)) { $accountcode = get_accountcode(); }
-<<<<<<< HEAD
-	if (empty($limit_max)) { $limit_max = $_SESSION['extension']['limit_max']['numeric'] ?? 5; }
-	if (empty($limit_destination)) { $limit_destination = '!USER_BUSY'; }
-	if (empty($call_timeout)) { $call_timeout = $_SESSION['extension']['call_timeout']['numeric'] ?? 30; }
-=======
 	if (empty($limit_max)) { $limit_max = $extension_limit_max; }
 	if (empty($limit_destination)) { $limit_destination = '!USER_BUSY'; }
 	if (empty($call_timeout)) { $call_timeout = $extension_call_timeout; }
->>>>>>> develop
 	if (empty($call_screen_enabled)) { $call_screen_enabled = 'false'; }
 	if (empty($user_record)) { $user_record = $extension_user_record_default; }
 	if (empty($voicemail_transcription_enabled)) { $voicemail_transcription_enabled = $voicemail_transcription_enabled_default; }
@@ -1232,11 +1207,7 @@
 	echo "</td>\n";
 	echo "<td width='70%' class='vtable' align='left'>\n";
 	if ($action == "add" || permission_exists("extension_extension")) {
-<<<<<<< HEAD
-		echo "    <input class='formfld' type='text' name='extension' autocomplete='new-password' maxlength='255' value=\"".escape($extension ?? '')."\" required='required' placeholder=\"".($_SESSION['extension']['extension_range']['text'] ?? '')."\">\n";
-=======
 		echo "    <input class='formfld' type='text' name='extension' autocomplete='new-password' maxlength='255' value=\"".escape($extension ?? '')."\" required='required' placeholder=\"".$settings->get('extension','extension_range','')."\">\n";
->>>>>>> develop
 		echo "    <input type='text' style='display: none;' disabled='disabled'>\n"; //help defeat browser auto-fill
 		echo "<br />\n";
 		echo $text['description-extension']."\n";
@@ -1859,11 +1830,7 @@
 		echo "</td>\n";
 		echo "</tr>\n";
 
-<<<<<<< HEAD
-		if (permission_exists('voicemail_transcription_enabled') && ($_SESSION['voicemail']['transcribe_enabled']['boolean'] ?? '') == "true") {
-=======
 		if (permission_exists('voicemail_transcription_enabled') && $transcribe_enabled) {
->>>>>>> develop
 			echo "<tr>\n";
 			echo "<td class='vncell' valign='top' align='left' nowrap='nowrap'>\n";
 			echo "	".$text['label-voicemail_transcription_enabled']."\n";

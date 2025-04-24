@@ -136,11 +136,6 @@
 		</script>
 		<?php
 	}
-<<<<<<< HEAD
-	if (!isset($dashboard_chart_type) || $dashboard_chart_type == "number") {
-		echo "<span class='hud_stat'>".$num_rows."</span>";
-	}
-=======
 
 	//dashboard numeric
 	if (!isset($dashboard_chart_type) || $dashboard_chart_type == "number") {
@@ -157,7 +152,6 @@
 		echo "</div>";
 	}
 
->>>>>>> develop
 	echo "</div>\n";
 
 	if ($dashboard_details_state != 'disabled') {
@@ -212,15 +206,9 @@
 							"&dest_cid_number=".urlencode($_SESSION['user']['extension'][0]['outbound_caller_id_number'] ?? '').
 							"&src=".urlencode($_SESSION['user']['extension'][0]['user'] ?? '').
 							"&dest=".urlencode($dest ?? '').
-<<<<<<< HEAD
-							"&rec=".(isset($_SESSION['click_to_call']['record']['boolean']) ? $_SESSION['click_to_call']['record']['boolean'] : "false").
-							"&ringback=".(isset($_SESSION['click_to_call']['ringback']['text']) ? $_SESSION['click_to_call']['ringback']['text'] : "us-ring").
-							"&auto_answer=".(isset($_SESSION['click_to_call']['auto_answer']['boolean']) ? $_SESSION['click_to_call']['auto_answer']['boolean'] : "true").
-=======
 							"&rec=".(filter_var($_SESSION['click_to_call']['record']['boolean'] ?? false, FILTER_VALIDATE_BOOL) ? 'true' : 'false').
 							"&ringback=".(isset($_SESSION['click_to_call']['ringback']['text']) ? $_SESSION['click_to_call']['ringback']['text'] : "us-ring").
 							"&auto_answer=".(filter_var($_SESSION['click_to_call']['auto_answer']['boolean'] ?? false, FILTER_VALIDATE_BOOL) ? 'true' : 'false').
->>>>>>> develop
 							"');\" ".
 							"style='cursor: pointer;'";
 					}

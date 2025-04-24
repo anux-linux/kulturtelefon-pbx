@@ -63,71 +63,6 @@
 		}
 	}
 
-<<<<<<< HEAD
-		if (!empty($percent_disk_usage)) {
-
-			//add half doughnut chart
-			echo "	<div class='hud_content' ".($dashboard_details_state == "disabled" ?: "onclick=\"$('#hud_system_status_details').slideToggle('fast'); toggle_grid_row_end('".$dashboard_name."')\"").">\n";
-			echo "		<span class='hud_title'><a onclick=\"document.location.href='".PROJECT_PATH."/app/system/system.php'\">".$text['label-disk_usage']."</a></span>\n";
-
-			if (!isset($dashboard_chart_type) || $dashboard_chart_type == "doughnut") {
-				?>
-				<div class='hud_chart' style='width: 175px;'><canvas id='system_status_chart'></canvas></div>
-
-				<script>
-					const system_status_chart = new Chart(
-						document.getElementById('system_status_chart').getContext('2d'),
-						{
-							type: 'doughnut',
-							data: {
-								datasets: [{
-									data: ['<?php echo $percent_disk_usage; ?>', 100 - '<?php echo $percent_disk_usage; ?>'],
-									backgroundColor: [
-										<?php
-										if ($percent_disk_usage <= 80) {
-											echo "'".($settings->get('theme', 'dashboard_disk_usage_chart_main_color')[0] ?? '#03c04a')."',\n";
-										} else if ($percent_disk_usage <= 90) {
-											echo "'".($settings->get('theme', 'dashboard_disk_usage_chart_main_color')[1] ?? '#ff9933')."',\n";
-										} else if ($percent_disk_usage > 90) {
-											echo "'".($settings->get('theme', 'dashboard_disk_usage_chart_main_color')[2] ?? '#ea4c46')."',\n";
-										}
-										?>
-										'<?php echo ($settings->get('theme', 'dashboard_disk_usage_chart_sub_color') ?? '#d4d4d4'); ?>'
-									],
-									borderColor: '<?php echo $settings->get('theme', 'dashboard_chart_border_color'); ?>',
-									borderWidth: '<?php echo $settings->get('theme', 'dashboard_chart_border_width'); ?>',
-								}]
-							},
-							options: {
-								circumference: 180,
-								rotation: 270,
-								plugins: {
-									chart_number_2: {
-										text: '<?php echo round($percent_disk_usage); ?>'
-									}
-								}
-							},
-							plugins: [{
-								id: 'chart_number_2',
-								beforeDraw(chart, args, options){
-									const {ctx, chartArea: {top, right, bottom, left, width, height} } = chart;
-									ctx.font = chart_text_size + ' ' + chart_text_font;
-									ctx.textBaseline = 'middle';
-									ctx.textAlign = 'center';
-									ctx.fillStyle = '<?php echo $dashboard_number_text_color; ?>';
-									ctx.fillText(options.text + '%', width / 2, top + (height / 2) + 35);
-									ctx.save();
-								}
-							}]
-						}
-					);
-				</script>
-				<?php
-			}
-			if ($dashboard_chart_type == "number") {
-				echo "	<span class='hud_stat'>".round($percent_disk_usage)."%</span>";
-			}
-=======
 
 //show the results
 	echo "	<div class='hud_content' ".($dashboard_details_state == "disabled" ?: "onclick=\"$('#hud_system_status_details').slideToggle('fast'); toggle_grid_row_end('".$dashboard_name."')\"").">\n";
@@ -215,17 +150,13 @@
 			echo "	<span class='hud_title' style='text-align: left; font-size: 11px; line-height: 1.8; font-weight: unset; padding-left: 10%;'>".$text['label-memory_usage']."</span>\n";
 			echo "	<div class='progress_container' style='width: 80%; height: 15px; border-radius: 10px; background: ".($settings->get('theme', 'dashboard_disk_usage_chart_sub_color') ?? '#d4d4d4').";'>\n";
 			echo "		<div class='progress_bar' style='width: ".round((int)$memory_details['memory_percent'])."%; height: 15px; border-radius: 10px; font-size: x-small; color: ".$row['dashboard_number_text_color']."; background: ".($settings->get('theme', 'dashboard_disk_usage_chart_main_color') ?? '#03c04a').";'>".round((int)$memory_details['memory_percent'])."%</div>\n";
->>>>>>> develop
 			echo "	</div>\n";
 		}
 	}
 
-<<<<<<< HEAD
-=======
 	echo "	</div>\n";
 
 
->>>>>>> develop
 	if ($dashboard_details_state != 'disabled') {
 		echo "<div class='hud_details hud_box' id='hud_system_status_details'>";
 		echo "<table class='tr_hover' width='100%' cellpadding='0' cellspacing='0' border='0'>\n";
@@ -323,13 +254,9 @@
 			}
 
 		//channel count
-<<<<<<< HEAD
-			$esl = event_socket::create();
-=======
 			if ($esl == null) {
 				$esl = event_socket::create();
 			}
->>>>>>> develop
 			if ($esl->is_connected()) {
 				$tmp = event_socket::api('status');
 				$matches = Array();
@@ -343,21 +270,6 @@
 				$c = ($c) ? 0 : 1;
 			}
 
-<<<<<<< HEAD
-		//registration count
-			if ($esl->is_connected() && file_exists($_SERVER["DOCUMENT_ROOT"].PROJECT_PATH."/app/registrations/")) {
-				$registration = new registrations;
-				$registrations = $registration->count();
-				$tr_link = "href='".PROJECT_PATH."/app/registrations/registrations.php'";
-				echo "<tr ".$tr_link.">\n";
-				echo "<td valign='top' class='".$row_style[$c]." hud_text'><a ".$tr_link.">".$text['label-registrations']."</a></td>\n";
-				echo "<td valign='top' class='".$row_style[$c]." hud_text' style='text-align: right;'>".$registrations."</td>\n";
-				echo "</tr>\n";
-				$c = ($c) ? 0 : 1;
-			}
-
-=======
->>>>>>> develop
 		echo "</table>\n";
 		echo "</div>";
 		//$n++;

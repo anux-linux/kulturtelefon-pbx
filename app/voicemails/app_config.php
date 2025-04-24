@@ -369,41 +369,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "false";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Define the transcription default value for new voicemails boxes.";
-<<<<<<< HEAD
-		$y++;
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "52f15a2d-d6c8-4a66-8f57-0ac176cfff17";
-		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";
-		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "dashboard_new_messages_chart_main_color";
-		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "#ff9933";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
-		$y++;
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "ec7b134d-622b-4f1e-bdae-faca40300b90";
-		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";
-		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "dashboard_new_messages_chart_sub_color";
-		$apps[$x]['default_settings'][$y]['default_setting_name'] = "text";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "#d4d4d4";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "";
-		$y++;
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "5d9a1f93-e163-4c05-a975-bd1e5a045660";
-		$apps[$x]['default_settings'][$y]['default_setting_category'] = "voicemail";
-		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "transcribe_enabled";
-		$apps[$x]['default_settings'][$y]['default_setting_name'] = "boolean";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "true";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "false";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Transcription enabled default false.";
-		$y++;
-		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "275cf580-7b72-45e4-9af5-b8eed9a45ec0";
-		$apps[$x]['default_settings'][$y]['default_setting_category'] = "voicemail";
-		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "database_retention_days";
-		$apps[$x]['default_settings'][$y]['default_setting_name'] = "numeric";
-		$apps[$x]['default_settings'][$y]['default_setting_value'] = "90";
-		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
-		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Number of days maintenance application will retain logs in the database.";
-		$y++;
-=======
 		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "52f15a2d-d6c8-4a66-8f57-0ac176cfff17";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "theme";
@@ -429,7 +394,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Number of days maintenance application will retain logs in the database.";
 		$y++;
->>>>>>> develop
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "9237cc82-7dea-4b5f-8225-eeed97938338";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "voicemail";
 		$apps[$x]['default_settings'][$y]['default_setting_subcategory'] = "filesystem_retention_days";
@@ -437,8 +401,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "90";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Number of days maintenance application will retain files.";
-<<<<<<< HEAD
-=======
 		$y++;
 		$apps[$x]['default_settings'][$y]['default_setting_uuid'] = "79d05433-a7ab-4641-ae5d-6eb7810eb560";
 		$apps[$x]['default_settings'][$y]['default_setting_category'] = "voicemail";
@@ -455,7 +417,6 @@
 		$apps[$x]['default_settings'][$y]['default_setting_value'] = "24";
 		$apps[$x]['default_settings'][$y]['default_setting_enabled'] = "true";
 		$apps[$x]['default_settings'][$y]['default_setting_description'] = "Number of hours the voicemail deletion queue will retain deleted voicemails";
->>>>>>> develop
 	//schema details
 		$y=0;
 		$apps[$x]['db'][$y]['table']['name'] = "v_voicemails";
@@ -530,10 +491,7 @@
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";
 		$apps[$x]['db'][$y]['fields'][$z]['search'] = 'true';
 		$apps[$x]['db'][$y]['fields'][$z]['description']['en-us'] = "Choose to keep the voicemail file after sending to forward destinations.";
-<<<<<<< HEAD
-=======
 		$apps[$x]['db'][$y]['fields'][$z]['deprecated'] = "true";
->>>>>>> develop
 		$z++;
 		$apps[$x]['db'][$y]['fields'][$z]['name'] = "voicemail_enabled";
 		$apps[$x]['db'][$y]['fields'][$z]['type'] = "text";

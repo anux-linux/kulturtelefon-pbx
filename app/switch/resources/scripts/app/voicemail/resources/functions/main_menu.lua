@@ -73,8 +73,6 @@
 							saved_messages = row["saved_messages"];
 						end);
 						dtmf_digits = session:playAndGetDigits(0, 1, 1, 300, "#", "phrase:voicemail_saved_message_count:" .. saved_messages .. ":saved", "", "\\d+");
-<<<<<<< HEAD
-=======
 					end
 				end
 			--deleted messages
@@ -93,7 +91,6 @@
 							deleted_messages = row["deleted_messages"];
 						end);
 						dtmf_digits = session:playAndGetDigits(0, 1, 1, 300, "#", "phrase:voicemail_deleted_message_count:" .. deleted_messages .. ":deleted", "", "\\d+");
->>>>>>> develop
 					end
 				end
 

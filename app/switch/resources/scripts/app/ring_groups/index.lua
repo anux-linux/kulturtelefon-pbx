@@ -246,8 +246,6 @@ log = require "resources.functions.log".ring_group
 	local Settings = require "resources.functions.lazy_settings";
 	local settings = Settings.new(dbh, domain_name, domain_uuid);
 
-<<<<<<< HEAD
-=======
 --get the recordings dir
 	--recordings_dir = settings:get('switch', 'recordings', 'dir');
 
@@ -256,7 +254,6 @@ log = require "resources.functions.log".ring_group
 		record_ext = 'wav';
 	end
 
->>>>>>> develop
 --prepare the recording path
 	record_path = recordings_dir .. "/" .. domain_name .. "/archive/" .. os.date("%Y/%b/%d");
 	record_path = record_path:gsub("\\", "/");
@@ -965,11 +962,7 @@ log = require "resources.functions.log".ring_group
 							user_hold_music = trim(api:executeString(cmd));
 							if (user_hold_music ~= nil) and (string.len(user_hold_music) > 0) then
 								hold_music = user_hold_music;
-<<<<<<< HEAD
-							else 
-=======
 							else
->>>>>>> develop
 								hold_music = default_hold_music
 							end
 

@@ -427,17 +427,6 @@
 	$token = $object->create('/app/devices/resources/dashboard/device_keys.php');
 
 //show the content
-<<<<<<< HEAD
-	echo "<div class='action_bar sub'>\n";
-	echo "	<div class='heading'><b>".$text['title-device_keys']."</b></div>\n";
-	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-apply'],'icon'=>$_SESSION['theme']['button_icon_save'],'collapse'=>false,'onclick'=>"document.location.href='".PROJECT_PATH."/app/devices/cmd.php?cmd=check_sync&profile=".$sip_profile_name."&user=".($user_id ?? '')."@".($server_address ?? '')."&domain=".($server_address ?? '')."&agent=".($device_key_vendor ?? '')."';"]);
-	echo button::create(['type'=>'button','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'collapse'=>false,'onclick'=>"list_form_submit('form_list_device_keys');"]);
-	echo "	</div>\n";
-	echo "	<div style='clear: both;'></div>\n";
-	echo "</div>\n";
-
-=======
 	echo "<div class='hud_box'>";
 
 	echo "<div class='hud_content' style='display: block;'>\n";
@@ -450,7 +439,6 @@
 	echo "		<div style='clear: both;'></div>\n";
 	echo "	</div>\n";
 
->>>>>>> develop
 	if (!empty($is_included) && !$is_included) {
 		echo $text['description-device_keys']."\n";
 		echo "<br /><br />\n";

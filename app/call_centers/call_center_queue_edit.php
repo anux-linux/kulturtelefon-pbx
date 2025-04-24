@@ -17,11 +17,7 @@
 
 	The Initial Developer of the Original Code is
 	Mark J Crane <markjcrane@fusionpbx.com>
-<<<<<<< HEAD
-	Portions created by the Initial Developer are Copyright (C) 2008-2024
-=======
 	Portions created by the Initial Developer are Copyright (C) 2008-2025
->>>>>>> develop
 	the Initial Developer. All Rights Reserved.
 
 	Contributor(s):
@@ -69,18 +65,11 @@
 		$action = "add";
 	}
 
-<<<<<<< HEAD
-//get the domain_uuid
-	$domain_uuid = $_SESSION['domain_uuid'];
-
-//initialize the destinations object
-=======
 //get the domain details
 	$domain_uuid = $_SESSION['domain_uuid'];
 	$domain_name = $_SESSION['domain_name'];
 
 //initialize the destination object
->>>>>>> develop
 	$destination = new destinations;
 
 //get total call center queues count from the database, check limit, if defined
@@ -89,10 +78,6 @@
 			$sql = "select count(*) from v_call_center_queues ";
 			$sql .= "where domain_uuid = :domain_uuid ";
 			$parameters['domain_uuid'] = $domain_uuid;
-<<<<<<< HEAD
-			$database = new database;
-=======
->>>>>>> develop
 			$total_call_center_queues = $database->select($sql, $parameters, 'column');
 			unset($sql, $parameters);
 
@@ -143,11 +128,7 @@
 				$queue_context = $_POST["queue_context"];
 			}
 			else if ($action == 'add') {
-<<<<<<< HEAD
-				$queue_context = $_SESSION['domain_name'];
-=======
 				$queue_context = $domain_name;
->>>>>>> develop
 			}
 
 		//remove invalid characters
@@ -190,11 +171,7 @@
 			if ($esl->is_connected()) {
 				//callcenter_config tier del [queue_name] [agent_name]
 				if (is_numeric($queue_extension) && is_uuid($call_center_agent_uuid)) {
-<<<<<<< HEAD
-					$cmd = "callcenter_config tier del ".$queue_extension."@".$_SESSION['domain_name']." ".$call_center_agent_uuid;
-=======
 					$cmd = "callcenter_config tier del ".$queue_extension."@".$domain_name." ".$call_center_agent_uuid;
->>>>>>> develop
 					$response = event_socket::api($cmd);
 				}
 			}
@@ -230,10 +207,6 @@
 				$sql = "select * from v_call_center_queues ";
 				$sql .= "where call_center_queue_uuid = :call_center_queue_uuid ";
 				$parameters['call_center_queue_uuid'] = $call_center_queue_uuid;
-<<<<<<< HEAD
-				$database = new database;
-=======
->>>>>>> develop
 				$row = $database->select($sql, $parameters, 'row');
 				if (!empty($row)) {
 					//if (!permission_exists('call_center_queue_domain')) {
@@ -399,13 +372,8 @@
 
 		//add definable export variables can be set in default settings
 			$export_variables = 'call_center_queue_uuid,sip_h_Alert-Info';
-<<<<<<< HEAD
-			if (!empty($_SESSION['call_center']['export_vars'])) {
-				foreach ($_SESSION['call_center']['export_vars'] as $export_variable) {
-=======
 			if (!empty($settings->get('call_center','export_vars', []))) {
 				foreach ($settings->get('call_center','export_vars', []) as $export_variable) {
->>>>>>> develop
 					$export_variables .= ','.$export_variable;
 				}
 			}
@@ -528,31 +496,19 @@
 						*/
 						//add the agent
 						if (is_numeric($queue_extension) && is_uuid($call_center_agent_uuid) && is_numeric($tier_level) && is_numeric($tier_position)) {
-<<<<<<< HEAD
-							$cmd = "callcenter_config tier add ".$queue_extension."@".$_SESSION["domain_name"]." ".$call_center_agent_uuid." ".$tier_level." ".$tier_position;
-=======
 							$cmd = "callcenter_config tier add ".$queue_extension."@".$domain_name." ".$call_center_agent_uuid." ".$tier_level." ".$tier_position;
->>>>>>> develop
 							$response = event_socket::api($cmd);
 						}
 						usleep(200);
 						//agent set level
 						if (is_numeric($queue_extension) && is_numeric($tier_level)) {
-<<<<<<< HEAD
-							$cmd = "callcenter_config tier set level ".$queue_extension."@".$_SESSION["domain_name"]." ".$call_center_agent_uuid." ".$tier_level;
-=======
 							$cmd = "callcenter_config tier set level ".$queue_extension."@".$domain_name." ".$call_center_agent_uuid." ".$tier_level;
->>>>>>> develop
 							$response = event_socket::api($cmd);
 						}
 						usleep(200);
 						//agent set position
 						if (is_numeric($queue_extension) && is_numeric($tier_position)) {
-<<<<<<< HEAD
-							$cmd = "callcenter_config tier set position ".$queue_extension."@".$_SESSION["domain_name"]." ".$tier_position;
-=======
 							$cmd = "callcenter_config tier set position ".$queue_extension."@".$domain_name." ".$tier_position;
->>>>>>> develop
 							$response = event_socket::api($cmd);
 						}
 						usleep(200);
@@ -657,10 +613,6 @@
 	$sql .= "where domain_uuid = :domain_uuid ";
 	$sql .= "order by agent_name asc";
 	$parameters['domain_uuid'] = $domain_uuid;
-<<<<<<< HEAD
-	$database = new database;
-=======
->>>>>>> develop
 	$agents = $database->select($sql, $parameters, 'all');
 	unset($sql, $parameters);
 
@@ -669,10 +621,7 @@
 	$audio_files[0] = $sounds->get();
 	unset($sounds);
 
-<<<<<<< HEAD
-=======
 //get the list of sounds
->>>>>>> develop
 	if (permission_exists('call_center_announce_sound')) {
 		$sounds = new sounds;
 		$sounds->sound_types = ['recordings'];
@@ -695,11 +644,7 @@
 	if (empty($queue_tier_rule_no_agent_no_wait)) { $queue_tier_rule_no_agent_no_wait = "true"; }
 	if (empty($queue_discard_abandoned_after)) { $queue_discard_abandoned_after = "900"; }
 	if (empty($queue_abandoned_resume_allowed)) { $queue_abandoned_resume_allowed = "false"; }
-<<<<<<< HEAD
-	if (empty($queue_context)) { $queue_context = $_SESSION['domain_name']; }
-=======
 	if (empty($queue_context)) { $queue_context = $domain_name; }
->>>>>>> develop
 
 //create token
 	$object = new token;
@@ -720,17 +665,8 @@
 	}
 
 //set the record_template
-<<<<<<< HEAD
-	if (empty($_SESSION['call_center']['record_name']['text'])) {
-		$record_template = $_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name']."/archive/\${strftime(%Y)}/\${strftime(%b)}/\${strftime(%d)}/\${uuid}.\${record_ext}";
-	}
-	else {
-		$record_template = $_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name']."/archive/".$_SESSION['call_center']['record_name']['text'];
-	}
-=======
 	$record_template = $settings->get('switch','recordings', '')."/".$domain_name."/archive/";
 	$record_template .= $settings->get('call_center','record_name', "\${strftime(%Y)}/\${strftime(%b)}/\${strftime(%d)}/\${uuid}.\${record_ext}");
->>>>>>> develop
 
 //show the content
 	if (permission_exists('recording_play') || permission_exists('recording_download')) {
@@ -849,11 +785,7 @@
 	echo "	".$text['label-extension']."\n";
 	echo "</td>\n";
 	echo "<td class='vtable' align='left'>\n";
-<<<<<<< HEAD
-	echo "	<input class='formfld' type='number' name='queue_extension' maxlength='255' min='0' step='1' value=\"".escape($queue_extension)."\" required='required' placeholder=\"".($_SESSION['call_center']['extension_range']['text'] ?? '')."\">\n";
-=======
 	echo "	<input class='formfld' type='number' name='queue_extension' maxlength='255' min='0' step='1' value=\"".escape($queue_extension)."\" required='required' placeholder=\"".$settings->get('call_center','extension_range', '')."\">\n";
->>>>>>> develop
 	echo "<br />\n";
 	echo $text['description-extension']."\n";
 	echo "</td>\n";
@@ -880,13 +812,8 @@
 				if ($key == 'recordings') {
 					if (
 						!empty($instance_value) &&
-<<<<<<< HEAD
-						($instance_value == $row["value"] || $instance_value == $_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name'].'/'.$row["value"]) &&
-						file_exists($_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name'].'/'.pathinfo($row["value"], PATHINFO_BASENAME))
-=======
 						($instance_value == $row["value"] || $instance_value == $settings->get('switch','recordings', '')."/".$domain_name.'/'.$row["value"]) &&
 						file_exists($settings->get('switch','recordings', '')."/".$domain_name.'/'.pathinfo($row["value"], PATHINFO_BASENAME))
->>>>>>> develop
 						) {
 						$selected = "selected='selected'";
 						$playable = '../recordings/recordings.php?action=download&type=rec&filename='.pathinfo($row["value"], PATHINFO_BASENAME);
@@ -929,11 +856,7 @@
 			case 'ogg' : $mime_type = 'audio/ogg'; break;
 		}
 		echo "<audio id='recording_audio_".$instance_id."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".$instance_id."')\" onended=\"recording_reset('".$instance_id."');\" src='".($playable ?? '')."' type='".($mime_type ?? '')."'></audio>";
-<<<<<<< HEAD
-		echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$_SESSION['theme']['button_icon_play'],'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'))"]);
-=======
 		echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$settings->get('theme','button_icon_play', ''),'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'))"]);
->>>>>>> develop
 		unset($playable, $mime_type);
 	}
 	echo "<br />\n";
@@ -1389,13 +1312,8 @@
 					if ($key == 'recordings') {
 						if (
 							!empty($instance_value) &&
-<<<<<<< HEAD
-							($instance_value == $row["value"] || $instance_value == $_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name'].'/'.$row["value"]) &&
-							file_exists($_SESSION['switch']['recordings']['dir']."/".$_SESSION['domain_name'].'/'.pathinfo($row["value"], PATHINFO_BASENAME))
-=======
 							($instance_value == $row["value"] || $instance_value == $settings->get('switch','recordings', '')."/".$domain_name.'/'.$row["value"]) &&
 							file_exists($settings->get('switch','recordings', '')."/".$domain_name.'/'.pathinfo($row["value"], PATHINFO_BASENAME))
->>>>>>> develop
 							) {
 							$selected = "selected='selected'";
 							$playable = '../recordings/recordings.php?action=download&type=rec&filename='.pathinfo($row["value"], PATHINFO_BASENAME);
@@ -1438,11 +1356,7 @@
 				case 'ogg' : $mime_type = 'audio/ogg'; break;
 			}
 			echo "<audio id='recording_audio_".$instance_id."' style='display: none;' preload='none' ontimeupdate=\"update_progress('".$instance_id."')\" onended=\"recording_reset('".$instance_id."');\" src='".($playable ?? '')."' type='".($mime_type ?? '')."'></audio>";
-<<<<<<< HEAD
-			echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$_SESSION['theme']['button_icon_play'],'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'))"]);
-=======
 			echo button::create(['type'=>'button','title'=>$text['label-play'].' / '.$text['label-pause'],'icon'=>$settings->get('theme','button_icon_play', ''),'id'=>'recording_button_'.$instance_id,'style'=>'display: '.(!empty($mime_type) ? 'inline' : 'none'),'onclick'=>"recording_play('".$instance_id."', document.getElementById('".$instance_id."').value, document.getElementById('".$instance_id."').options[document.getElementById('".$instance_id."').selectedIndex].parentNode.getAttribute('data-type'))"]);
->>>>>>> develop
 			unset($playable, $mime_type);
 		}
 		echo "<br />\n";

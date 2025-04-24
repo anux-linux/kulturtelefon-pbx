@@ -9,12 +9,6 @@
 		exit;
 	}
 
-<<<<<<< HEAD
-//include files
-	include "resources/classes/permissions.php";
-
-=======
->>>>>>> develop
 //increase limits
 	set_time_limit(0);
 	ini_set('max_execution_time', 0);
@@ -92,11 +86,7 @@
 	$setting = new settings(["category" => "email_queue"]);
 
 //email queue enabled
-<<<<<<< HEAD
-	if ($setting->get('email_queue', 'enabled') != 'true') {
-=======
 	if ($settings->get('email_queue', 'enabled') != 'true') {
->>>>>>> develop
 		echo "Email Queue is disabled in Default Settings\n";
 		exit;
 	}
@@ -125,34 +115,20 @@
 	}
 
 //get the call center settings
-<<<<<<< HEAD
-	$interval = $setting->get('email_queue', 'interval');
-=======
 	$interval = $settings->get('email_queue', 'interval');
->>>>>>> develop
 
 //set the defaults
 	if (!is_numeric($interval)) { $interval = 30; }
 
 //set the email queue limit
-<<<<<<< HEAD
-	if (!empty($setting->get('email_queue', 'limit'))) {
-		$email_queue_limit = $setting->get('email_queue', 'limit');
-=======
 	if (!empty($settings->get('email_queue', 'limit'))) {
 		$email_queue_limit = $settings->get('email_queue', 'limit');
->>>>>>> develop
 	}
 	else {
 		$email_queue_limit = '30';
 	}
-<<<<<<< HEAD
-	if (!empty($setting->get('email_queue', 'debug'))) {
-		$debug = $setting->get('email_queue', 'debug');
-=======
 	if (!empty($settings->get('email_queue', 'debug'))) {
 		$debug = $settings->get('email_queue', 'debug');
->>>>>>> develop
 	}
 
 //get the messages waiting in the email queue

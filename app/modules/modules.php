@@ -127,13 +127,8 @@
 	echo "	<div class='heading'><b>".$text['header-modules']."</b><div class='count'>".number_format($module_count)."</div></div>\n";
 	echo "	<div class='actions'>\n";
 	if (permission_exists('module_edit') && $modules && $esl->is_connected()) {
-<<<<<<< HEAD
-		echo button::create(['type'=>'button','label'=>$text['button-stop'],'icon'=>$_SESSION['theme']['button_icon_stop'],'onclick'=>"modal_open('modal-stop','btn_stop');"]);
-		echo button::create(['type'=>'button','label'=>$text['button-start'],'icon'=>$_SESSION['theme']['button_icon_start'],'onclick'=>"modal_open('modal-start','btn_start');"]);
-=======
 		echo button::create(['type'=>'button','label'=>$text['button-stop'],'icon'=>$settings->get('theme', 'button_icon_stop'),'onclick'=>"modal_open('modal-stop','btn_stop');"]);
 		echo button::create(['type'=>'button','label'=>$text['button-start'],'icon'=>$settings->get('theme', 'button_icon_start'),'onclick'=>"modal_open('modal-start','btn_start');"]);
->>>>>>> develop
 	}
 	echo button::create(['type'=>'button','label'=>$text['button-refresh'],'icon'=>$settings->get('theme', 'button_icon_refresh'),'style'=>'margin-right: 15px;','link'=>'modules.php']);
 	if (permission_exists('module_add')) {

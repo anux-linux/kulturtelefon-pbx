@@ -4,8 +4,6 @@ $x++;
 $array['dashboard'][$x]['dashboard_uuid'] = 'c388de65-85ad-4662-bbc3-a65fe9ddc319';
 $array['dashboard'][$x]['dashboard_name'] = 'System Status';
 $array['dashboard'][$x]['dashboard_path'] = 'system/system_status';
-<<<<<<< HEAD
-=======
 $array['dashboard'][$x]['dashboard_icon'] = '';
 $array['dashboard'][$x]['dashboard_icon_color'] = '';
 $array['dashboard'][$x]['dashboard_url'] = '';
@@ -30,7 +28,6 @@ $array['dashboard'][$x]['dashboard_detail_background_color'] = '#ffffff';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
 $array['dashboard'][$x]['dashboard_row_span'] = '2';
 $array['dashboard'][$x]['dashboard_details_state'] = 'hidden';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_order'] = '90';
 $array['dashboard'][$x]['dashboard_enabled'] = 'true';
 $array['dashboard'][$x]['dashboard_description'] = 'System information like Disk usage.';
@@ -79,8 +76,6 @@ $x++;
 $array['dashboard'][$x]['dashboard_uuid'] = 'beade936-846b-4f02-986c-a2de6fa762c2';
 $array['dashboard'][$x]['dashboard_name'] = 'System CPU Status';
 $array['dashboard'][$x]['dashboard_path'] = 'system/system_cpu_status';
-<<<<<<< HEAD
-=======
 $array['dashboard'][$x]['dashboard_icon'] = '';
 $array['dashboard'][$x]['dashboard_icon_color'] = '';
 $array['dashboard'][$x]['dashboard_url'] = '';
@@ -105,7 +100,6 @@ $array['dashboard'][$x]['dashboard_detail_background_color'] = '#ffffff';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
 $array['dashboard'][$x]['dashboard_row_span'] = '2';
 $array['dashboard'][$x]['dashboard_details_state'] = 'hidden';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_order'] = '100';
 $array['dashboard'][$x]['dashboard_enabled'] = 'false';
 $array['dashboard'][$x]['dashboard_description'] = 'System CPU information.';
@@ -118,8 +112,6 @@ $x++;
 $array['dashboard'][$x]['dashboard_uuid'] = 'bb76f7fc-669f-41dd-a636-6ddaee5deae1';
 $array['dashboard'][$x]['dashboard_name'] = 'System Counts';
 $array['dashboard'][$x]['dashboard_path'] = 'system/system_counts';
-<<<<<<< HEAD
-=======
 $array['dashboard'][$x]['dashboard_icon'] = '';
 $array['dashboard'][$x]['dashboard_icon_color'] = '';
 $array['dashboard'][$x]['dashboard_url'] = '';
@@ -144,7 +136,6 @@ $array['dashboard'][$x]['dashboard_detail_background_color'] = '#ffffff';
 $array['dashboard'][$x]['dashboard_column_span'] = '1';
 $array['dashboard'][$x]['dashboard_row_span'] = '2';
 $array['dashboard'][$x]['dashboard_details_state'] = 'hidden';
->>>>>>> develop
 $array['dashboard'][$x]['dashboard_order'] = '110';
 $array['dashboard'][$x]['dashboard_enabled'] = 'true';
 $array['dashboard'][$x]['dashboard_description'] = 'A list of showing the count of active and inactive domains, devices, extensions, gateways, users, desttinations, ring groups and more';
