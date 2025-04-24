@@ -182,11 +182,6 @@ log = require "resources.functions.log".ring_group
 		call_direction = "local";
 	end
 
---set ring ready
-	if (session:ready()) then
-		session:execute("ring_ready", "");
-	end
-
 --define additional variables
 	external = "false";
 
@@ -418,9 +413,9 @@ log = require "resources.functions.log".ring_group
 					local sql = "SELECT * FROM v_email_templates ";
 					sql = sql .. "WHERE (domain_uuid = :domain_uuid or domain_uuid is null) ";
 					sql = sql .. "AND template_language = :template_language ";
-					sql = sql .. "AND template_category = 'missed' "
-					sql = sql .. "AND template_enabled = 'true' "
-					sql = sql .. "ORDER BY domain_uuid DESC "
+					sql = sql .. "AND template_category = 'missed' ";
+					sql = sql .. "AND template_enabled = 'true' ";
+					sql = sql .. "ORDER BY domain_uuid DESC ";
 					local params = {domain_uuid = domain_uuid, template_language = default_language.."-"..default_dialect};
 					if (debug["sql"]) then
 						freeswitch.consoleLog("notice", "[voicemail] SQL: " .. sql .. "; params:" .. json.encode(params) .. "\n");
@@ -923,6 +918,11 @@ log = require "resources.functions.log".ring_group
 							record_session = true;
 						end
 
+					--set record session to false if the recording was already started
+						if (session:getVariable("record_path") ~= nil and session:getVariable("record_name") ~= nil) then
+							record_session = false;
+						end
+
 					--record the session
 						if (record_session) then
 							record_session = ",api_on_answer='uuid_record "..uuid.." start ".. record_path .. "/" .. record_name .. "',record_path='".. record_path .."',record_name="..record_name;
@@ -931,6 +931,25 @@ log = require "resources.functions.log".ring_group
 							record_session = '';
 						end
 						row.record_session = record_session
+
+					--call timeout ignored with enterprise adjust the destinaton_timeout to honor the call timeout
+						if (ring_group_strategy == "enterprise") then
+							delay = tonumber(destination_delay)
+							if (delay >= 1000) then
+								delay = delay / 1000;
+							end
+							timeout = tonumber(destination_timeout);
+							call_timeout = tonumber(ring_group_call_timeout);
+							if (delay == 0 and call_timeout < timeout) then
+								destination_timeout = call_timeout;
+							end
+							if (delay > 0 and call_timeout < delay + timeout) then
+								destination_timeout = (delay + timeout) - call_timeout;
+								if (delay >= call_timeout) then
+									goto continue
+								end
+							end
+						end
 
 					--process according to user_exists, sip_uri, external number
 						if (user_exists == "true") then
@@ -1045,6 +1064,7 @@ log = require "resources.functions.log".ring_group
 					--increment the value of x
 						x = x + 1;
 				end
+				::continue::
 			end
 
 		--release dbh before bridge

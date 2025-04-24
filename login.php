@@ -29,4 +29,7 @@
 //additional includes
 	require_once "resources/check_auth.php";
 
+//redirect to the dashboard
+	header("Location: ".$settings->get('login', 'destination', PROJECT_PATH.'/core/dashboard/'));
+
 ?>

@@ -155,6 +155,32 @@
 						unset($sql, $parameters);
 					}
 
+				//if speed dial number already exists, empty before save
+					if (!empty($phone_speed_dial)) {
+						$phone_speed_dial_exists = false;
+						if (is_numeric($phone_speed_dial)) {
+							$sql = "select count(contact_phone_uuid) ";
+							$sql .= "from v_contact_phones ";
+							$sql .= "where phone_speed_dial = :phone_speed_dial ";
+							$sql .= "and domain_uuid = :domain_uuid ";
+							if ($action == "update" && is_uuid($contact_phone_uuid)) {
+								$sql .= "and contact_phone_uuid <> :contact_phone_uuid ";
+								$parameters['contact_phone_uuid'] = $contact_phone_uuid;
+							}
+							$parameters['phone_speed_dial'] = $phone_speed_dial;
+							$parameters['domain_uuid'] = $domain_uuid;
+							$database = new database;
+							if (!empty($database->execute($sql, $parameters, 'column'))) {
+								$phone_speed_dial_exists = true;
+							}
+							unset($sql, $parameters);
+						}
+						if (!is_numeric($phone_speed_dial) || $phone_speed_dial_exists) {
+							message::add($text['message-speed_dial_exists'],'negative');
+							unset($phone_speed_dial);
+						}
+					}
+
 				//add the phone
 					if ($action == "add" && permission_exists('contact_phone_add')) {
 						$contact_phone_uuid = uuid();
@@ -263,8 +289,8 @@
 	}
 	echo "	</div>\n";
 	echo "	<div class='actions'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'contact_edit.php?id='.urlencode($contact_uuid)]);
-	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$_SESSION['theme']['button_icon_save'],'id'=>'btn_save']);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'id'=>'btn_back','style'=>'margin-right: 15px;','link'=>'contact_edit.php?id='.urlencode($contact_uuid)]);
+	echo button::create(['type'=>'submit','label'=>$text['button-save'],'icon'=>$settings->get('theme', 'button_icon_save'),'id'=>'btn_save']);
 	echo "	</div>\n";
 	echo "	<div style='clear: both;'></div>\n";
 	echo "</div>\n";

@@ -38,7 +38,7 @@
 	}
 
 //set from session variables
-	$list_row_edit_button = !empty($_SESSION['theme']['list_row_edit_button']['boolean']) ? $_SESSION['theme']['list_row_edit_button']['boolean'] : 'false';
+	$list_row_edit_button = $settings->get('theme', 'list_row_edit_button', false);
 
 //get the contact attachment list
 	$sql = "select *, length(decode(attachment_content,'base64')) as attachment_size from v_contact_attachments ";
@@ -107,8 +107,12 @@
 				foreach ($contact_attachments as $row) {
 					$attachment_type = strtolower(pathinfo($row['attachment_filename'], PATHINFO_EXTENSION));
 					$attachment_type_label = $attachment_type == 'jpg' || $attachment_type == 'jpeg' || $attachment_type == 'gif' || $attachment_type == 'png' ? $text['label-image'] : $text['label-file'];
+					$list_row_url = '';
 					if (permission_exists('contact_attachment_edit')) {
 						$list_row_url = "contact_attachment_edit.php?contact_uuid=".urlencode($row['contact_uuid'])."&id=".urlencode($row['contact_attachment_uuid']);
+						if ($row['domain_uuid'] != $_SESSION['domain_uuid'] && permission_exists('domain_select')) {
+							$list_row_url .= '&domain_uuid='.urlencode($row['domain_uuid']).'&domain_change=true';
+						}
 					}
 					echo "<tr class='list-row' href='".$list_row_url."'>\n";
 					if (permission_exists('contact_attachment_delete')) {
@@ -131,7 +135,7 @@
 					echo "	<td class='description overflow hide-md-dn'>".escape($row['attachment_description'])."</td>\n";
 					if (permission_exists('contact_attachment_edit') && $list_row_edit_button == 'true') {
 						echo "	<td class='action-button'>\n";
-						echo button::create(['type'=>'button','title'=>$text['button-edit'],'icon'=>$_SESSION['theme']['button_icon_edit'],'link'=>$list_row_url]);
+						echo button::create(['type'=>'button','title'=>$text['button-edit'],'icon'=>$settings->get('theme', 'button_icon_edit'),'link'=>$list_row_url]);
 						echo "	</td>\n";
 					}
 					echo "</tr>\n";
@@ -147,3 +151,4 @@
 	}
 
 ?>
+

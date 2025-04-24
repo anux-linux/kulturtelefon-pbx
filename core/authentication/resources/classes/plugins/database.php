@@ -67,6 +67,12 @@ class plugin_database {
 			$login_destination = $settings->get('login', 'destination');
 			$users_unique = $settings->get('users', 'unique', '');
 
+		//determine whether to show the forgot password for resetting the password
+			$login_password_reset_enabled = false;
+			if (!empty($settings->get('login', 'password_reset_key'))) {
+				$login_password_reset_enabled = true;
+			}
+
 		//check if already authorized
 			if (isset($_SESSION['authentication']['plugin']['database']) && $_SESSION['authentication']['plugin']['database']["authorized"]) {
 				return;
@@ -106,16 +112,38 @@ class plugin_database {
 					$view->assign("login_destination_url", $login_destination);
 					$view->assign("login_domain_name_visible", $login_domain_name_visible);
 					$view->assign("login_domain_names", $login_domain_name);
+					$view->assign("login_password_reset_enabled", $login_password_reset_enabled);
 					$view->assign("favicon", $theme_favicon);
 					$view->assign("login_logo_width", $theme_login_logo_width);
 					$view->assign("login_logo_height", $theme_login_logo_height);
 					$view->assign("login_logo_source", $theme_logo);
 					$view->assign("message_delay", $theme_message_delay);
 					$view->assign("background_video", $theme_background_video);
+					$view->assign("login_password_description", $text['label-password_description']);
+					$view->assign("button_cancel", $text['button-cancel']);
+					$view->assign("button_forgot_password", $text['button-forgot_password']);
+
+				//assign openid values to the template
+					if ($settings->get('open_id', 'enabled', false)) {
+						$classes = $settings->get('open_id', 'methods', []);
+						$banners = [];
+						foreach ($classes as $open_id_class) {
+							if (class_exists($open_id_class)) {
+								$banners[] = [
+									'name' => $open_id_class,
+									'image' => $open_id_class::get_banner_image(),
+									'url' => '/app/open_id/open_id.php?action=' . $open_id_class,
+								];
+							}
+						}
+						if (count($banners) > 0) {
+							$view->assign('banners', $banners);
+						}
+					}
+
+				//assign user to the template
 					if (!empty($_SESSION['username'])) {
-						$view->assign("login_password_description", $text['label-password_description']);
 						$view->assign("username", $_SESSION['username']);
-						$view->assign("button_cancel", $text['button-cancel']);
 					}
 
 				//messages

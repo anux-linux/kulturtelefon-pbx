@@ -263,12 +263,13 @@
 	$outbound_caller_id_number = urldecode($array["variables"]["outbound_caller_id_number"] ?? '');
 
 //set the time zone
-	if (isset($_SESSION['domain']['time_zone']['name'])) {
-		date_default_timezone_set($_SESSION['domain']['time_zone']['name']);
-	}
+	date_default_timezone_set($settings->get('domain', 'time_zone', 'GMT'));
+
+//create the destinations object
+	$destinations = new destinations();
 
 //build the call flow summary array
-	$xml_cdr = new xml_cdr;
+	$xml_cdr = new xml_cdr(["database" => $database, "settings" => $settings, "destinations" => $destinations]);
 	$xml_cdr->domain_uuid = $_SESSION['domain_uuid'];
 	$xml_cdr->call_direction = $call_direction; //used to determine when the call is outbound
 	$xml_cdr->status = $status; //used to determine when the call is outbound
@@ -382,9 +383,9 @@
 	echo "<tr>\n";
 	echo "<td width='30%' align='left' valign='top' nowrap='nowrap'><b>".$text['title2']."</b><br><br></td>\n";
 	echo "<td width='70%' align='right' valign='top'>\n";
-	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$_SESSION['theme']['button_icon_back'],'link'=>'xml_cdr.php'.(!empty($_SESSION['xml_cdr']['last_query']) ? '?'.urlencode($_SESSION['xml_cdr']['last_query']) : null)]);
+	echo button::create(['type'=>'button','label'=>$text['button-back'],'icon'=>$settings->get('theme', 'button_icon_back'),'link'=>'xml_cdr.php'.(!empty($_SESSION['xml_cdr']['last_query']) ? '?'.urlencode($_SESSION['xml_cdr']['last_query']) : null)]);
 	if ($call_log_enabled && isset($log_content) && !empty($log_content)) {
-		echo button::create(['type'=>'button','label'=>$text['button-call_log'],'icon'=>$_SESSION['theme']['button_icon_search'],'style'=>'margin-left: 15px;','link'=>'xml_cdr_log.php?id='.$uuid]);
+		echo button::create(['type'=>'button','label'=>$text['button-call_log'],'icon'=>$settings->get('theme', 'button_icon_search'),'style'=>'margin-left: 15px;','link'=>'xml_cdr_log.php?id='.$uuid]);
 	}
 	if ($transcribe_enabled && !empty($transcribe_engine) && empty($record_transcription)) {
 		echo button::create(['type'=>'button','label'=>$text['button-transcribe'],'icon'=>'quote-right','id'=>'btn_transcribe','name'=>'btn_transcribe','collapse'=>'hide-xs','style'=>'margin-left: 15px;','onclick'=>"window.location.href='?id=".$uuid."&action=transcribe';"]);
@@ -496,37 +497,33 @@
 	echo "</tr>\n";
 	echo "</table>\n";
 	echo "<div class='card'>\n";
-	echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-	echo "<tr>\n";
-	echo "	<th>".$text['label-application']."</th>\n";
-	if ($call_direction == 'outbound') {
-		echo "	<th>".$text['label-source']."</th>\n";
+	echo "	<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+	echo "	<tr>\n";
+	echo "		<th>".$text['label-application']."</th>\n";
+	if ($call_direction == 'local' || $call_direction == 'outbound') {
+		echo "		<th>".$text['label-source']."</th>\n";
 	}
-	echo "	<th>".$text['label-destination']."</th>\n";
-	echo "	<th>".$text['label-name']."</th>\n";
-	echo "	<th>".$text['label-start']."</th>\n";
-	echo "	<th>".$text['label-end']."</th>\n";
-	echo "	<th>".$text['label-duration']."</th>\n";
-	echo "	<th>".$text['label-status']."</th>\n";
-	echo "</tr>\n";
+	echo "		<th>".$text['label-destination']."</th>\n";
+	echo "		<th>".$text['label-name']."</th>\n";
+	echo "		<th>".$text['label-start']."</th>\n";
+	echo "		<th>".$text['label-end']."</th>\n";
+	echo "		<th>".$text['label-duration']."</th>\n";
+	echo "		<th>".$text['label-status']."</th>\n";
+	echo "	</tr>\n";
 	$i = 1;
 	foreach ($call_flow_summary as $row) {
-		echo "<tr >\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["application_url"]."\">".escape($row["application_label"])."</a></td>\n";
-		if ($call_direction == 'outbound') {
-			echo "	<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["source_url"]."\">".escape($row["source_number"])."</a></td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row["destination_number"])."</td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["source_url"]."\">".escape($row["source_name"])."</a></td>\n";
+		echo "	<tr >\n";
+		echo "		<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["application_url"]."\">".escape($row["application_label"])."</a></td>\n";
+		if ($call_direction == 'local' || $call_direction == 'outbound') {
+			echo "		<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["source_url"]."\">".escape($row["source_number"])."</a></td>\n";
 		}
-		else {
-			echo "	<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["destination_url"]."\">".escape($row["destination_number"])."</a></td>\n";
-			echo "	<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["destination_url"]."\">".escape($row["destination_name"])."</a></td>\n";
-		}
-		echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row["start_stamp"])."</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row["end_stamp"])."</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".escape($row["duration_formatted"])."</td>\n";
-		echo "	<td valign='top' class='".$row_style[$c]."'>".escape($text['label-'.$row["destination_status"]] ?? '')."</td>\n";
-		echo "</tr>\n";
+		echo "		<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["destination_url"]."\">".escape($row["destination_number"])."</a></td>\n";
+		echo "		<td valign='top' class='".$row_style[$c]."'><a href=\"".$row["destination_url"]."\">".escape($row["destination_label"])."</a></td>\n";
+		echo "		<td valign='top' class='".$row_style[$c]."'>".escape($row["start_stamp"])."</td>\n";
+		echo "		<td valign='top' class='".$row_style[$c]."'>".escape($row["end_stamp"])."</td>\n";
+		echo "		<td valign='top' class='".$row_style[$c]."'>".escape($row["duration_formatted"])."</td>\n";
+		echo "		<td valign='top' class='".$row_style[$c]."'>".escape($text['label-'.$row["destination_status"]] ?? '')."</td>\n";
+		echo "	</tr>\n";
 
 		//alternate $c
 		$c = $c ? 0 : 1;
@@ -534,7 +531,7 @@
 		//increment the row count
 		$i++;
 	}
-	echo "</table>";
+	echo "	</table>";
 	echo "</div>\n";
 	echo "<br /><br />\n";
 
@@ -542,14 +539,14 @@
 	if ($transcribe_enabled == 'true' && !empty($transcribe_engine) && !empty($record_transcription)) {
 		echo "<b>".$text['label-transcription']."</b><br>\n";
 		echo "<div class='card'>\n";
-		echo "<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
-		echo "<tr>\n";
-		echo "	<th>".$text['label-text']."</th>\n";
-		echo "</tr>\n";
-		echo "<tr >\n";
-		echo "	<td valign='top' class='".$row_style[0]."'>".escape($record_transcription)."</td>\n";
-		echo "</tr>\n";
-		echo "</table>";
+		echo "	<table width='100%' border='0' cellpadding='0' cellspacing='0'>\n";
+		echo "	<tr>\n";
+		echo "		<th>".$text['label-text']."</th>\n";
+		echo "	</tr>\n";
+		echo "	<tr >\n";
+		echo "		<td valign='top' class='".$row_style[0]."'>".escape($record_transcription)."</td>\n";
+		echo "	</tr>\n";
+		echo "	</table>";
 		echo "</div>\n";
 		echo "<br /><br />\n";
 	}
